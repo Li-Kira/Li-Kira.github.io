@@ -246,7 +246,7 @@
 <p> 1.Install requirment 安装依赖</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install - r requirements.txt</span><br></pre></td></tr></table></figure>
 
-<p>2.Run<code> setup.py</code> 启动环境</p>
+<p>2.Run<code>setup.py</code> 启动环境</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%cd VITS_WebUI\monotonic_align</span><br><span class="line">!python setup.py build_ext --inplace</span><br></pre></td></tr></table></figure>
 
 <blockquote>
@@ -316,7 +316,7 @@
 <h3 id="Layout"><a href="#Layout" class="headerlink" title="Layout"></a>Layout</h3><ul>
 <li><p><strong>Blocks:</strong></p>
 <blockquote>
-<p><strong>能创建自定义的UI，搭配CSS食用更佳：</strong><a target="_blank" rel="noopener" href="https://gradio.app/custom-CSS-and-JS/">https://gradio.app/custom-CSS-and-JS/</a></p>
+<p><strong>能创建自定义的UI，搭配CSS食用更佳：</strong> <a target="_blank" rel="noopener" href="https://gradio.app/custom-CSS-and-JS/">https://gradio.app/custom-CSS-and-JS/</a></p>
 </blockquote>
 </li>
 <li><p><strong>Markdown:</strong></p>
@@ -338,7 +338,7 @@
 <blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">theme = gr.themes.Base()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> gr.Blocks(theme=theme) <span class="keyword">as</span> interface:</span><br><span class="line">    <span class="comment">#Components </span></span><br><span class="line">    </span><br><span class="line">interface.queue(concurrency_count=<span class="number">1</span>).launch(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
 
-<p><code>queue(concurrency_count=1)</code>开启可以显示进程的执行时间，<code>debug=True</code>这个参数默认是<strong>False</strong>，开启后可以使用debug功能，定位到错误信息。</p>
+<p><code>queue(concurrency_count=1)</code>开启可以显示进程的执行时间，<code>debug</code>这个参数默认是<strong>False</strong>，开启后可以使用debug功能，定位到错误信息。</p>
 </blockquote>
 </li>
 </ul>
