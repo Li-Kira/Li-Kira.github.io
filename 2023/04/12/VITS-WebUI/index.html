@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>VITS_WebUI | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">VITS_WebUI</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 12, 2023&nbsp;&nbsp;23:02:07</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Machine-Learning/">Machine Learning</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>A WebUI for text-to-speech inference based on the Vits model</p>
+<p>一个基于Vits模型的文本转语音推理WebUI</p>
+</blockquote>
+<p><strong>Address 项目地址：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Li-Kira/VITS_WebUI"><img src="https://gh-card.dev/repos/Li-Kira/VITS_WebUI.svg" alt="Li-Kira/VITS_WebUI - GitHub"></a></p>
+<p><strong>Preview 项目预览：</strong></p>
+<p><img src="https://user-images.githubusercontent.com/62274988/231185600-feb2fec3-24cd-4695-beab-0362ef4286f6.png" alt="image"></p>
+<p><img src="https://user-images.githubusercontent.com/62274988/231162669-10c84a50-1dd9-45f3-a4c9-85cd9daaf0d5.png" alt="image"></p>
+<h2 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h2><ul>
+<li>Text to Speech inference 文本转语音推理</li>
+<li>Generate parameter adjustment 生成参数调整</li>
+<li>Export generated audio 导出生成音频</li>
+<li>Import model information 导入模型信息：name_en、name_ch、Speaker ID、Example text、Cover、Language</li>
+<li>Import model error message 导入模型错误提示</li>
+<li>Display model information 模型信息显示</li>
+<li>Switch checkpoints 切换模型</li>
+<li>Display example text 实例文本显示</li>
+</ul>
+<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><blockquote>
+<p>using Gradio 3.25.0</p>
+</blockquote>
+<p> 1.Install requirment 安装依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install - r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>2.Run<code> setup.py</code> 启动环境</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%cd VITS_WebUI\monotonic_align</span><br><span class="line">!python setup.py build_ext --inplace</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>单调对齐搜索，一种搜索最大化的，由归一化流参数化的数据的对齐的方法。</p>
+</blockquote>
+<p>3.Run interface 启动界面</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%cd VITS_WebUI</span><br><span class="line">!python app.py</span><br></pre></td></tr></table></figure>
+
+<p>或者你也可以执行此文件<code>GUI_Usage.ipynb</code></p>
+<p>4.View in browser 在浏览器中查看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:7860/</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Detail"><a href="#Detail" class="headerlink" title="Detail"></a>Detail</h2><blockquote>
+<p>如果你想在此项目上修改，可以参考这里</p>
+</blockquote>
+<h3 id="Inference-related-functions"><a href="#Inference-related-functions" class="headerlink" title="Inference-related functions"></a>Inference-related functions</h3><ul>
+<li><code>get_text(text, hps)</code>：文本预处理函数，能够将<strong>输入文本</strong>转换为<strong>音素</strong></li>
+<li><code>tts_fn(text, noise_scale, noise_scale_w, length_scale)</code>：推理函数，给定三个超参数<strong>noise_scale</strong>、<strong>noise_scale_w</strong>、<strong>length_scale</strong>用于控制生成音频的<strong>情感变化长度</strong>、<strong>发音长度</strong>、<strong>语速</strong></li>
+</ul>
+<h3 id="Gradio-related-function"><a href="#Gradio-related-function" class="headerlink" title="Gradio-related function"></a>Gradio-related function</h3><blockquote>
+<p><strong>Gradio具有丰富的案例Demo和详尽的开发文档，入门请参考这些网站</strong></p>
+<ul>
+<li>Gradio案例：<a target="_blank" rel="noopener" href="https://gradio.app/demos/">https://gradio.app/demos/</a></li>
+<li>Gradio文档：<a target="_blank" rel="noopener" href="https://gradio.app/docs/">https://gradio.app/docs/</a></li>
+</ul>
+</blockquote>
+<ul>
+<li><p><code>get_options()</code>：从<code>models/model_info.json</code>该json文件中获取模型信息</p>
+</li>
+<li><p><code>add_model_fn()</code>：导入模型信息函数，支持导入以下参数：<strong>example_text</strong>，<strong>cover</strong>，<strong>speakerID</strong>，<strong>name_en</strong>，<strong>name_cn</strong>，<strong>language</strong></p>
+<blockquote>
+<p><strong>speakerID</strong>、<strong>name_en</strong>、<strong>language</strong>为必填选项，如果为空则会提升错误</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查必填字段是否为空</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> SPEAKER_ID <span class="keyword">or</span> <span class="keyword">not</span> name_en <span class="keyword">or</span> <span class="keyword">not</span> language:</span><br><span class="line">    <span class="keyword">raise</span> gr.Error(<span class="string">&quot;Please fill in all required fields!&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Failed to add model&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果要执行<code>gr.Error</code>，必须在<strong>click</strong>方法中添加一个组件到<strong>outputs</strong>，否则会报错，这里我选择的是一个<strong>Textbox组件</strong></p>
+</blockquote>
+</li>
+<li><p><code>change_dropdown()</code>：更新模型信息函数，当<strong>Dropdown</strong>选取新的模型时，实时地更新</p>
+<blockquote>
+<p><strong>注意：</strong></p>
+<ul>
+<li><p>由于Gradio的<code>update()</code>方法无法更新<strong>Example组件</strong>，于是用Textbox来替代示例</p>
+</li>
+<li><p>声明了<strong>Global</strong>全局变量</p>
+</li>
+<li><p>需要在<code>Blocks</code>里面添加<strong>change</strong>函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model_choice.change(fn=change_dropdown, inputs=model_choice, outputs=[speaker_id_choice,cover_markdown,title_markdown,lan,example_text_box])</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>CustomEncoder(json.JSONEncoder)</code>：json编码器类，用于解决在执行<code>json.dump()</code>时出现的格式错误</p>
+</li>
+<li><p><code>download_audio_js</code>：JS方法，用来下载生成的音频，保存的文件名为<strong>Input Textbox</strong>中的文本截取</p>
+<blockquote>
+<p>需要为作为<strong>Inputs</strong>的<strong>Textbox组件</strong>添加一个<strong>elem_id</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">elem_id=<span class="string">f&quot;input-text-en-<span class="subst">&#123;name_en.replace(<span class="string">&#x27; &#x27;</span>,<span class="string">&#x27;&#x27;</span>)&#125;</span>&quot;</span>,</span><br></pre></td></tr></table></figure>
+
+<p>以及为作为<strong>Outputs</strong>的<strong>Audio组件</strong>添加一个elem_id</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">output_audio = gr.Audio(label=<span class="string">&quot;Output&quot;</span>, elem_id=<span class="string">f&quot;tts-audio-en-<span class="subst">&#123;name_en.replace(<span class="string">&#x27; &#x27;</span>,<span class="string">&#x27;&#x27;</span>)&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>该方法在<strong>download_button</strong>被点击时执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">download_button.click(<span class="literal">None</span>, [], [], _js=download_audio_js.<span class="built_in">format</span>(audio_id=<span class="string">f&quot;en-<span class="subst">&#123;name_en.replace(<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;&#x27;</span>)&#125;</span>&quot;</span>))</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<h3 id="Layout"><a href="#Layout" class="headerlink" title="Layout"></a>Layout</h3><ul>
+<li><p><strong>Blocks:</strong></p>
+<blockquote>
+<p><strong>能创建自定义的UI，搭配CSS食用更佳：</strong><a target="_blank" rel="noopener" href="https://gradio.app/custom-CSS-and-JS/">https://gradio.app/custom-CSS-and-JS/</a></p>
+</blockquote>
+</li>
+<li><p><strong>Markdown:</strong></p>
+<p><code>gr.Markdown</code>支持Markdown格式的输入，你也可以输入html文本</p>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gr.Markdown(<span class="string">&quot;&quot;&quot;# Select Model&quot;&quot;&quot;</span>)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cover_markdown = gr.Markdown(</span><br><span class="line">    <span class="string">&#x27;&lt;div align=&quot;center&quot;&gt;&#x27;</span></span><br><span class="line">    <span class="string">f&#x27;&lt;img style=&quot;width:auto;height:512px;&quot; src=&quot;file/<span class="subst">&#123;COVER&#125;</span>&quot;&gt;&#x27;</span> <span class="keyword">if</span> COVER <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">                                                                               <span class="string">&#x27;&lt;/div&gt;&#x27;</span>)</span><br><span class="line">title_markdown = gr.Markdown(</span><br><span class="line">    <span class="string">&#x27;&lt;div align=&quot;center&quot;&gt;&#x27;</span></span><br><span class="line">    <span class="string">f&#x27;&lt;h3&gt;&lt;a&gt;&lt;strong&gt;<span class="subst">&#123;<span class="string">&quot;语音名称: &quot;</span>&#125;</span><span class="subst">&#123;MODEL_ZH_NAME&#125;</span>&lt;/strong&gt;&lt;/a&gt;&#x27;</span></span><br><span class="line">    <span class="string">f&#x27;&lt;h3&gt;&lt;strong&gt;<span class="subst">&#123;<span class="string">&quot;checkpoint: &quot;</span>&#125;</span><span class="subst">&#123;speaker_choice&#125;</span>&lt;/strong&gt;&#x27;</span></span><br><span class="line">                                                                               <span class="string">&#x27;&lt;/div&gt;&#x27;</span>)</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p><strong>Columns and Nesting</strong></p>
+<p>你可以使用<code>gr.Box()</code>、<code>gr.Row()</code>、<code>gr.Column</code>来控制组件的布局</p>
+<blockquote>
+<p>只有<strong>Column</strong>能够使用<strong>scale</strong>来控制大小，如果想控制<strong>Row</strong>的大小，你可以采取以下嵌套方式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> gr.Box():</span><br><span class="line">    <span class="keyword">with</span> gr.Row():</span><br><span class="line">        <span class="keyword">with</span> gr.Column(scale = <span class="number">2</span>):</span><br><span class="line">            <span class="comment">#Components </span></span><br><span class="line">        <span class="keyword">with</span> gr.Column(scale = <span class="number">1</span>):</span><br><span class="line">            <span class="comment">#Components</span></span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p><strong>Theme：</strong></p>
+<p>我这里使用的是<strong>Base</strong>主题，你可以查看官方文档选择你想要的主题：<a target="_blank" rel="noopener" href="https://gradio.app/theming-guide/">https://gradio.app/theming-guide/</a></p>
+<blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">theme = gr.themes.Base()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> gr.Blocks(theme=theme) <span class="keyword">as</span> interface:</span><br><span class="line">    <span class="comment">#Components </span></span><br><span class="line">    </span><br><span class="line">interface.queue(concurrency_count=<span class="number">1</span>).launch(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>queue(concurrency_count=1)</code>开启可以显示进程的执行时间，<code>debug=True</code>这个参数默认是<strong>False</strong>，开启后可以使用debug功能，定位到错误信息。</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li>论文地址:<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2106.06103">https://arxiv.org/abs/2106.06103</a></li>
+<li>论文代码：<a target="_blank" rel="noopener" href="https://github.com/jaywalnut310/vits">https://github.com/jaywalnut310/vits</a></li>
+<li>Vits微调：<a target="_blank" rel="noopener" href="https://github.com/SayaSS/vits-finetuning">https://github.com/SayaSS/vits-finetuning</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/04/12/VITS-WebUI/">https://li-kira.github.io/2023/04/12/VITS-WebUI/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Machine-Learning/"># Machine Learning</a>
+                    
+                        <a href="/tags/Gradio/"># Gradio</a>
+                    
+                        <a href="/tags/Text-To-Speach/"># Text To Speach</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/04/12/%E5%BA%94%E7%94%A8%E6%8E%A8%E8%8D%90/">应用推荐</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
