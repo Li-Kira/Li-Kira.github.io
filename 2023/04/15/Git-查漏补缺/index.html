@@ -255,6 +255,20 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;**/models/*.pth&quot;</span></span><br></pre></td></tr></table></figure></li>
 </ul>
 <h3 id="删除-Git-LFS-文件"><a href="#删除-Git-LFS-文件" class="headerlink" title="删除 Git LFS 文件"></a><strong>删除 Git LFS 文件</strong></h3><p>Git LFS 命令行客户端不支持删除服务器上的文件，因此如何删除他们取决于你的托管服务提供商。</p>
+<h2 id="Git-指定分支"><a href="#Git-指定分支" class="headerlink" title="Git 指定分支"></a>Git 指定分支</h2><p>安装正常操作clone仓库后默认是把main分支的内容拉取下来，如果想要拉取其他分支，应在git clone指定中添加如下命令行选项：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b 分支名称 url</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>单杠和双杠的区别：</strong></p>
+<p><code>-</code>后面跟着的是单字符参数，可以设置多个参数在横线后面，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xcvf ×××</span><br></pre></td></tr></table></figure>
+
+<p><code>--</code>后面跟着的是字符串参数，只能选择一个参数放在<code>--</code>后面，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+
+<p>在选项需要加参数的时候，可以使用如下格式实现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch --set-upstream-to origin/remote_branch  your_branch</span><br><span class="line">git branch --set-upstream-to=origin/remote_branch  your_branch</span><br></pre></td></tr></table></figure>
+</blockquote>
 <h2 id="问题收集"><a href="#问题收集" class="headerlink" title="问题收集"></a>问题收集</h2><h3 id="“The-remote-disconnected-Check-your-Internet-connection-and-try-again”"><a href="#“The-remote-disconnected-Check-your-Internet-connection-and-try-again”" class="headerlink" title="“The remote disconnected. Check your Internet connection and try again”"></a>“The remote disconnected. Check your Internet connection and try again”</h3><p><a target="_blank" rel="noopener" href="https://github.com/desktop/desktop/issues/4746">https://github.com/desktop/desktop/issues/4746</a></p>
 <p>更改缓冲区大小或者使用Git LFS</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global http.postBuffer 1048576000</span><br></pre></td></tr></table></figure>
@@ -341,6 +355,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/05/13/Unity-%E4%BB%A3%E7%90%86%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">Unity 代理相关问题</a>
             
             
             <a class="next" rel="next" href="/2023/04/12/VITS-WebUI/">VITS_WebUI</a>
