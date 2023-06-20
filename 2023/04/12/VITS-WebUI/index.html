@@ -230,6 +230,7 @@
 <p><strong>Preview 项目预览：</strong></p>
 <p><img src="https://user-images.githubusercontent.com/62274988/231185600-feb2fec3-24cd-4695-beab-0362ef4286f6.png" alt="image"></p>
 <p><img src="https://user-images.githubusercontent.com/62274988/231162669-10c84a50-1dd9-45f3-a4c9-85cd9daaf0d5.png" alt="image"></p>
+<p><img src="https://github.com/Li-Kira/VITS_WebUI/assets/62274988/e943790b-e57a-4368-b1f0-b410945bba0f" alt="Snipaste_2023-05-19_20-51-53"></p>
 <h2 id="Features"><a href="#Features" class="headerlink" title="Features"></a>Features</h2><ul>
 <li>Text to Speech inference 文本转语音推理</li>
 <li>Generate parameter adjustment 生成参数调整</li>
@@ -239,11 +240,11 @@
 <li>Display model information 模型信息显示</li>
 <li>Switch checkpoints 切换模型</li>
 <li>Display example text 实例文本显示</li>
+<li>ChatGPT API 接入ChatGPT</li>
 </ul>
-<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><blockquote>
-<p>using Gradio 3.25.0</p>
-</blockquote>
-<p> 1.Install requirment 安装依赖</p>
+<h2 id="Terms-of-Use"><a href="#Terms-of-Use" class="headerlink" title="Terms of Use"></a>Terms of Use</h2><p>🚨<strong>Please resolve the dataset authorization issues by yourself. Any problems caused by using unauthorized datasets for training are at your own risk and responsibility.This project does not provide datasets or model files.</strong></p>
+<p>🚨<strong>请自行解决数据集授权问题，任何因使用未经授权的数据集进行训练而造成的问题，由您自行承担风险和责任。本项目不提供数据集以及模型文件。</strong></p>
+<h2 id="Getting-started"><a href="#Getting-started" class="headerlink" title="Getting started"></a>Getting started</h2><p> 1.Install requirment 安装依赖</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install - r requirements.txt</span><br></pre></td></tr></table></figure>
 
 <p>2.Run<code>setup.py</code> 启动环境</p>
@@ -259,8 +260,10 @@
 <p>4.View in browser 在浏览器中查看</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:7860/</span><br></pre></td></tr></table></figure>
 
-
-
+<p>5.在<strong>Settings</strong>中导入模型信息，并将训练好的checkpoints文件改名为对应<code>name_en.pth</code>并放到<strong>models</strong>目录下对应生成的文件夹中。</p>
+<blockquote>
+<p>首次运行请在<code>models/Yuuka</code>中放入任意checkpoints</p>
+</blockquote>
 <h2 id="Detail"><a href="#Detail" class="headerlink" title="Detail"></a>Detail</h2><blockquote>
 <p>如果你想在此项目上修改，可以参考这里</p>
 </blockquote>
@@ -281,7 +284,7 @@
 <li><p><code>add_model_fn()</code>：导入模型信息函数，支持导入以下参数：<strong>example_text</strong>，<strong>cover</strong>，<strong>speakerID</strong>，<strong>name_en</strong>，<strong>name_cn</strong>，<strong>language</strong></p>
 <blockquote>
 <p><strong>speakerID</strong>、<strong>name_en</strong>、<strong>language</strong>为必填选项，如果为空则会提升错误</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查必填字段是否为空</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> SPEAKER_ID <span class="keyword">or</span> <span class="keyword">not</span> name_en <span class="keyword">or</span> <span class="keyword">not</span> language:</span><br><span class="line">    <span class="keyword">raise</span> gr.Error(<span class="string">&quot;Please fill in all required fields!&quot;</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Failed to add model&quot;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检查必填字段是否为空</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> SPEAKER_ID <span class="keyword">or</span> <span class="keyword">not</span> name_en <span class="keyword">or</span> <span class="keyword">not</span> language:</span><br><span class="line"> <span class="keyword">raise</span> gr.Error(<span class="string">&quot;Please fill in all required fields!&quot;</span>)</span><br><span class="line"> <span class="keyword">return</span> <span class="string">&quot;Failed to add model&quot;</span></span><br></pre></td></tr></table></figure>
 
 <p>如果要执行<code>gr.Error</code>，必须在<strong>click</strong>方法中添加一个组件到<strong>outputs</strong>，否则会报错，这里我选择的是一个<strong>Textbox组件</strong></p>
 </blockquote>
@@ -325,18 +328,18 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gr.Markdown(<span class="string">&quot;&quot;&quot;# Select Model&quot;&quot;&quot;</span>)</span><br></pre></td></tr></table></figure>
 </blockquote>
 <blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cover_markdown = gr.Markdown(</span><br><span class="line">    <span class="string">&#x27;&lt;div align=&quot;center&quot;&gt;&#x27;</span></span><br><span class="line">    <span class="string">f&#x27;&lt;img style=&quot;width:auto;height:512px;&quot; src=&quot;file/<span class="subst">&#123;COVER&#125;</span>&quot;&gt;&#x27;</span> <span class="keyword">if</span> COVER <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">                                                                               <span class="string">&#x27;&lt;/div&gt;&#x27;</span>)</span><br><span class="line">title_markdown = gr.Markdown(</span><br><span class="line">    <span class="string">&#x27;&lt;div align=&quot;center&quot;&gt;&#x27;</span></span><br><span class="line">    <span class="string">f&#x27;&lt;h3&gt;&lt;a&gt;&lt;strong&gt;<span class="subst">&#123;<span class="string">&quot;语音名称: &quot;</span>&#125;</span><span class="subst">&#123;MODEL_ZH_NAME&#125;</span>&lt;/strong&gt;&lt;/a&gt;&#x27;</span></span><br><span class="line">    <span class="string">f&#x27;&lt;h3&gt;&lt;strong&gt;<span class="subst">&#123;<span class="string">&quot;checkpoint: &quot;</span>&#125;</span><span class="subst">&#123;speaker_choice&#125;</span>&lt;/strong&gt;&#x27;</span></span><br><span class="line">                                                                               <span class="string">&#x27;&lt;/div&gt;&#x27;</span>)</span><br></pre></td></tr></table></figure></blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cover_markdown = gr.Markdown(</span><br><span class="line"> <span class="string">&#x27;&lt;div align=&quot;center&quot;&gt;&#x27;</span></span><br><span class="line"> <span class="string">f&#x27;&lt;img style=&quot;width:auto;height:512px;&quot; src=&quot;file/<span class="subst">&#123;COVER&#125;</span>&quot;&gt;&#x27;</span> <span class="keyword">if</span> COVER <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">                                                                            <span class="string">&#x27;&lt;/div&gt;&#x27;</span>)</span><br><span class="line">title_markdown = gr.Markdown(</span><br><span class="line"> <span class="string">&#x27;&lt;div align=&quot;center&quot;&gt;&#x27;</span></span><br><span class="line"> <span class="string">f&#x27;&lt;h3&gt;&lt;a&gt;&lt;strong&gt;<span class="subst">&#123;<span class="string">&quot;语音名称: &quot;</span>&#125;</span><span class="subst">&#123;MODEL_ZH_NAME&#125;</span>&lt;/strong&gt;&lt;/a&gt;&#x27;</span></span><br><span class="line"> <span class="string">f&#x27;&lt;h3&gt;&lt;strong&gt;<span class="subst">&#123;<span class="string">&quot;checkpoint: &quot;</span>&#125;</span><span class="subst">&#123;speaker_choice&#125;</span>&lt;/strong&gt;&#x27;</span></span><br><span class="line">                                                                            <span class="string">&#x27;&lt;/div&gt;&#x27;</span>)</span><br></pre></td></tr></table></figure></blockquote>
 </li>
 <li><p><strong>Columns and Nesting</strong></p>
 <p>你可以使用<code>gr.Box()</code>、<code>gr.Row()</code>、<code>gr.Column</code>来控制组件的布局</p>
 <blockquote>
 <p>只有<strong>Column</strong>能够使用<strong>scale</strong>来控制大小，如果想控制<strong>Row</strong>的大小，你可以采取以下嵌套方式</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> gr.Box():</span><br><span class="line">    <span class="keyword">with</span> gr.Row():</span><br><span class="line">        <span class="keyword">with</span> gr.Column(scale = <span class="number">2</span>):</span><br><span class="line">            <span class="comment">#Components </span></span><br><span class="line">        <span class="keyword">with</span> gr.Column(scale = <span class="number">1</span>):</span><br><span class="line">            <span class="comment">#Components</span></span><br></pre></td></tr></table></figure></blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> gr.Box():</span><br><span class="line"> <span class="keyword">with</span> gr.Row():</span><br><span class="line">     <span class="keyword">with</span> gr.Column(scale = <span class="number">2</span>):</span><br><span class="line">         <span class="comment">#Components </span></span><br><span class="line">     <span class="keyword">with</span> gr.Column(scale = <span class="number">1</span>):</span><br><span class="line">         <span class="comment">#Components</span></span><br></pre></td></tr></table></figure></blockquote>
 </li>
 <li><p><strong>Theme：</strong></p>
 <p>我这里使用的是<strong>Base</strong>主题，你可以查看官方文档选择你想要的主题：<a target="_blank" rel="noopener" href="https://gradio.app/theming-guide/">https://gradio.app/theming-guide/</a></p>
 <blockquote>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">theme = gr.themes.Base()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> gr.Blocks(theme=theme) <span class="keyword">as</span> interface:</span><br><span class="line">    <span class="comment">#Components </span></span><br><span class="line">    </span><br><span class="line">interface.queue(concurrency_count=<span class="number">1</span>).launch(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">theme = gr.themes.Base()</span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> gr.Blocks(theme=theme) <span class="keyword">as</span> interface:</span><br><span class="line"> <span class="comment">#Components </span></span><br><span class="line"></span><br><span class="line">interface.queue(concurrency_count=<span class="number">1</span>).launch(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
 
 <p><code>queue(concurrency_count=1)</code>开启可以显示进程的执行时间，<code>debug</code>这个参数默认是<strong>False</strong>，开启后可以使用debug功能，定位到错误信息。</p>
 </blockquote>
