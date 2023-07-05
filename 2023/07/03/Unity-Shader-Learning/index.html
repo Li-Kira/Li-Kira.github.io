@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>Unity Shader Learning（绝赞更新中） | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Unity Shader Learning（绝赞更新中）</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 3, 2023&nbsp;&nbsp;20:36:02</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Unity/">Unity</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>参考书籍：冯乐乐 - 《Unity Shader入门精要》</p>
+</blockquote>
+<h2 id="1-渲染流水线"><a href="#1-渲染流水线" class="headerlink" title="1 - 渲染流水线"></a>1 - 渲染流水线</h2><p>在《Render-Time Rendering，Third Edition》一书中，提出将一个渲染流程分为3各阶段：<strong>应用阶段（Application Stage）、几何阶段（Geometry Stage）、光栅化阶段（Rasterizer Stage）</strong>。</p>
+<h3 id="1-1-应用阶段"><a href="#1-1-应用阶段" class="headerlink" title="1.1 - 应用阶段"></a>1.1 - 应用阶段</h3><p><strong>应用阶段（在CPU上）：</strong></p>
+<ul>
+<li><p>将数据加载到显存</p>
+</li>
+<li><p>设置渲染状态</p>
+<blockquote>
+<p><strong>渲染状态：</strong>定义了场景中的网格是怎么被渲染的，使用了什么顶点、片元着色器，光源属性和材质等。</p>
+</blockquote>
+</li>
+<li><p>Draw Call</p>
+<blockquote>
+<p><strong>Draw Call：</strong>CPU告诉GPU如何去进行渲染的指令，即根据渲染状态和所有输入的顶点数据。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="1-2-几何阶段"><a href="#1-2-几何阶段" class="headerlink" title="1.2 - 几何阶段"></a>1.2 - 几何阶段</h3><p><strong>几何阶段：</strong>顶点数据通过顶点着色器等一系列着色器进行空间变换、顶点着色，最终经过裁剪映射到屏幕空间。</p>
+<ul>
+<li><p><strong>顶点着色器：</strong>最主要的工作是坐标变换、逐顶点光照。常用于实现顶点动画。一个最基本的顶点着色器需要完成工作是将顶点坐标转换到齐次剪裁空间中。</p>
+</li>
+<li><p><strong>剪裁：</strong>剔除不在视野范围的物体数据。</p>
+</li>
+<li><p><strong>屏幕映射：</strong>将每个图元的x和y坐标转换到屏幕坐标系下。</p>
+<blockquote>
+<p>屏幕坐标系在<strong>OpenGL</strong>和<strong>DirectX</strong>中存在差异，<strong>OpenGL</strong>中是数学中常用的由左向右，由下向上的坐标系，<strong>DirectX</strong>则是由左往右，由上往下，符合人类的阅读顺序的坐标系。</p>
+<p>如果发现得到的图像是反的，那么有可能是这个原因造成的。</p>
+</blockquote>
+</li>
+</ul>
+<p><img src="/image/UnityShaderLearning/image-20230630211935996.png" alt="image-20230630211935996"></p>
+<h3 id="1-3-光栅化阶段"><a href="#1-3-光栅化阶段" class="headerlink" title="1.3 - 光栅化阶段"></a>1.3 - 光栅化阶段</h3><p><strong>光栅化阶段：</strong>计算每个图元覆盖了哪些像素，为这些像素计算它们的颜色。</p>
+<ul>
+<li><p><strong>三角形设置：</strong>计算光栅化一个三角网格所需的信息。</p>
+</li>
+<li><p><strong>三角形遍历：</strong>检查每一个像素是否被一个三角网格覆盖，如果是就会生成一个片元。</p>
+<blockquote>
+<p>片元不是真正意义上的像素，而是包含了很多状态的集合，这些状态用于计算每个像素的最终颜色。包括屏幕坐标，深度信息，以及其他从几何阶段输出的顶点信息例如：法线、纹理坐标等。</p>
+</blockquote>
+</li>
+<li><p><strong>片元着色器：</strong>这个阶段可以完成许多渲染技术，其中最重要的就是纹理采样。</p>
+</li>
+<li><p><strong>逐片元操作：</strong>决定每个片元的可见性，涉及很多测试工作：例如<strong>深度测试</strong>、<strong>模板测试</strong>。如果一个片元通过了所有的测试，那么就将这个片元的颜色值和已经存储在颜色缓冲区中的颜色进行混合。</p>
+<blockquote>
+<p>理解模板测试和深度就能够理解之后章节提到的渲染队列，尤其是处理透明效果时出现的问题。如果一个片元通过了模板测试，那么他会进行下一个深度测试。</p>
+<ul>
+<li><strong>模板测试：</strong>通常用于限制渲染的范围。</li>
+<li><strong>深度测试：</strong>显示出离摄像机最近的物体，剔除其他被遮挡的部分。</li>
+<li><strong>合并：</strong>如果一个片元通过了模板测试和深度测试，那么就可以进行合并。对于半透明的物体，需要混合操作让这个物体看起来是透明的。<strong>混合</strong>类似于Photoshop中的图层混合模式，会根据透明通道的值进行相加、相减、相乘等。</li>
+<li>此外，在Unity的渲染流水线中，<strong>深度测试</strong>是在片元着色器之前的，这种技术也称为<strong>Early-Z</strong>技术，通过尽可能地早知道哪些片元是会被舍弃的，提高了GPU的性能。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>当图元经过了光栅化阶段的计算和测试后，就会显示到我们的屏幕上。我们的屏幕上显示的就是颜色缓冲区中的颜色值，为了避免我们看到那些正在光栅化的图元，GPU会使用<strong>双重缓冲（Double Buffering）</strong>策略。即对于场景的渲染是在幕后的<strong>后置缓冲（Back Buffer）</strong>中进行的，当场景被渲染到后置缓冲中，GPU就会交换后置缓冲和<strong>前置缓冲（Front Buffer）</strong>中的内容，由此来保证我们看到的图像总是连续的。</p>
+<h3 id="1-4-Draw-Call"><a href="#1-4-Draw-Call" class="headerlink" title="1.4 - Draw Call"></a>1.4 - Draw Call</h3><p><strong>Draw Call：</strong>Draw Call是CPU调用图像接口命令，如OpenGL或者DirectX中的相关命令，以指示GPU进行渲染的操作。</p>
+<ol>
+<li><p>CPU和GPU之间如何实现并行工作？</p>
+<p>使用命令缓冲区，其中包含的命令有很多，除了Draw Call以外还有改变渲染状态等。</p>
+</li>
+<li><p>为什么Draw Call多了会影响帧率？</p>
+<p>分配内存、创建元数据这些操作多了会造成很多额外的性能开销，如果复制了很多小文件，那么这种性能开销会很大。</p>
+</li>
+<li><p>如何减少Draw Call？</p>
+<p>减少Draw Call的方法有很多，比如：<strong>批处理</strong></p>
+<blockquote>
+<p><strong>批处理</strong>是将很多的Draw Call合并成一个大的Draw Call，通过<strong>合并网格</strong>，适用于静态的物体，如将不会移动的地面合并。当然也可以对动态物体进行批处理，但是这些物体是不断移动的，因此每一帧都需要进行合并，这也会造成一定的性能开销。</p>
+<p>为了减少Draw Call，需要注意：</p>
+<ul>
+<li>尽量避免使用大量很小的网格，如果不可避免，那么可以考虑合并他们</li>
+<li>尽量避免使用过多的材质，在不同的网格之间使用相同的材质。</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<h3 id="1-5-Shader在渲染流水线中扮演的角色"><a href="#1-5-Shader在渲染流水线中扮演的角色" class="headerlink" title="1.5 - Shader在渲染流水线中扮演的角色"></a>1.5 - Shader在渲染流水线中扮演的角色</h3><ul>
+<li>Shader是GPU流水线上的一些可高度编程的阶段，由Shader编译出来的代码最终会运行在GPU上。</li>
+<li>有一些特定的着色器：顶点着色器、片元着色器</li>
+<li>依靠Shader我们可以控制渲染流水线上的细节，如使用<strong>顶点着色器</strong>来进行<strong>顶点变换</strong>或者<strong>传递数据</strong>，使用<strong>片元着色器</strong>来进行<strong>逐像素的渲染</strong>。</li>
+</ul>
+<h2 id="2-Unity-Shader基础"><a href="#2-Unity-Shader基础" class="headerlink" title="2 - Unity Shader基础"></a>2 - Unity Shader基础</h2><h3 id="2-1-Unity-Shader-概述"><a href="#2-1-Unity-Shader-概述" class="headerlink" title="2.1 - Unity Shader 概述"></a>2.1 - Unity Shader 概述</h3><blockquote>
+<p><strong>参考资料</strong></p>
+<p>Writing Your First Shader In Unity - Rendering In Unity：<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ZNvEM76Zi-c&amp;list=PLX2vGYjWbI0RS_lkb68ApE2YPcZMC4Ohz&amp;index=2">https://www.youtube.com/watch?v=ZNvEM76Zi-c&amp;list=PLX2vGYjWbI0RS_lkb68ApE2YPcZMC4Ohz&amp;index=2</a></p>
+</blockquote>
+<p><img src="/image/UnityShaderLearning/image-20230628171902384.png" alt="image-20230628171902384"></p>
+<p>一个完整的渲染过程需要包括以下资产：<strong>3D模型</strong>、<strong>材质</strong>以及<strong>Shader</strong></p>
+<ul>
+<li>其中，<strong>3D模型</strong>包含<strong>顶点</strong>、<strong>顶点颜色</strong>、<strong>UV数据</strong>以及<strong>法线</strong>。</li>
+<li>在Unity中，要渲染的游戏对象带有添加了<strong>材质</strong>的<strong>Mesh Render</strong>渲染器，<strong>材质</strong>声明了使用的Shader、纹理贴图、颜色以及属性信息。</li>
+<li><strong>Shader</strong>使用来自<strong>3D模型</strong>和<strong>材质</strong>中的信息，使用<strong>CG/HLSL</strong>代码在屏幕上绘制像素。</li>
+</ul>
+<p><img src="/image/UnityShaderLearning/image-20230628173214190.png" alt="image-20230628173214190"></p>
+<ul>
+<li><strong>Shader</strong>是一种计算机程序，在渲染过程中用于进行着色：在图像中产生适当的光亮、暗淡和颜色，或者在现代也用于产生特殊的平面效果或进行视频后期处理（如图像效果）。</li>
+<li><strong>Shader</strong>是一个专门在GPU上运行的程序。它最终用于绘制你的3D模型的三角面。</li>
+</ul>
+<p>一个<strong>Unity Shader</strong>的基本结构如下：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Shader &quot;ShaderName&quot;</span><br><span class="line">&#123;</span><br><span class="line">    Properties</span><br><span class="line">    &#123;</span><br><span class="line">    	//属性</span><br><span class="line">    &#125;</span><br><span class="line">    SubShader</span><br><span class="line">    &#123;</span><br><span class="line">       //显卡A使用的子着色器</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="2-2-SubShader"><a href="#2-2-SubShader" class="headerlink" title="2.2 - SubShader"></a>2.2 - SubShader</h3><p>Unity可以包含多个<strong>SubShader</strong>语义，但至少要有一个。<strong>SubShader</strong>定义了一些列的<strong>Pass</strong>以及状态（**[RenderSetup]<strong>）、标签（</strong>[Tag]<strong>）的设置。如果</strong>Pass**的数目过多，会造成性能的下降。</p>
+<blockquote>
+<p>Unity会选择<strong>第一个</strong>能够在目标平台上运行的SubShader，如果都不支持的话就会使用<strong>Fallback</strong>语义中指定的Unity Shader。这样做的好处是能够在新旧的显卡上面呈现不同计算复杂度的画面。</p>
+</blockquote>
+<p>以下是<strong>SubShader</strong>语义块包含的内容：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SubShder&#123;</span><br><span class="line">	[Tags]			//可选</span><br><span class="line">	[RenderSetup]  	//可选</span><br><span class="line">	Pass&#123;</span><br><span class="line">	&#125;</span><br><span class="line">	//Other Pass</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="2-2-1-状态设置"><a href="#2-2-1-状态设置" class="headerlink" title="2.2.1 - 状态设置"></a>2.2.1 - 状态设置</h4><ul>
+<li><strong>状态设置：</strong>ShaderLab提供的一系列渲染状态的设置指令，例如是否开启混合/深度测试。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>状态名称</th>
+<th>设置指令</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cull</td>
+<td>Cull Back| Front |Off</td>
+<td>设置剔除指令，剔除背面/正面/关闭剔除</td>
+</tr>
+<tr>
+<td>ZTest</td>
+<td>ZTest Less Greater | LEqual | GEqual | NotEqual | Always</td>
+<td>设置深度测试时使用的函数</td>
+</tr>
+<tr>
+<td>ZWrite</td>
+<td>ZWrite On | Off</td>
+<td>开启/关闭深度写入</td>
+</tr>
+<tr>
+<td>Blend</td>
+<td>Blend SrcFactor DstFactor</td>
+<td>开启并设置混合模式</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>当在SubShader中设置了上面的渲染状态之后，会应用到<strong>所有的Pass中</strong>，如果不想这样，那么可以在Pass中单独设置。</p>
+</blockquote>
+<ul>
+<li><p><code>ZWrite off</code>：这是深度写入（Z写入）的设置。将其设置为<code>off</code>表示在渲染此Shader时不会写入深度缓冲区。这意味着该对象将不会对后续的渲染产生深度测试的影响，而是始终绘制在已经渲染的像素之上，不考虑深度。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Manual/SL-ZWrite.html">https://docs.unity3d.com/Manual/SL-ZWrite.html</a></p>
+</blockquote>
+</li>
+<li><p><code>Blend SrcAlpha OneMinusSrcAlpha</code>：这是混合（Blending）的设置。它指定了使用源颜色的alpha通道和目标颜色的反相alpha通道进行混合。具体来说，<code>SrcAlpha</code>表示使用源颜色的alpha通道作为混合因子，<code>OneMinusSrcAlpha</code>表示使用目标颜色的反相alpha通道作为混合因子。这种混合方式常用于实现半透明效果，源颜色会根据其alpha值与背景进行混合，产生透明效果。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/530/Documentation/Manual/SL-Blend.html">https://docs.unity3d.com/530/Documentation/Manual/SL-Blend.html</a></p>
+</blockquote>
+</li>
+</ul>
+<h4 id="2-2-2-标签"><a href="#2-2-2-标签" class="headerlink" title="2.2.2 - 标签"></a>2.2.2 - 标签</h4><ul>
+<li><strong>标签：</strong>SubShader的标签（**[Tag]<strong>）是一个键值对，它用来告诉Unity希望</strong>怎样<strong>以及</strong>何时**渲染这个对象。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>标签类型</th>
+<th>说明</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Queue</td>
+<td>控制渲染顺序</td>
+<td>Tags { “Queue”=”Transparent” }</td>
+</tr>
+<tr>
+<td>RenderType</td>
+<td>对着色器进行分类,例如用来区别透明和不透明着色器</td>
+<td>Tags { “RenderType”=”Opaque” }</td>
+</tr>
+<tr>
+<td>DisableBatching</td>
+<td>一些SubShader在只要批处理会出现问题，例如使用了模型空间下的坐标进行顶点动画。这时可以通过此标签来取消该SubShader对于批处理的使用。</td>
+<td>Tags { “DisableBatching”=”True” }</td>
+</tr>
+<tr>
+<td>ForceNoShadowCasting</td>
+<td>控制该物体是否会投射阴影</td>
+<td>Tags { “ForceNoShadowCasting”=”True” }</td>
+</tr>
+<tr>
+<td>IgnoreProjector</td>
+<td>如果该标签为**”True”<strong>，那么该物体不会受</strong>Projector<strong>的影响，通常用于</strong>半透明物体**。</td>
+<td>Tags { “IgnoreProjector”=”True” }</td>
+</tr>
+<tr>
+<td>CanUseSpriteAtlas</td>
+<td>当该对象是Sprite时，将该标签设置为**”False”**</td>
+<td>Tags { “CanUseSpriteAtlas”=”False” }</td>
+</tr>
+<tr>
+<td>PreviewType</td>
+<td>指明材质面板该如何预览该材质，例如”Plane“、”Skybox“</td>
+<td>Tags { “PreviewType”=”Plane” }</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-3-Pass"><a href="#2-2-3-Pass" class="headerlink" title="2.2.3 - Pass"></a>2.2.3 - Pass</h4><ul>
+<li><strong>Pass语义块</strong></li>
+</ul>
+<p>以下是<strong>Pass</strong>语义块包含的内容：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Pass&#123;</span><br><span class="line">	[Name]</span><br><span class="line">	[Tag]</span><br><span class="line">	[RenderSetup]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>我们可以在<strong>Pass</strong>中定义该<strong>Pass</strong>的名称，例如：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Name ”MyPassName“</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>在<strong>ShaderLab</strong>中，我们可以使用<code>UsePass</code>命令来直接使用其他Unity Shader中的<strong>Pass</strong></p>
+<p>例如：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UsePass ”MyShader/MYPASSNAME&quot;</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，Unity内部会将所有的<strong>Pass</strong>的名称转换成<strong>大写字母</strong>的表示，因此，在使用UsePass命令的时候必须使用大写形式的名字。</p>
+</blockquote>
+<p>SubShader中的状态设置同样使用与Pass，在Pass中我们还可以使用固定管线的着色器。</p>
+<p>在Pass中同样可以设置标签，但是不同于SubShader中的标签。</p>
+<table>
+<thead>
+<tr>
+<th>标签类型</th>
+<th>说明</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LightMode</td>
+<td>定义该Pass在Unity渲染流水线中的角色</td>
+<td>Tags { “LightMode”=”ForwardBase” }</td>
+</tr>
+<tr>
+<td>RequireOptions</td>
+<td>当满足某些特定条件时才渲染该Pass</td>
+<td>Tags { “RequireOptions”=”SoftVegetation” }</td>
+</tr>
+</tbody></table>
+<p>除了上面定义的Pass之外，Unity Shader还支持一些特殊的Pass：</p>
+<ul>
+<li><strong>UsePass：</strong>可以使用指令来复用其他Shader中的Pass</li>
+<li><strong>GrabPass：</strong>负责抓取屏幕并将结果存储在一张纹理中，一边用于后续的Pass处理。</li>
+</ul>
+<h4 id="2-2-4-Fallback"><a href="#2-2-4-Fallback" class="headerlink" title="2.2.4 - Fallback"></a>2.2.4 - Fallback</h4><p>在各个SubShader语义块之后的，可以是一个Fallback指令，它用于告诉Unity，如果上面的SubShader都无法在这张显卡上运行，那就是用这个最低级的Shader。</p>
+<p>它的语句如下：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Fakkback “Name”</span><br><span class="line">Fallback off</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>另外，在渲染阴影纹理时，Unity会在每个Unity Shader中寻找一个阴影投射的Pass，通常情况下，我们不需要专门实现一个Pass，因为Fallback使用的内置Shader会包含这样一个通用的Pass，因此，对每个Unity Shder正确设置一个Fallback是非常重要的。</p>
+</blockquote>
+<h4 id="2-2-5-其他语义"><a href="#2-2-5-其他语义" class="headerlink" title="2.2.5 - 其他语义"></a>2.2.5 - 其他语义</h4><p>除了上面的语义之外，Unity还包含以下不常用的语义：</p>
+<ul>
+<li>CustomEditor：自定义材质面板的编辑画面，用来扩展编辑界面</li>
+<li>Category：对Unity Shader中的命令进行分组</li>
+</ul>
+<h3 id="2-3-Unity中的几种着色器类型"><a href="#2-3-Unity中的几种着色器类型" class="headerlink" title="2.3 - Unity中的几种着色器类型"></a>2.3 - Unity中的几种着色器类型</h3><p>以下是Unity中内置的几种着色器：</p>
+<ul>
+<li><p><strong>表面着色器（Surface Shaders）</strong>采用了代码生成的方法，相比使用低级顶点/像素着色器程序，更容易编写光照着色器。使用基于物理的渲染方法。</p>
+<blockquote>
+<p>表面着色器是顶点/片元着色器的更高一层的抽象，Unity为我们处理了很多光照细节，我们不需要在计算这些。</p>
+<p>以下是一个表面着色器的示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Shader &quot;Custom/TestSurfaceShader&quot;</span><br><span class="line">&#123;</span><br><span class="line"> Properties</span><br><span class="line"> &#123;</span><br><span class="line"> &#125;</span><br><span class="line"> SubShader</span><br><span class="line"> &#123;</span><br><span class="line">     Tags &#123; &quot;RenderType&quot;=&quot;Opaque&quot; &#125;</span><br><span class="line">     LOD 200</span><br><span class="line"></span><br><span class="line">     CGPROGRAM</span><br><span class="line">     #pragma surface surf Standard fullforwardshadows</span><br><span class="line">     #pragma target 3.0</span><br><span class="line"></span><br><span class="line">     struct Input</span><br><span class="line">     &#123;</span><br><span class="line">         float2 uv_MainTex;</span><br><span class="line">     &#125;;</span><br><span class="line"></span><br><span class="line">     half _Glossiness;</span><br><span class="line">     half _Metallic;</span><br><span class="line">     fixed4 _Color;</span><br><span class="line"></span><br><span class="line">     UNITY_INSTANCING_BUFFER_START(Props)</span><br><span class="line">     UNITY_INSTANCING_BUFFER_END(Props)</span><br><span class="line"></span><br><span class="line">     void surf (Input IN, inout SurfaceOutputStandard o)</span><br><span class="line">     &#123;</span><br><span class="line">         fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;</span><br><span class="line">         o.Albedo = c.rgb;</span><br><span class="line">         o.Metallic = _Metallic;</span><br><span class="line">         o.Smoothness = _Glossiness;</span><br><span class="line">         o.Alpha = c.a;</span><br><span class="line">     &#125;</span><br><span class="line">     ENDCG</span><br><span class="line"> &#125;</span><br><span class="line"> FallBack &quot;Diffuse&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>表面着色器不关心<strong>Pass</strong>，只要使用纹理去填充颜色、法线纹理去填充法线，使用Lambert光照模型，其他的都交给Unity，</p>
+<p>Unity还是会把它转换成一个包含多个Pass的顶点/片元着色器。</p>
+</blockquote>
+</li>
+<li><p><strong>无光照着色器（Unlit Shaders）</strong>不与Unity的光源进行交互，适用于特殊效果，灵活性较高。</p>
+</li>
+<li><p><strong>图像效果着色器（Image Effect Shaders）</strong>通常是一种后期处理效果，它读取源图像，对其进行一些计算，并将结果渲染到提供的目标图像中（例如使用Graphics.Blit）。</p>
+</li>
+<li><p><strong>计算着色器（Compute Shaders）</strong>是在显卡上运行的程序，独立于正常的渲染流程。它们可用于大规模<strong>并行</strong>的GPU算法，或者加速游戏渲染的某些部分。旨在利用GPU的并行性来进行一些与常规渲染流水线无关的计算。</p>
+</li>
+</ul>
+<h2 id="3-Shader-相关数学基础"><a href="#3-Shader-相关数学基础" class="headerlink" title="3 - Shader 相关数学基础"></a>3 - Shader 相关数学基础</h2><h3 id="3-1-笛卡尔坐标系"><a href="#3-1-笛卡尔坐标系" class="headerlink" title="3.1 - 笛卡尔坐标系"></a>3.1 - 笛卡尔坐标系</h3><p>三维中的笛卡尔坐标系并不都是等价的，如果他们具有相同的<strong>旋向性</strong>，那么我们可以通过旋转的方式让他们的坐标轴重合。如果他们具有不同的旋向性，例如下图的左手坐标系和右手坐标系，那么就无法通过旋转的方式让他们的坐标系重合。</p>
+<p><img src="/image/UnityShaderLearning/image-20230703103234130.png" alt="image-20230703103234130"></p>
+<p>食指朝上，<strong>向上</strong>的方向就是<strong>y轴的正方向</strong>，中指朝前，<strong>向前</strong>的方向就是<strong>z轴的正方向</strong>，剩下的<strong>拇指的方向</strong>就是<strong>x轴的正方向。</strong></p>
+<p>在<strong>模型空间</strong>和<strong>世界空间</strong>中，Unity使用的是<strong>左手坐标系</strong>。蓝色代表z轴，绿色代表y轴，红色代表x轴。</p>
+<p>但是对于观察空间来说，Unity使用的是<strong>右手坐标系</strong>。</p>
+<blockquote>
+<p>观察空间是以摄像机为原点的坐标系，摄像机的前向是z轴的负方向，z轴越小，物体深度越大，离摄像机月远。</p>
+</blockquote>
+<p><img src="/image/UnityShaderLearning/image-20230703105207299.png" alt="image-20230703105207299"></p>
+<h2 id="4-Unity-Shader"><a href="#4-Unity-Shader" class="headerlink" title="4 - Unity Shader"></a>4 - Unity Shader</h2><h3 id="4-1-基本的Shader结构"><a href="#4-1-基本的Shader结构" class="headerlink" title="4.1- 基本的Shader结构"></a>4.1- 基本的Shader结构</h3><h4 id="4-1-1-基本Shader代码包含的内容"><a href="#4-1-1-基本Shader代码包含的内容" class="headerlink" title="4.1.1 - 基本Shader代码包含的内容"></a>4.1.1 - 基本Shader代码包含的内容</h4><p>基本的一个Unlit Shader代码包含以下内容：</p>
+<blockquote>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">Shader <span class="string">&quot;Unlit/Test&quot;</span></span><br><span class="line">&#123;</span><br><span class="line">    Properties</span><br><span class="line">    &#123;</span><br><span class="line">        _MainTex (<span class="string">&quot;Texture&quot;</span>, <span class="number">2</span>D) = <span class="string">&quot;white&quot;</span> &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    SubShader</span><br><span class="line">    &#123;</span><br><span class="line">        Tags &#123; <span class="string">&quot;RenderType&quot;</span>=<span class="string">&quot;Opaque&quot;</span> &#125;</span><br><span class="line">        LOD <span class="number">100</span></span><br><span class="line"></span><br><span class="line">        Pass</span><br><span class="line">        &#123;</span><br><span class="line">            CGPROGRAM</span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> vertex vert</span></span><br><span class="line">            <span class="meta">#<span class="keyword">pragma</span> fragment frag</span></span><br><span class="line"></span><br><span class="line">            <span class="meta">#include &quot;UnityCG.cginc&quot;</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">struct</span> appdata</span><br><span class="line">            &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">struct</span> v2f</span><br><span class="line">            &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            sampler2D _MainTex;</span><br><span class="line">            float4 _MainTex_ST;</span><br><span class="line"></span><br><span class="line">            <span class="function">v2f <span class="title">vert</span> (<span class="params">appdata v</span>)</span></span><br><span class="line">            &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">                o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">                o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="function">fixed4 <span class="title">frag</span> (<span class="params">v2f i</span>) : SV_Target</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// sample the texture</span></span><br><span class="line">                fixed4 col = tex2D(_MainTex, i.uv);</span><br><span class="line">                <span class="keyword">return</span> col;</span><br><span class="line">            &#125;</span><br><span class="line">            ENDCG</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#pragma vertex vert</span><br><span class="line">#pragma fragment frag</span><br></pre></td></tr></table></figure>
+
+<p>他们将告诉Unity，哪个函数包含了顶点着色器的代码，哪个函数包含了片元着色器的代码。</p>
+</blockquote>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">            &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">            &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">v2f vert (appdata v)</span><br><span class="line">            &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">                o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">                o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line">                return o;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<p>vert函数的输入<strong>v</strong>包含了这个顶点的<strong>位置和UV</strong>，他们是由<strong>POSITION</strong>和<strong>TEXCOORD0</strong>指定的，他们都是<strong>CG/HLSL</strong>中的<strong>语义</strong>。</p>
+<p><strong>POSITION</strong>告诉Unity，把模型的顶点坐标填充到<strong>appdata</strong>中的参数<strong>vertex</strong>中，<strong>SV_POSITION</strong>告诉Unity，<strong>v2f</strong>中的<strong>vertex</strong>就是<strong>裁剪空间</strong>中的顶点坐标。</p>
+<p><strong>v2f</strong>的含义是把顶点着色器的数据传输到片元着色器中：Vertex to Fragment。</p>
+</blockquote>
+<blockquote>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">fixed4 <span class="title">frag</span> (<span class="params">v2f i</span>) : SV_Target</span></span><br><span class="line">&#123;</span><br><span class="line"> <span class="comment">// sample the texture</span></span><br><span class="line"> fixed4 col = tex2D(_MainTex, i.uv);</span><br><span class="line"> <span class="keyword">return</span> col;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>冒号（:）后面的**”SV_Target”<strong>表示此函数的返回值将被写入到指定的</strong>渲染目标（Render Target）<strong>中。在这种情况下，它指示将片段着色器（frag）的输出颜色写入到默认的渲染目标（通常是屏幕上的像素缓冲区）中。这里返回了一个表示</strong>纹理颜色<strong>的</strong>fixed4**类型的变量</li>
+<li>在Unity的着色器中，片段着色器负责计算每个像素的颜色输出。通过使用**”SV_Target”**语义，我们可以指定将这个输出颜色写入到哪个渲染目标中，从而控制着色器的渲染结果在场景中的影响位置。</li>
+<li>需要注意的是，这段代码中使用了默认的”SV_Target”语义，这意味着输出颜色将直接写入默认的渲染目标。在特定的渲染管线或自定义渲染流程中，可以使用其他语义来指定不同的渲染目标。</li>
+</ul>
+</blockquote>
+<h4 id="4-1-2-获取模型数据"><a href="#4-1-2-获取模型数据" class="headerlink" title="4.1.2 - 获取模型数据"></a>4.1.2 - 获取模型数据</h4><p>我们可以使用纹理坐标来访问纹理，法线可以用于计算光照。</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct appdata &#123;</span><br><span class="line">    float4 vertex : POSITION;</span><br><span class="line">    float3 normal : NORMAL;</span><br><span class="line">    float4 texcoord : TEXCOORD0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>通过声明一个新的结构体<strong>appdata</strong>，它包含了顶点着色器需要的模型数据。</p>
+<p>对应顶点着色器的输出，Unity支持的语义有：<strong>POSITION</strong>, <strong>TANGENT</strong> , <strong>NORMAL</strong>，<strong>TEXCOORD0</strong>,<strong>TEXCOORD1</strong>, <strong>TEXCOORD2</strong>， <strong>TEXCOORD3</strong>,<strong>COLOR</strong>等</p>
+<p>填充到<strong>POSITION</strong>、<strong>NORMAL</strong>、<strong>TEXCOORD0</strong>中的数据是由<strong>材质</strong>的<strong>Mesh Render</strong>组件提供的。</p>
+<p>在调用<strong>Draw Call</strong>的时候，<strong>Mesh Render</strong>会将他负责渲染的模型数据发送给Unity Shader。</p>
+<p>一个模型通常包含一组<strong>三角面片</strong>，每个三角面由3个顶点构成，而每个顶点又包含了一些数据，如：<strong>顶点位置、法线、切线、纹理位置、顶点颜色等。</strong></p>
+</blockquote>
+<h4 id="4-1-3-顶点着色器与片元着色器之间的通信"><a href="#4-1-3-顶点着色器与片元着色器之间的通信" class="headerlink" title="4.1.3 - 顶点着色器与片元着色器之间的通信"></a>4.1.3 - 顶点着色器与片元着色器之间的通信</h4><blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line">    float4 pos : SV_POSITION;</span><br><span class="line">    fixed3 color : COLOR0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>v2f用于在顶点着色器与片元着色器之间传递信息。</p>
+<p>我们使用了<strong>SV_POSITION</strong>和<strong>COLOR0</strong>语义，顶点着色器的输出结构中，必须包含一个变量，它的语义是<strong>SV_POSITION</strong>。<strong>COLOR0</strong>语义中的数据可以由用户自行定义，但一般都是存储颜色，例如逐顶点的漫反射颜色或逐顶点的高光反射颜色。类似的语义还有<strong>COLOR0</strong>。</p>
+<p>顶点着色器是逐顶点调用的，而片元着色器是逐片元调用的，片元着色器的输入实际上是把顶点着色器的输入进行插值后得到的结果。</p>
+</blockquote>
+<h4 id="4-1-4-属性"><a href="#4-1-4-属性" class="headerlink" title="4.1.4 - 属性"></a>4.1.4 - 属性</h4><p>Shader Lab中的属性类型和CG之间变量类型之间的匹配关系：</p>
+<table>
+<thead>
+<tr>
+<th align="center">Shader Lab属性类型</th>
+<th align="center">CG变量类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Color，Vector</td>
+<td align="center">float4，half4，fixed4</td>
+</tr>
+<tr>
+<td align="center">Range，Float</td>
+<td align="center">float，half，fixed</td>
+</tr>
+<tr>
+<td align="center">2D</td>
+<td align="center">sample2D</td>
+</tr>
+<tr>
+<td align="center">Cube</td>
+<td align="center">sampleCube</td>
+</tr>
+<tr>
+<td align="center">3D</td>
+<td align="center">sample3D</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-Unity内置文件和变量"><a href="#4-2-Unity内置文件和变量" class="headerlink" title="4.2 - Unity内置文件和变量"></a>4.2 - Unity内置文件和变量</h3><p>为了方便开发，Unity提供了很多内置文件，包含许多提前定义的函数、变量、宏等。</p>
+<blockquote>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;UnityCG.cginc&quot;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>我们可以前往官网下载，选择下载Built-in Shader。</p>
+<blockquote>
+<p>下载地址：<a target="_blank" rel="noopener" href="https://unity.com/releases/editor/archive">https://unity.com/releases/editor/archive</a></p>
+</blockquote>
+<p>以下是下载的Shader中<strong>CGIncludes</strong>文件夹中中主要包含的文件以及它们的主要用处：</p>
+<table>
+<thead>
+<tr>
+<th align="center">文件名</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">UnityCG.cginc</td>
+<td align="center">包含了最常使用的帮助函数、宏和结构体等</td>
+</tr>
+<tr>
+<td align="center">UnityShader Variables.cginc</td>
+<td align="center">在编译Unity Shader 时，会被自动包含进来。包含了许多内置的全局变量，如UNITY_MATRIX MVP等</td>
+</tr>
+<tr>
+<td align="center">Lighting.cginc</td>
+<td align="center">包含了各种内置的光照模型，如果编写的是Surface Shader的话，会自动包含进来</td>
+</tr>
+<tr>
+<td align="center">HLSLSupport.cginc</td>
+<td align="center">在编译Unity Shader时，会被自动包含进来。声明了很多用于跨平台编译的宏和定义</td>
+</tr>
+</tbody></table>
+<p><strong>UnityCG.cginc</strong>是我们最常接触的文件，我们可以直接使用其中预定义的<strong>结构体</strong>作为顶点着色器的输入和输出。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>包含的变量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>appdata_base</td>
+<td>可用于顶点着色器的输入</td>
+<td>顶点位置、顶点法线、第一组纹理坐标</td>
+</tr>
+<tr>
+<td>appdata_tan</td>
+<td>可用于顶点着色器的输入</td>
+<td>顶点位置、顶点切线、顶点法线、第一组纹理坐标</td>
+</tr>
+<tr>
+<td>appdata_full</td>
+<td>可用于顶点着色器的输入</td>
+<td>顶点位置、顶点切线、顶点法线、四组(或更多）纹理坐标</td>
+</tr>
+<tr>
+<td>appdata_img</td>
+<td>可用于顶点着色器的输入</td>
+<td>顶点位置、第一组纹理坐标</td>
+</tr>
+<tr>
+<td>v2f_img</td>
+<td>可用于顶点着色器的输出</td>
+<td>裁剪空间中的位置、纹理坐标</td>
+</tr>
+</tbody></table>
+<p><strong>UnityCG.cginc</strong>，还提供了许多常见的帮助函数以及用于访问时间、光照、雾效和环境光等目的的变量。</p>
+<h3 id="4-3-Unity支持的语义"><a href="#4-3-Unity支持的语义" class="headerlink" title="4.3 - Unity支持的语义"></a>4.3 - Unity支持的语义</h3><p>从<strong>应用阶段</strong>传递模型数据给<strong>顶点着色器</strong>时Unity支持的语义：</p>
+<table>
+<thead>
+<tr>
+<th align="center">语义</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">POSITION</td>
+<td align="center">模型空间中的顶点位置，通常是float4类型</td>
+</tr>
+<tr>
+<td align="center">NORMAL</td>
+<td align="center">顶点法线，通常是float3类型</td>
+</tr>
+<tr>
+<td align="center">TANGENT</td>
+<td align="center">顶点切线，通常是float4类型</td>
+</tr>
+<tr>
+<td align="center">TEXCOORDn，如TEXCOORD0、TEXCOORD1</td>
+<td align="center">该顶点的纹理坐标，TEXCOORD0表示第一组纹理坐标，依此类推。通常是float2或float4类型</td>
+</tr>
+<tr>
+<td align="center">COLOR</td>
+<td align="center">顶点颜色，通常是 fixed4或float4类型</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>其中 TEXCOORDn 中n的数目是和 Shader Model有关的,例如一般在 Shader Model 2（即Unity默认编译到的Shader Model 版本）和Shader Model 3中，n等于8，而在Shader Model 4和Shader Model 5中，n等于16。通常情况下，一个模型的纹理坐标组数一般不超过2，即我们往往只使用TEXCOORDO和 TEXCOORD1。在Unity内置的数据结构体appdata_full 中，它最多使用了6个坐标纹理组。</p>
+</blockquote>
+<p>从<strong>顶点着色器</strong>传递模型数据给<strong>片元着色器</strong>时Unity支持的语义：</p>
+<table>
+<thead>
+<tr>
+<th align="center">语义</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">SV_POSITION</td>
+<td align="center">裁剪空间中的顶点坐标，结构体中必须包含一个用该语义修饰的变量。等同于DirectX 9中的POSITION，但最好使用SV_POSITION</td>
+</tr>
+<tr>
+<td align="center">COLOR 0</td>
+<td align="center">通常用于输出第一组顶点颜色，但不是必需的</td>
+</tr>
+<tr>
+<td align="center">COLOR 1</td>
+<td align="center">通常用于输出第二组顶点颜色，但不是必需的</td>
+</tr>
+<tr>
+<td align="center">TEXCOORD0～TEXCOORD7</td>
+<td align="center">通常用于输出纹理坐标,但不是必需的</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>上面的语义中，除了SV_POSITION是有特别含义外，其他语义对变量的含义没有明确要求,<br>也就是说，我们可以存储任意值到这些语义描述变量中。通常，如果我们需要把一些自定义的数据从顶点着色器传递给片元着色器，一般选用TEXCOORDO等。</p>
+</blockquote>
+<p>片元着色器输出时Unity支持的语义：</p>
+<table>
+<thead>
+<tr>
+<th align="center">语义</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">SV_Target</td>
+<td align="center">输出值将会存储到渲染目标（render target）中。等同于DirectX 9中的COLOR语义，但最好使用SV_Target</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>需要注意的是，一个语义可以使用的寄存器只能处理<strong>4个</strong>浮点值（float）。因此,如果我们想要定义矩阵类型，如 <strong>float3×4</strong>、<strong>float4×4</strong>等变量就需要使用更多的空间。一种方法是，把这些变量拆分成多个变量，例如对于<strong>float4×4</strong>的矩阵类型，我们可以<strong>拆分成4个float4类型的变量</strong>,每个变量存储了矩阵中的一行数据。</p>
+</blockquote>
+<h3 id="4-4-Debug"><a href="#4-4-Debug" class="headerlink" title="4.4 - Debug"></a>4.4 - Debug</h3><ul>
+<li>使用假彩色图片</li>
+<li>使用Visual Studio中的Graphics Debugger</li>
+<li>使用Unity中的<strong>帧调试器</strong></li>
+</ul>
+<h4 id="4-4-1-帧调试器"><a href="#4-4-1-帧调试器" class="headerlink" title="4.4.1 - 帧调试器"></a>4.4.1 - 帧调试器</h4><p>Unity中的帧调试器可以让我们看到游戏图像中的某一帧是如何一步步渲染出来的。</p>
+<p>可以从<code>Window -&gt; Analysis -&gt; Frame Debugger</code>打开帧调试器。</p>
+<blockquote>
+<p>帧调试器可以用于查看渲染该帧时进行的各种<strong>渲染事件（event)<strong>，这些事件包含了</strong>Draw Call序列</strong>，也包括了类似清空帧缓存等操作。帧调试器窗口大致可分为3个部分:最上面的区域可以开启/关闭(单击 Enable 按钮）帧调试功能，当开启了帧调试时，通过移动窗口最上方的滑动条(或单击前进和后退按钮)，我们可以重放这些渲染事件;<br>左侧的区域显示了所有事件的树状图,在这个树状图中,每个叶子节点就是一个事件,而每个父节点的右侧显示了该节点下的事件数目。我们可以从事件的名字了解这个事件的操作，例如以 Draw开头的事件通常就是一个Draw Call;当单击了某个事件时，在右侧的窗口中就会显示出该事件的细节，例如几何图形的细节以及使用了哪个Shader等。同时在Game视图中我们也可以看到它的效果。如果该事件是一个 Draw Call并且对应了场景中的一个GameObject,那么这个GameObject也会在Hierarchy视图中被高亮显示出来。</p>
+</blockquote>
+<blockquote>
+<p>如果被选中的Draw Call是对一个渲染纹理（RenderTexture）的渲染操作，那么这个渲染纹理就会显示在 Game视图中。而且，此时右侧面板上方的工具栏中也会出现更多的选项，例如在Game视图中单独显示R、G、B和A通道。<br>Unity提供的帧调试器实际上并没有实现一个真正的<strong>帧拾取（frame capture）</strong>功能，而是仅仅使用<strong>停止渲染</strong>的方法来查看渲染事件的结果。例如，如果我们想要查看第4个Draw Call 的结果，那么帧调试器就会在第4个 Draw Call 调用完毕后停止渲染。这种方法虽然简单，但得到的信息也很有限。如果想要获取更多的信息,还是需要使用外部工具，例如VisualStudio 插件，或者 Intel GPA、RenderDoc、NVIDIA NSight、AMD GPU PerfStudio等工具。</p>
+</blockquote>
+<h3 id="4-5-小心：渲染平台的差异"><a href="#4-5-小心：渲染平台的差异" class="headerlink" title="4.5 - 小心：渲染平台的差异"></a>4.5 - 小心：渲染平台的差异</h3><h4 id="4-5-1-渲染纹理的坐标差异"><a href="#4-5-1-渲染纹理的坐标差异" class="headerlink" title="4.5.1 - 渲染纹理的坐标差异"></a>4.5.1 - 渲染纹理的坐标差异</h4><p>OpenGL和DirectX的屏幕空间坐标存在差异，但是Unity会在背后为我们处理，翻转屏幕图像纹理，以达到在不同平台的一致性。</p>
+<ul>
+<li><p>有一种情况下Unity不会为我们进行这个反转操作，这种情况是我们开启了抗锯齿。</p>
+<p>在<code>Edit -&gt; Project Settings -&gt; Quality -&gt; Anti Aliasing</code>中开启</p>
+</li>
+</ul>
+<blockquote>
+<p>在这种种情况下，Unity 首先渲染得到屏幕图像，再由<strong>硬件进行抗锯齿处理</strong>后，得到一张渲染纹理来供我们进行后续处理。此时，在 DirectX平台下，我们得到的输入屏幕图像并不会被Unity翻转，也就是说，此时对屏幕图像的采样坐标是需要符合 DirectX平台规定的。如果我们的屏幕特效只需要处理一张渲染图像，我们仍然不需要在意纹理的翻转问题，这是因为在我们调用<code>Graphics.Blt</code>函数时，Unity已经为我们对屏幕图像的采样坐标进行了处理，我们只需要按正常的采样过程处理屏幕图像即可。但如果我们需要同时处理多张渲染图像(前提是开启了抗锯齿)，例如需要同时处理屏幕图像和法线纹理，这些图像在竖直方向的朝向就可能是不同的(只有在 DirectX这样的平台上才有这样的问题)。这种时候，我们就需要自己在顶点着色器中翻转某些渲染纹理（例如深度纹理或其他由脚本传递过来的纹理）的纵坐标，使之都符合DirectX平台的规则。例如:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#if UNITY_UV_STARTS_AT_TOP</span><br><span class="line">if(_MainTex_TexelSize.y &lt; 0)</span><br><span class="line">	uv.y= 1-uv.y;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>其中，<strong>UNITY_UV_STARTS_AT_TOP</strong> 用于判断当前平台是否是DirectX类型的平台，而当在这样的平台下开启了抗锯齿后，主纹理的纹素大小在竖直方向上会变成负值，以方便我们对主纹理进行正确的采样。因此，我们可以通过判断 <code>MainTex_TexelSize.x</code>是否小于0来检验是否开启了抗锯齿。如果是，我们就需要对除主纹理外的其他纹理的采样坐标进行竖直方向上的翻转。</p>
+</blockquote>
+<blockquote>
+<p>在本书资源的项目中，我们开启了抗锯齿选项。在第12章中，我们将学习一些基本的<strong>屏幕后处理效果</strong>。这些效果大多使用了单张屏幕图像进行处理，因此我们不需要考虑平台差异化的问题，因为Unity已经在背后为我们处理过了。但在12.5节中，我们<strong>需要在一个Pass 中同时处理屏幕图像和提取得到的亮部图像来实现Bloom效果。由于需要同时处理多张纹理，因此在 DirectX这样的平台下如果开启了抗锯齿，主纹理和亮部纹理在竖直方向上的朝向就是不同的，我们就需要对亮部纹理的采样坐标进行翻转。</strong>在第13章中，<strong>我们需要同时处理屏幕图像和深度/法线纹理来实现一些特殊的屏幕效果，在这些处理过程中，我们也需要进行</strong><br><strong>一些平台差异化处理。</strong>在15.3节中,尽管我们也在一个 Pass中同时处理了屏幕图像、深度纹理和一张噪声纹理，但我们只对深度纹理的采样坐标进行了平台差异化处理，而没有对噪声纹理进行处理。这是因为，类似噪声纹理的装饰性纹理，它们在竖直方向上的朝向并不是很重要，即便翻转了效果往往也是正确的，因此我们可以不对这些纹理进行平台差异化处理。</p>
+</blockquote>
+<p>除此之外，还有Shader语法和语义的差异。</p>
+<h4 id="4-5-2-语法差异"><a href="#4-5-2-语法差异" class="headerlink" title="4.5.2 - 语法差异"></a>4.5.2 - 语法差异</h4><ul>
+<li><p>在表面着色器的顶点函数中，用了一个没有初始化的out修饰符参数</p>
+<blockquote>
+<p>可以使用以下代码对这些参数进行初始化：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">void vert (inout appdata full v, out Input o)&#123;</span><br><span class="line">//使用Unity内置的UNITY_INITIALIZE_OUTPUT宏对输出结构体o进行初始化</span><br><span class="line">	UNITY_INITIALIZE__OUTPUT ( Input, o);</span><br><span class="line">//.…</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>DirectX 9/11 不支持在顶点着色器中使用<strong>tex2D函数</strong>，因为在这个阶段Shader无法得到UV的偏导，而<strong>tex2D函数</strong>需要得到这个骗到，因此我们需要使用<strong>tex2Dlod函数</strong>来替代</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tex2Dlod(tex, float4(uv, 0,0)).</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<h4 id="4-5-3-语义差异"><a href="#4-5-3-语义差异" class="headerlink" title="4.5.3 - 语义差异"></a>4.5.3 - 语义差异</h4><p>我们应该遵循以下语义来描述Shader的输入和输出变量</p>
+<ul>
+<li>使用<strong>SV_POSITION</strong>来描述顶点着色器输出的顶点位置。一些Shader使用了 <strong>POSITION</strong> 语义，但这些Shader无法在索尼PS4平台上或使用了细分着色器的情况下正常工作。</li>
+<li>使用<strong>SV_Target</strong>来描述片元着色器的输出颜色。一些Shader使用了<strong>COLOR</strong>或者<strong>COLOR0</strong>语义,同样的,这些Shader无法在索尼PS4上正常工作。</li>
+</ul>
+<h3 id="4-6-Shader简洁之道"><a href="#4-6-Shader简洁之道" class="headerlink" title="4.6 - Shader简洁之道"></a>4.6 - Shader简洁之道</h3><ul>
+<li>根据平台选择合适的精度</li>
+<li>规范语法</li>
+<li>避免不必要的计算</li>
+<li>慎用分支和循环语句</li>
+<li>不要除以0</li>
+</ul>
+<h4 id="4-6-1-精度的选择"><a href="#4-6-1-精度的选择" class="headerlink" title="4.6.1- 精度的选择"></a>4.6.1- 精度的选择</h4><p>在CG/HLSL中，以下几种精度数值：</p>
+<table>
+<thead>
+<tr>
+<th align="center">类型</th>
+<th align="center">精度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">float</td>
+<td align="center">最高精度的浮点值。通常使用32位来存储</td>
+</tr>
+<tr>
+<td align="center">half</td>
+<td align="center">中等精度的浮点值。通常使用16位来存储，精度范围是-60000～+60 000</td>
+</tr>
+<tr>
+<td align="center">fixed</td>
+<td align="center">最低精度的浮点值。通常使用11位来存储，精度范围是-2.0～+2.0</td>
+</tr>
+</tbody></table>
+<ul>
+<li>大多数现代的桌面GPU 会把所有计算都按最高的浮点精度进行计算，也就是说，float、half、 fixed在这些平台上实际是等价的。这意味着,我们在PC上很难看出因为 half和fixed精度而带来的不同。</li>
+<li>但在移动平台的GPU上，它们的确会有不同的精度范围，而且不同精度的浮点值的运算速度也会有所差异。因此，我们应该确保在真正的移动平台上验证我们的Shader 。</li>
+<li>fixed精度实际上只在一些较旧的移动平台上有用，在大多数现代的GPU上，它们内部把fixed和 half当成同等精度来对待。</li>
+</ul>
+<p>尽管有上面的不同,但一个基本建议是，尽可能使用精度较低的类型,因为这可以优化 Shader的性能，这一点在<strong>移动平台</strong>上尤其重要。从它们大体的值域范围来看，我们可以使用<strong>fixed</strong>类型来存储<strong>颜色</strong>和<strong>单位矢量</strong>，如果要存储更大范围的数据可以选择<strong>half</strong>类型，<strong>最差情况</strong>下再选择使用float。如果我们的目标平台是移动平台，一定要确保在真实的手机上测试我们的Shader，这一点非常重要。</p>
+<h4 id="4-6-2-避免不必要的计算"><a href="#4-6-2-避免不必要的计算" class="headerlink" title="4.6.2 - 避免不必要的计算"></a>4.6.2 - 避免不必要的计算</h4><p>当出现以下报错时：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">temporary register limit of 8 exceeded</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Arithmetic instruction limit of 64 exceeded; 65 arithmetic instructions needed to compileprogram</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>出现这些错误信息大多是因为我们在Shader中进行了过多的运算，使得需要的临时寄存器数目或指令数目超过了当前可支持的数目。需要知道的是，不同的<strong>Shader Target</strong>、<strong>不同的着色器阶段</strong>，我们可使用的临时寄存器和指令数目都是不同的。<br>通常，我们可以通过指定更高等级的 <strong>Shader Target</strong>来消除这些错误。</p>
+<table>
+<thead>
+<tr>
+<th align="center">指令</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">#pragma target 2.0</td>
+<td align="center">默认的 Shader Target等级。相当于Direct3D9上的Shader Model 2.0</td>
+</tr>
+<tr>
+<td align="center">#pragma target 3.0</td>
+<td align="center">相当于 Direct3D 9上的 Shader Model 3.0</td>
+</tr>
+<tr>
+<td align="center">#pragma target 4.0</td>
+<td align="center">相当于Direct3D 10上的Shader Model 4.0。目前只在 DirectX 11和 XboxOne/PS4平台上提供了</td>
+</tr>
+<tr>
+<td align="center">#pragma target 5.0</td>
+<td align="center">相当于Direct3D 11上的Shader Model 5.0。目前只在 DirectX 11和XboxOne/PS4平台上提供了</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>需要注意的是，所有类似OpenGL 的平台（包括移动平台）被当成是支持到Shader Model 3.0的。而WP8/WinRT平台则只支持到Shader Model 2.0。</p>
+<ul>
+<li><p>什么是 Shader Model 呢?</p>
+</li>
+<li><p>Shader Model是由微软提出的一套规范,通俗地理解就是它们决定了Shader中各个<strong>特性(feature)<strong>的</strong>能力(capability)<strong>。这些特性和能力体现在Shader能使用的运算指令数目、寄存器个数等各个方面。</strong>Shader Model等级越高，Shader的能力就越大。</strong></p>
+</li>
+</ul>
+<p>虽然更高等级的Shader Target可以让我们使用更多的临时寄存器和运算指令，但一个更好的方法是尽可能减少Shader 中的运算，或者通过预计算的方式来提供更多的数据。</p>
+</blockquote>
+<h4 id="4-6-3-慎用分支和循环语句"><a href="#4-6-3-慎用分支和循环语句" class="headerlink" title="4.6.3- 慎用分支和循环语句"></a>4.6.3- 慎用分支和循环语句</h4><p>如果我们在Shader中使用了大量的流程控制语句，那么这个 Shader的性能可能会成倍下降。一个解决方法是，<strong>我们应该尽量把计算向流水线上端移动</strong>，例如把放在<strong>片元着色器中的计算放到顶点着色器中</strong>，或者<strong>直接在CPU中进行预计算，再把结果传递给Shader</strong>。当然，有时我们不可避免地要使用分支语句来进行运算,那么一些建议是:</p>
+<ul>
+<li>分支判断语句中使用的条件变量最好是常数，即在Shader运行过程中不会发生变化;</li>
+<li>每个分支中包含的操作指令数尽可能少;</li>
+<li>分支的嵌套层数尽可能少。</li>
+</ul>
+<h2 id="5-Unity-中的基础光照"><a href="#5-Unity-中的基础光照" class="headerlink" title="5 - Unity 中的基础光照"></a>5 - Unity 中的基础光照</h2><blockquote>
+<p>如何决定一个像素的颜色，从宏观上看，渲染包含两大部分：</p>
+<ul>
+<li>决定一个像素的可见性</li>
+<li>决定这个像素上的光照计算</li>
+</ul>
+<p>光照模型就是用于决定这个像素上的光照计算</p>
+</blockquote>
+<h3 id="5-1-模拟现实中的光照环境"><a href="#5-1-模拟现实中的光照环境" class="headerlink" title="5.1 - 模拟现实中的光照环境"></a>5.1 - 模拟现实中的光照环境</h3><p>要模拟真实的光照环境，需要考虑一下三种物理现象：</p>
+<ul>
+<li>光线从<strong>光源</strong>中被发射出来</li>
+<li>光线与场景中的物体相交，一部分被<strong>吸收</strong>，一部分被<strong>散射</strong></li>
+<li>摄像机吸收光线，产生了图像</li>
+</ul>
+<h4 id="5-1-1-光源"><a href="#5-1-1-光源" class="headerlink" title="5.1.1 - 光源"></a>5.1.1 - 光源</h4><p>在光学中，我们使用<strong>辐照度（irradiance）</strong>来量化光。计算物体表明的辐照度可以使用<strong>光源方向l</strong>和<strong>表面法线n</strong>之间的夹角的<strong>余弦值</strong>来得到。</p>
+<h4 id="5-1-2-吸收和散射"><a href="#5-1-2-吸收和散射" class="headerlink" title="5.1.2 - 吸收和散射"></a>5.1.2 - 吸收和散射</h4><p>光线由光源发射出来后，就会与一些物体相交。通常，相交的结果有两个:<strong>散射(scattering)<strong>和</strong>吸收（absorption)</strong><br><strong>散射</strong>只改变光线的<strong>方向</strong>，但不改变光线的密度和颜色。而<strong>吸收</strong>只改变光线<strong>的密度和颜色</strong>，但不改变光线的方向。</p>
+<blockquote>
+<p>光线在物体表面经过散射后,有两种方向:一种将会散射到物体内部，这种现象被称为<strong>折射（refraction）</strong>或<strong>透射（transmission)</strong>;另一种将会散射到外部，这种现象被称为**反射（reflection)**。</p>
+<p>对于不透明物体，折射进入物体内部的光线还会继续与内部的颗粒进行相交,其中一些光线最后会重新发射出物体表面，而另一些则被物体吸收。那些从物体表面重新发射出的光线将具有和入射光线不同的方向分布和颜色。</p>
+</blockquote>
+<p>为了区分两种不同的散射方向，我们在<strong>光照模型</strong>中使用了不同的部分来计算它们:<strong>高光反射(specular)<strong>部分表示物体表面是如何反射光线的，而</strong>漫反射（diffuse）</strong>部分则表示有多少光线会被折射、吸收和散射出表面。</p>
+<h4 id="5-1-3-着色"><a href="#5-1-3-着色" class="headerlink" title="5.1.3 - 着色"></a>5.1.3 - 着色</h4><p>着色指的是根据材质属性、光源信息，使用一个等式去计算某个观察方向的出射度的过程，也成为光照模型。</p>
+<h4 id="5-1-3-BRDF光照模型"><a href="#5-1-3-BRDF光照模型" class="headerlink" title="5.1.3 - BRDF光照模型"></a>5.1.3 - BRDF光照模型</h4><p>当光线从某个点照射到一个表面时，有多少光线被反射，反射的方向有哪些，<strong>BRDF（Bidirectional Reflectance Distribution Function）</strong>光照模型就是用来回答这些问题的。</p>
+<p>在图形学中，BRDF 大多使用一个数学公式来表示，并且提供了一些参数来调整材质属性。通俗来讲，当给定入射光线的方向和辐照度后，BRDF可以给出在某个出射方向上的</p>
+<h3 id="5-2-标准光照模型"><a href="#5-2-标准光照模型" class="headerlink" title="5.2 - 标准光照模型"></a>5.2 - 标准光照模型</h3><h4 id="5-2-1-Phong光照模型"><a href="#5-2-1-Phong光照模型" class="headerlink" title="5.2.1 - Phong光照模型"></a>5.2.1 - Phong光照模型</h4><ul>
+<li><p><strong>自发光：</strong>这个部分用于描述当给定一个方向时，一个表面本身会向该方向发射多少辐射量。</p>
+<blockquote>
+<p>需要注意的是，如果没有使用**全局光照(global illumination)**技术，这些自发光的表面并不会真的照亮周围的物体，而是它本身看起来更亮了而已。</p>
+</blockquote>
+</li>
+<li><p><strong>高光反射：</strong>这个部分用于描述当光线从光源照射到模型表面时，该表面会在完全镜面反射方向散射多少辐射量。</p>
+</li>
+<li><p><strong>漫反射：</strong>这个部分用于描述，当光线从光源照射到模型表面时,该表面会向每个方向散射多少辐射量。</p>
+<blockquote>
+<p>漫反射符合兰伯特定律：反射光线的强度与表面法线和光源方向之间的夹角的余弦值成正比</p>
+<p>需要注意的是，我们需要防止法线和光源方向点乘的结果为负值，为此，我们使用取最大值的函数来将其截取到0，这可以防止物体被从后面来的光源照亮。</p>
+</blockquote>
+</li>
+<li><p><strong>环境光：</strong>它用于描述其他所有的间接光照。</p>
+</li>
+</ul>
+<h4 id="5-2-2-Blinn-Phong光照模型"><a href="#5-2-2-Blinn-Phong光照模型" class="headerlink" title="5.2.2 - Blinn-Phong光照模型"></a>5.2.2 - Blinn-Phong光照模型</h4><p>Blinn提出了简单的修改办法来得到类似的高光反射效果。在硬件实现时，如果摄像机和光源距离模型足够远的话，Blinn模型会快于Phong模型。</p>
+<p>需要注意的是，这两种光照模型都是经验模型。</p>
+<h4 id="5-2-3-逐像素还是逐顶点光照"><a href="#5-2-3-逐像素还是逐顶点光照" class="headerlink" title="5.2.3 - 逐像素还是逐顶点光照"></a>5.2.3 - 逐像素还是逐顶点光照</h4><p>以上的光照模型可以在<strong>顶点着色器</strong>中计算，称为逐<strong>顶点光照（per-vertex lighting）</strong>，也可以在<strong>片元着色器</strong>中计算，称为<strong>逐像素光照（per-pixel lighting</strong>）。</p>
+<blockquote>
+<p>在<strong>逐像素光照</strong>中，我们会以每个像素为基础，得到它的法线(可以是对顶点法线插值得到的，也可以是从法线纹理中采样得到的)，然后进行光照模型的计算。这种在面片之间对顶点法线进行插值的技术被称为<strong>Phong着色(Phong shading)</strong>,也被称为Phong插值或法线插值着色技术。这不同于我们之前讲到的Phong光照模型。</p>
+</blockquote>
+<blockquote>
+<p>与之相对的是<strong>逐顶点光照</strong>，也被称为<strong>高洛德着色（Gouraud shading)<strong>。在逐顶点光照中，我们在每个顶点上计算光照，然后会在渲染图元内部进行线性插值，最后输出成像素颜色。由于顶点数目往往远小于像素数目，</strong>因此逐顶点光照的计算量往往要小于逐像素光照</strong>。但是，由于逐顶点光照依赖于线性插值来得到像素光照，因此，当光照模型中有<strong>非线性的计算（例如计算高光反射时）时，逐顶点光照就会出问题</strong>。在后面的章节中，我们将会看到这种情况。而且，由于逐顶点光照会在渲染图元内部对顶点颜色进行插值，这会导致渲染图元内部的颜色总是暗于顶点处的最高颜色值，这在某些情况下会产生明显的棱角现象。</p>
+</blockquote>
+<p>但这种模型有很多局限性。首先，有很多重要的物理现象无法用Blinn-Phong模型表现出来，例如<strong>菲涅耳反射（Fresnel reflection)<strong>。其次，</strong>Blinn-Phong模型</strong>是<strong>各项同性(isotropic）</strong>的，也就是说，当我们固定视角和光源方向旋转这个表面时，反射不会发生任何改变。但有些表面是具有<strong>各向异性(anisotropic）</strong>反射性质的，例如拉丝金属、毛发等。</p>
+<h3 id="5-3-Unity中的环境光和自发光"><a href="#5-3-Unity中的环境光和自发光" class="headerlink" title="5.3 - Unity中的环境光和自发光"></a>5.3 - Unity中的环境光和自发光</h3><p>在标准光照模型中，环境光和自发光的计算是最简单的。</p>
+<ul>
+<li>在Unity 中,场景中的<strong>环境光</strong>可以在<code>Window -&gt;Lighting -&gt;Ambient SourcelAmbient ColorlAmbientIntensity</code>中控制</li>
+<li>在 Shader中,我们只需要通过Unity 的内置变量<strong>UNITY_LIGHTMODEL_AMBIENT</strong>就可以得到<strong>环境光</strong>的颜色和强度信息。</li>
+</ul>
+<h3 id="5-4-在Unity中实现漫反射光照模型"><a href="#5-4-在Unity中实现漫反射光照模型" class="headerlink" title="5.4 - 在Unity中实现漫反射光照模型"></a>5.4 - 在Unity中实现漫反射光照模型</h3><p>漫反射的计算公式：<br>$$<br>c_{diffuse} = (c_{light} \cdot m_{diffuse})max(0, \hat{n} \cdot I)<br>$$<br>从公式可以看出，要计算漫反射需要知道4个参数:</p>
+<ul>
+<li>入射光线的颜色和强度<strong>c_light</strong>，</li>
+<li>材质的漫反射系数<strong>m_diffuse</strong>，</li>
+<li>表面法线<strong>n</strong></li>
+<li>光源方向<strong>I</strong></li>
+</ul>
+<blockquote>
+<p>为了防止点积结果为<strong>负值</strong>，我们需要使用<strong>max操作</strong>，而CG提供了这样的函数。在本例中，使用CG的另一个函数可以达到同样的目的,即<code>saturate</code>函数。</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/07/03/Unity-Shader-Learning/">https://li-kira.github.io/2023/07/03/Unity-Shader-Learning/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Unity/"># Unity</a>
+                    
+                        <a href="/tags/Unity-Shader/"># Unity Shader</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/06/25/VFX-Particle-System-Learning/">VFX - Particle System Learning</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
