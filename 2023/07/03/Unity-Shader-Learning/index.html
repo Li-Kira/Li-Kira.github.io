@@ -920,6 +920,1003 @@
 <blockquote>
 <p>为了防止点积结果为<strong>负值</strong>，我们需要使用<strong>max操作</strong>，而CG提供了这样的函数。在本例中，使用CG的另一个函数可以达到同样的目的,即<code>saturate</code>函数。</p>
 </blockquote>
+<h4 id="5-4-1-逐顶点光照的实现"><a href="#5-4-1-逐顶点光照的实现" class="headerlink" title="5.4.1 - 逐顶点光照的实现"></a>5.4.1 - 逐顶点光照的实现</h4><ol>
+<li><p>为Shader改名</p>
+</li>
+<li><p>为了得到漫反射颜色，声明Color类型的属性**_Diffuse**,用于控制漫反射颜色</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line">  _Diffuse (&quot;Color&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>在Pass中指定光照模式</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>包含Unity内置文件<strong>Lighting.cginc</strong></p>
+</li>
+<li><p>定义变量，与属性中声明的变量匹配</p>
+</li>
+<li><p>在appdata和v2f中定义相应的变量</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : POSITION;</span><br><span class="line"> fixed3 normal : NORMAL;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : SV_POSITION;</span><br><span class="line"> fixed3 color : COLOR;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>在顶点着色计算漫反射</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line"> v2f o;</span><br><span class="line"> o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"> o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line"></span><br><span class="line"> // 获取环境光</span><br><span class="line"> fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line"> // 将法线方向从物体空间转为剪裁空间</span><br><span class="line"> fixed3 worldNormal = normalize(mul(v.normal, (float3x3)unity_WorldToObject));</span><br><span class="line"> // 获取世界空间下的光线方向</span><br><span class="line"> fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"></span><br><span class="line"> // 计算漫反射</span><br><span class="line"> fixed3 diffuse =  _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal,worldLight));</span><br><span class="line"> o.color = ambient + diffuse;</span><br><span class="line"></span><br><span class="line"> return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>因为计算都在顶点着色器中完成，片元着色器只要返回颜色值。</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;        </span><br><span class="line"> return fixed4(i.color, 1.0);      </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>最后添加回调函数</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Diffuse&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<h4 id="5-4-2-逐像素光照的实现"><a href="#5-4-2-逐像素光照的实现" class="headerlink" title="5.4.2 - 逐像素光照的实现"></a>5.4.2 - 逐像素光照的实现</h4><blockquote>
+<p>逐像素光照是在逐顶点光照的基础上，将计算都移到片元着色器中实现。</p>
+</blockquote>
+<blockquote>
+<p>顶点着色器和片元着色器的输入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : POSITION;</span><br><span class="line"> fixed3 normal : NORMAL;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : SV_POSITION;</span><br><span class="line"> float3 worldNormal : TEXCOORD0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>顶点着色器中只计算法线方向</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line"> v2f o;</span><br><span class="line"> o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"> o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);</span><br><span class="line"> return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<p>在片元着色器中完成所有计算：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line"> // 获取环境光</span><br><span class="line"> fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line"> // 将法线方向从物体空间转为剪裁空间</span><br><span class="line"> fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line"> // 获取世界空间下的光线方向</span><br><span class="line"> fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"></span><br><span class="line"> // 计算漫反射</span><br><span class="line"> fixed3 diffuse =  _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal,worldLight));</span><br><span class="line"></span><br><span class="line"> fixed3 color = ambient + diffuse;</span><br><span class="line"></span><br><span class="line"> return fixed4(color, 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="5-4-3-半兰伯特模型"><a href="#5-4-3-半兰伯特模型" class="headerlink" title="5.4.3 - 半兰伯特模型"></a>5.4.3 - 半兰伯特模型</h4><p><strong>半兰伯特模型的计算公式如下：</strong><br>$$<br>c_{diffuse} = (c_{light} \cdot m_{diffuse})(0.5(0, \hat{n} \cdot I)+0.5)<br>$$</p>
+<blockquote>
+<p>这个模型没有使用Max函数来防止光线为负，而是将n·I的结果从[-1，1]映射到[0，1]的范围。</p>
+<p>这样做的好处是能够使得背光面有明暗变化，而不是死黑。</p>
+</blockquote>
+<blockquote>
+<p>在逐像素光照的基础上，将<strong>saturate</strong>的操作更换成以下操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line"> // 获取环境光</span><br><span class="line"> fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line"> // 将法线方向从物体空间转为剪裁空间</span><br><span class="line"> fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line"> // 获取世界空间下的光线方向</span><br><span class="line"> fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"> // 计算漫反射</span><br><span class="line"> fixed halfLambert = dot(worldNormal,worldLight) * 0.5 + 0.5;</span><br><span class="line"></span><br><span class="line"> fixed3 diffuse =  _LightColor0.rgb * _Diffuse.rgb * halfLambert;</span><br><span class="line"></span><br><span class="line"> fixed3 color = ambient + diffuse;</span><br><span class="line"></span><br><span class="line"> return fixed4(color, 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="5-5-在Unity中实现高光反射模型"><a href="#5-5-在Unity中实现高光反射模型" class="headerlink" title="5.5 - 在Unity中实现高光反射模型"></a>5.5 - 在Unity中实现高光反射模型</h3><p><strong>高光反射的计算公式如下：</strong><br>$$<br>c_{specular} = (c_{light} \cdot m_{specular})max(0, \hat{v} \cdot r)^{m_{gloss}}<br>$$<br>从上述公式可以得出，计算高光反射需要4个参数：</p>
+<ul>
+<li>入射光线的颜色和强度<strong>c_light</strong></li>
+<li>材质的高光反射系数<strong>m_specular</strong></li>
+<li>视角方向的<strong>单位向量v</strong></li>
+<li>反射方向<strong>r</strong></li>
+</ul>
+<blockquote>
+<p>反射方向r可以由表面法线的<strong>单位向量n</strong>和光源方向的<strong>单位向量I</strong>得到，</p>
+<p>可以直接使用CG提供的函数<code>reflect(i，n)</code>计算得出</p>
+</blockquote>
+<h4 id="5-5-1-逐顶点光照的实现"><a href="#5-5-1-逐顶点光照的实现" class="headerlink" title="5.5.1 - 逐顶点光照的实现"></a>5.5.1 - 逐顶点光照的实现</h4><ol>
+<li><p>首先，在属性声明三个属性：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line"> _Diffuse (&quot;Color&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line"> _Specular (&quot;Specular&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line"> _Gloss (&quot;&quot;, Range(8.0, 256)) = 20</span><br><span class="line"> //高光区域大小</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，Specular用于控制高光反射的颜色，Gloss用于控制高光区域的大小</p>
+</blockquote>
+</li>
+<li><p>然后指明光照模式</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>指明我们定义的顶点和片元着色器，同时将**”Lighting.cginc**”包含进来</p>
+</li>
+<li><p>声明属性变量，并且定义顶点和片元着色器的输入结构体</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : POSITION;</span><br><span class="line"> fixed3 normal : NORMAL;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : SV_POSITION;</span><br><span class="line"> float3 color : COLOR;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>在顶点着色器中计算高光反射：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line"> v2f o;</span><br><span class="line"> o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"></span><br><span class="line"> // 获取环境光</span><br><span class="line"> fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line"> // 将法线方向从物体空间转为剪裁空间</span><br><span class="line"> fixed3 worldNormal = normalize(mul(v.normal, (float3x3)unity_WorldToObject));</span><br><span class="line"> // 获取世界空间下的光线方向</span><br><span class="line"> fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"> //计算漫反射系数</span><br><span class="line"> fixed3 diffuse =  _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal,worldLight));</span><br><span class="line"></span><br><span class="line"> //从世界空间获取反射方向</span><br><span class="line"> fixed3 reflectDir = normalize(reflect(-worldLight, worldNormal));</span><br><span class="line"> //从世界空间获取视觉方向</span><br><span class="line"> fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - mul(unity_ObjectToWorld, v.vertex).xyz);</span><br><span class="line"> //计算高光系数</span><br><span class="line"> fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)),_Gloss);</span><br><span class="line"></span><br><span class="line"> o.color = ambient + diffuse + specular;</span><br><span class="line"> return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>漫反射的部分和上节提到的完全一致，对于高光反射部分，我们首先计算入射光线方向关于表面法线的反射方向<strong>reflectDir</strong>。由于CG的<strong>reflect函数</strong>的入射方向要求是由光源指向交点处的，因此我们需要对 <strong>worldLightDir</strong> 取反后再传给reflect函数。</p>
+</li>
+<li><p>然后，我们通过**_WorldSpaceCameraPos<strong>得到了世界空间中的摄像机位置，再把顶点位置从模型空间变换到世界空间下，再通过和</strong>_WorldSpaceCameraPos** 相减即可得到世界空间下的视角方向。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>在片元着色器中输出颜色</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line"> return fixed4(i.color, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>最后设置回调函数</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Specular&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<h4 id="5-5-2-逐像素光照的实现"><a href="#5-5-2-逐像素光照的实现" class="headerlink" title="5.5.2 - 逐像素光照的实现"></a>5.5.2 - 逐像素光照的实现</h4><ol>
+<li><p>在逐顶点光照的基础上，修改输入结构体：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : POSITION;</span><br><span class="line"> fixed3 normal : NORMAL;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : SV_POSITION;</span><br><span class="line"> float3 worldNormal : TEXCOORD0;</span><br><span class="line"> float3 worldPos : TEXCOORD1;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>在顶点着色器中，我们只要计算<strong>世界空间</strong>下的<strong>法线方向</strong>以及<strong>顶点坐标</strong>，并将它们传递给片元着色器即可</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line"> v2f o;</span><br><span class="line"> o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"> o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);</span><br><span class="line"> o.worldPos = mul(unity_ObjectToWorld, v.vertex);</span><br><span class="line"> return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>在片元着色器中计算光照模型：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  // 获取环境光</span><br><span class="line"> fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line"> // 将法线方向从物体空间转为剪裁空间</span><br><span class="line"> fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line"> // 获取世界空间下的光线方向</span><br><span class="line"> fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"> //计算漫反射系数</span><br><span class="line"> fixed3 diffuse =  _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal,worldLight));</span><br><span class="line"></span><br><span class="line"> //从世界空间获取反射方向</span><br><span class="line"> fixed3 reflectDir = normalize(reflect(-worldLight, worldNormal));</span><br><span class="line"> //从世界空间获取视觉方向</span><br><span class="line"> fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);</span><br><span class="line"> //计算高光系数</span><br><span class="line"> fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(saturate(dot(reflectDir, viewDir)),_Gloss);</span><br><span class="line"></span><br><span class="line"> fixed3 color = ambient + diffuse + specular;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> return fixed4(color, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在从世界空间获取<strong>反射方向</strong>r中，CG的<strong>reflect函数</strong>的入射方向要求是由光源指向交点处的，因此我们需要对 <strong>worldLightDir</strong> 取反后再传给reflect函数。</p>
+</blockquote>
+</li>
+</ol>
+<p>逐像素处理可以得到更加平滑的高光效果，至此，我们得到了一个完整的Phong光照模型</p>
+<h4 id="5-5-3-Blinn-Phong光照模型"><a href="#5-5-3-Blinn-Phong光照模型" class="headerlink" title="5.5.3 - Blinn-Phong光照模型"></a>5.5.3 - Blinn-Phong光照模型</h4><p>Blinn模型没有使用<strong>反射方向r</strong>，而是引入一个新的矢量h：<br>$$<br>\hat{h} = \frac{\hat{v} + \hat{I}}{\mid \hat{v} + \hat{I} \mid }<br>$$<br>而Blinn模型计算高光反射的公式如下：<br>$$<br>c_{specular} = (c_{light} \cdot m_{specular})max(0, \hat{n} \cdot \hat{h})^{m_{gloss}}<br>$$</p>
+<p>代码的实现只要修改逐像素光照中片元着色器的部分：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line"> //从世界空间获取视觉方向</span><br><span class="line"> fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);</span><br><span class="line"> //从世界空间获取半方向</span><br><span class="line"> fixed3 halfDir = normalize(worldLight + viewDir);</span><br><span class="line"> //计算高光系数</span><br><span class="line"> fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0,dot(worldNormal, halfDir)),_Gloss);</span><br><span class="line"></span><br><span class="line"> fixed3 color = ambient + diffuse + specular;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> return fixed4(color, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>法线向量n</strong>与<strong>halfDir</strong>进行点积，最后将环境光、漫反射、高光反射相加得到颜色。</p>
+</blockquote>
+<p>Blinn-Phong光照模型的高光反射部分看起来更大、更亮一些，在<strong>实际的渲染</strong>中，我们也会<strong>选择Blinn-Phong光照模型</strong>。</p>
+<h3 id="5-6-Unity内置函数"><a href="#5-6-Unity内置函数" class="headerlink" title="5.6 - Unity内置函数"></a>5.6 - Unity内置函数</h3><p>在计算光照模型的时候，我们往往需要得到光源方向、视角方向这两个基本信息。我们在上面的例子中得到的光源方向，这种办法只适用于平行光，如果需要处理更复杂的光照模型，如点光源和聚光灯，那么这种计算方法是错误的。我们需要现在代码中先判断光源的类型，再计算它的光源信息。</p>
+<p>Unity提供了一些内置函数来帮助我们计算这些信息：</p>
+<table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">float3 WorldSpaceViewDir (float4 v)</td>
+<td align="center">输入一个<strong>模型空间</strong>中的顶点位置,返回<strong>世界空间</strong>中从该点到摄像机的观察方向。内部实现使用了<strong>Unity WorldSpace ViewDir</strong>函数</td>
+</tr>
+<tr>
+<td align="center">float3 Unity WorldSpaceViewDir (float4 v)</td>
+<td align="center">输入一个<strong>世界空间</strong>中的顶点位置,返回<strong>世界空间</strong>中从该点到摄像机的观察方向</td>
+</tr>
+<tr>
+<td align="center">float3 ObjSpaceViewDir (float4 v)</td>
+<td align="center">输入一个<strong>模型空间</strong>中的顶点位置,返回<strong>模型空间</strong>中从该点到摄像机的观察方向</td>
+</tr>
+<tr>
+<td align="center">float3 WorldSpaceLightDir(float4 v)</td>
+<td align="center"><strong>仅可用于前向渲染中</strong>。输入一个<strong>模型空间</strong>中的顶点位置，返回<strong>世界空间</strong>中从该点到光源的光照方向。内部实现使用了 Unity WorldSpaceLightDir函数。没有被归一化</td>
+</tr>
+<tr>
+<td align="center">float3 UnityWorldSpaceLightDir (float4 v)</td>
+<td align="center"><strong>仅可用于前向渲染中</strong>。输入一个<strong>世界空间</strong>中的顶点位置，返回<strong>世界空间</strong>中从该点到光源的光照方向。没有被归一化</td>
+</tr>
+<tr>
+<td align="center">float3 ObjSpaceLightDir (float4 v)</td>
+<td align="center"><strong>仅可用于前向渲染中。</strong>输入一个<strong>模型空间</strong>中的顶点位置，返回<strong>模型空间</strong>中从该点到光源的光照方向。没有被归一化</td>
+</tr>
+<tr>
+<td align="center">float3 UnityObjectToWorldNormal (float3 norm)</td>
+<td align="center">把法线方向从<strong>模型空间</strong>转换到<strong>世界空间</strong>中</td>
+</tr>
+<tr>
+<td align="center">float3 UnityObjectToWorldDir (in float3 dir)</td>
+<td align="center">把方向矢量从<strong>模型空间</strong>变换到<strong>世界空间</strong>中</td>
+</tr>
+<tr>
+<td align="center">float3 Unity WorldToObjectDir(float3 dir)</td>
+<td align="center">把方向矢量从<strong>世界空间</strong>变换到<strong>模型空间</strong>中</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>需要注意的是，这些函数都没有保障得到的方向矢量是单位矢量，因此，我们需要在使用前把它们归一化</p>
+</blockquote>
+<p>计算光源方向的3个函数：</p>
+<ul>
+<li><strong>WorldSpaceLightDir</strong></li>
+<li><strong>Unity WorldSpaceLightDir</strong></li>
+<li><strong>ObjSpaceLightDir</strong> </li>
+</ul>
+<p>它们尽可用于向前渲染，因为只有在向前渲染中，这3个函数中使用的内置变量**_WorldSpaceLightPos0**才会被正确赋值。</p>
+<p>以下是在<strong>Blinn-Phong光照模型</strong>中的使用Unity内置函数的例子：</p>
+<ul>
+<li><p>在顶点着色器中，我们使用<strong>UnityObjectToWorldNormal</strong> 来计算世界空间下的法线方向</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line"> v2f o;</span><br><span class="line"> o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"> //o.worldNormal = mul(v.normal, (float3x3)unity_WorldToObject);</span><br><span class="line"> //使用内置函数来计算世界空间中的法线向量</span><br><span class="line"> o.worldNormal = UnityObjectToWorldNormal(v.normal);</span><br><span class="line"></span><br><span class="line"> o.worldPos = mul(unity_ObjectToWorld, v.vertex);</span><br><span class="line"> return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>在片元着色器中，我们使用内置的<strong>UnityWorldSpaceLightDir</strong> 函数和<strong>WorldSpaceViewDir</strong> 来计算世界空间中的光照方向和视角方向</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"> ...</span><br><span class="line"></span><br><span class="line"> // 将法线方向从物体空间转为剪裁空间</span><br><span class="line"> fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line"> // 获取世界空间下的光线方向</span><br><span class="line"> fixed3 worldLight = normalize(UnityWorldSpaceLightDir(i.worldPos));</span><br><span class="line"> //fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line"> ...</span><br><span class="line"></span><br><span class="line"> ...</span><br><span class="line"></span><br><span class="line"> //从世界空间获取视角方向</span><br><span class="line"> fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));</span><br><span class="line"> //fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.worldPos.xyz);</span><br><span class="line"> ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<blockquote>
+<p>以上的方向矢量都需要使用<strong>normalize</strong>进行归一化得到单位矢量。</p>
+</blockquote>
+<h2 id="6-基础纹理"><a href="#6-基础纹理" class="headerlink" title="6 - 基础纹理"></a>6 - 基础纹理</h2><blockquote>
+<p>在美术人员建模的时候，通常会在建模软件中利用纹理展开技术把<strong>纹理映射坐标(texture-mapping coordinates）</strong>存储在每个顶点上。纹理映射坐标定义了该顶点在纹理中对应的2D坐标。通常，这些坐标使用一个<strong>二维变量(u, v)<strong>来表示，其中u是横向坐标，而v是纵向坐标。因此，纹理映射坐标也被称为</strong>UV坐标</strong>。</p>
+<p>Unity使用的纹理空间是符合<strong>OpenGL</strong>风格的。</p>
+</blockquote>
+<h3 id="6-1-单张纹理"><a href="#6-1-单张纹理" class="headerlink" title="6.1 -  单张纹理"></a>6.1 -  单张纹理</h3><h4 id="6-1-1-单张纹理的实现"><a href="#6-1-1-单张纹理的实现" class="headerlink" title="6.1.1 - 单张纹理的实现"></a>6.1.1 - 单张纹理的实现</h4><ol>
+<li><p>为了使用纹理，在Properties中添加以下属性</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line">    _Color (&quot;Color&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">    _MainTex (&quot;Texture&quot;, 2D) = &quot;white&quot; &#123;&#125;</span><br><span class="line">    _Specular (&quot;Specular&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">    _Gloss (&quot;&quot;, Range(8.0, 256)) = 20</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>指明光照模式、声明变量、包含内置文件</p>
+<blockquote>
+<p>与其他属性类型不同的是，我们还需要为纹理类型的属性声明一个 <strong>float4</strong>类型的变量**_MainTex_ST<strong>。其中，</strong>_MainTex_ST<strong>的名字不是任意起的。在 Unity中，我们需要使用纹理名</strong>_ST<strong>的方式来声明某个纹理的属性。其中，</strong>ST<strong>是</strong>缩放(scale)<strong>和</strong>平移( translation)<strong>的缩写。</strong>_MainTex_ST<strong>可以让我们得到该纹理的缩放和平移（偏移）值，</strong>_MainTex_ST.xy** 存储的是缩放值，而**_MainTex ST.zw**存储的是偏移值。这些值可以在材质中调节。</p>
+</blockquote>
+</li>
+<li><p>定义顶点着色器的输入和输出结构体</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line">    float4 vertex : POSITION;</span><br><span class="line">    fixed3 normal : NORMAL;</span><br><span class="line">    float2 uv : TEXCOORD0;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line">    float4 vertex : SV_POSITION;</span><br><span class="line">    float2 uv : TEXCOORD2;</span><br><span class="line">    float3 worldNormal : TEXCOORD0;</span><br><span class="line">    float3 worldPos : TEXCOORD1;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在上面的代码中,我们首先在a2v结构体中使用<strong>TEXCOORDO</strong>语义声明了一个新的变量uv，这样Unity就会将模型的第一组纹理坐标存储到该变量中。</p>
+</li>
+<li><p>然后，我们在<strong>v2f</strong>结构体中添加了用于存储纹理坐标的变量<strong>uv</strong>，以便在片元着色器中使用该坐标进行纹理采样。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>定义顶点着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line">    v2f o;</span><br><span class="line">    o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line">    </span><br><span class="line">    o.worldNormal = UnityObjectToWorldNormal(v.normal);</span><br><span class="line">    o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;</span><br><span class="line">    </span><br><span class="line">    o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line">    </span><br><span class="line">    return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>在顶点着色器中，我们使用纹理的属性值**_MainTex_ST<strong>来对顶点纹理坐标进行变换，得到最终的纹理坐标。计算过程是，首先使用缩放属性</strong>_MainTex_ST.xy** 对顶点纹理坐标进行缩放,然后再使用偏移属<strong>性_Main Tex_ST.zw</strong>对结果进行偏移。</p>
+</li>
+<li><p>Unity 提供了一个内置宏 <strong>TRANSFORM_TEX</strong>来帮我们计算上述过程。TRANSFORM_TEX是在 UnityCGcginc中定义的:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define TRANSFORM_TEX(tex, name) &#123;tex.xy * name##_ST,xy + name##_ST,zw&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</blockquote>
+</li>
+<li><p>实现片元着色器，并在计算漫反射时使用纹理中的纹素值</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line">    fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));</span><br><span class="line"></span><br><span class="line">    fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;</span><br><span class="line">    fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;</span><br><span class="line"></span><br><span class="line">    fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));</span><br><span class="line">    </span><br><span class="line">    fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));</span><br><span class="line">    fixed3 halfDir = normalize(worldLightDir + viewDir);</span><br><span class="line">    fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0,dot(worldNormal, halfDir)),_Gloss);</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    fixed3 col = ambient + diffuse + specular;</span><br><span class="line">    return fixed4(col, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码首先计算了在<strong>世界空间</strong>下的<strong>法线方向</strong>和<strong>光照方向</strong>，然后使用CG的tex2D函数对纹理进行采样。它的第一个参数是<strong>需要被采样的纹理</strong>，第二个参数是一个<strong>float2</strong>类型的<strong>纹理坐标</strong>，它将返回计算得到的纹素值。我们使用采样结果和颜色属性**_Color** 的乘积来作为材质的反射率<strong>albedo</strong>，并把它和环境光照相乘得到环境光部分。随后，我们使用<strong>albedo</strong>来计算漫反射光照的结果，并和环境光照、高光反射光照相加后返回。</p>
+</blockquote>
+</li>
+<li><p>设置合适的回调函数</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Specular&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<h4 id="6-1-2-纹理的属性"><a href="#6-1-2-纹理的属性" class="headerlink" title="6.1.2 - 纹理的属性"></a>6.1.2 - 纹理的属性</h4><p>纹理的类型有以下几种</p>
+<ul>
+<li>Default：默认为纹理类型</li>
+<li>Normal map：法线类型</li>
+<li>Cubemap</li>
+</ul>
+<ul>
+<li><p><strong>Wrap Mode一共有两种：</strong> <strong>Repeat</strong>和<strong>Clamp</strong>。它决定了纹理坐标超过[0, 1]时候纹理将会如何被平铺，Repeat会不断重复，Clamp只会截取临近的部分，如果纹理坐标大于1，那么会截取到1，如果小于0，那么会截取到0；</p>
+</li>
+<li><p><strong>Filter Mode：</strong>它决定了当纹理由于变换而产生拉伸时将会采用哪种滤波模式。</p>
+<p>Filter Mode支持3种模式:<strong>Point</strong>，<strong>Bilinear</strong>以及 <strong>Trilinear</strong>。它们得到的图片滤波效果依次提升，但需要耗费的性能也依次增大。纹理滤波会影响放大或缩小纹理时得到的图。</p>
+<blockquote>
+<ul>
+<li><p>纹理缩小的过程比放大更加复杂一些，此时原纹理中的多个像素将会对应一个目标像素。纹理缩放更加复杂的原因在于我们往往需要处理抗锯齿问题一个最常使用的方法就是使用<strong>多级渐远纹理(mipmapping）</strong>技术。</p>
+</li>
+<li><p>多级渐远纹理技术将原纹理提前用滤波处理来得到很多更小的图像，形成了一个图像金字塔，每一层都是对上一层图像降采样的结果。这样在实时运行时，就可以快速得到结果像素，例如当物体远离摄像机时，可以直接使用较小的纹理。但缺点是需要使用一定的空间用于存储这些多级渐远纹理，通常会多占用33%的内存空间。这是一种典型的用空间换取时间的方法。</p>
+</li>
+<li><p>在 Unity中，我们可以在纹理导入面板中，首先将纹理类型(TextureType）选择成Advanced，再勾选 Generate Mip Maps即可开启多级渐远纹理技术。同时，我们还可以选择生成多级渐远纹理时是否使用<strong>线性空间</strong>以及采用的滤波器等。</p>
+</li>
+</ul>
+</blockquote>
+<p>在内部实现上，<strong>Point</strong>模式使用了<strong>最近邻(nearest neighbor）滤波</strong>,在放大或缩小时，它的采样像素数目通常只有一个，因此图像会看起来有种<strong>像素风格</strong>的效果。而<strong>Bilinear滤波</strong>则使用了<strong>线性滤波</strong>，对于每个目标像素，它会找到4个邻近像素，然后对它们进行线性插值混合后得到最终像素，因此图像看起来像被模糊了。而 <strong>Trilinear滤波</strong>几乎是和 <strong>Bilinear</strong>一样的，只是 <strong>Trilinear</strong>还会在<strong>多级渐远纹理</strong>之间进行混合。如果一张纹理没有使用<strong>多级渐远纹理技术</strong>，那么<strong>Trilinear</strong>得到的结果还是和<strong>Bilinear</strong>是一样的。</p>
+</li>
+<li><p><strong>纹理的最大尺寸：</strong>如果导入的纹理大小超过了Max Texture Size 中的设置值,那么Unity将会把该纹理缩放为这个最大分辨率。理想情况下,导入的纹理可以是非正方形的,但长宽的大小应该是2的幂,<br>例如<br>2、4、8、16、32、64等。如果使用了非2的幂大小(Non Powerof Two,NPOT)的纹理，那么这些纹理往往会占用更多的内存空间，而且GPU 读取该纹理的速度也会有所下降。有一些平台甚至不支持这种<strong>NPOT纹理</strong>,这时Unity在内部会把它缩放成最近的2的幂大小。出于性能和空间的考虑，我们应该尽量使用2的幂大小的纹理。</p>
+</li>
+</ul>
+<p><strong>Point</strong>，<strong>Bilinear</strong>以及 <strong>Trilinear</strong>下的画面拉伸的图：</p>
+<p><img src="/image/UnityShaderLearning/image-20230704184957079.png" alt="image-20230704184957079"></p>
+<h3 id="6-2-凹凸映射"><a href="#6-2-凹凸映射" class="headerlink" title="6.2 - 凹凸映射"></a>6.2 - 凹凸映射</h3><p>纹理的另一种常见的应用就是<strong>凹凸映射（bump mapping)<strong>。凹凸映射的目的是使用一张纹理来修改模型表面的法线，以便为模型提供更多的细节。这种方法</strong>不会真的改变模型的顶点位置</strong>,只是让模型看起来好像是“凹凸不平”的，但可以从模型的轮廓处看出“破绽”。</p>
+<p>有两种主要的方法可以用来进行凹凸映射:</p>
+<ul>
+<li>一种方法是使用一张<strong>高度纹理(height map）</strong>来模拟表面位移(displacement),然后得到一个修改后的法线值,这种方法也被称为高度映射(heightmapping);</li>
+<li>另一种方法则是使用一张<strong>法线纹理(normal map）</strong>来直接存储表面法线，这种方法又被称为法线映射（normal mapping)。尽管我们常常将凹凸映射和法线映射当成是相同的技术，但读者需要知道它们之间的不同。</li>
+</ul>
+<h4 id="6-2-1-高度纹理"><a href="#6-2-1-高度纹理" class="headerlink" title="6.2.1 - 高度纹理"></a>6.2.1 - 高度纹理</h4><p>高度图中存储的是强度值（intensity)，它用于表示模型表面局部的海拔高度。因此,颜色越浅表明该位置的表面越向外凸起,而颜色越深表明该位置越问里。</p>
+<p>这种力云内灯处足非常直观,我们可以从高度图中明确地知道一个模型表画的凹凸情况，但缺点是计算更加复杂，在实时计算时不能直接得到表面法线,而是需要由像素的灰度值，因此需要消耗更多的性能。</p>
+<p>高度图通常会和法线映射一起便用,用于给出表面凹凸的额外信息。也就是说，我们通常会使用法线映射来修改光照。</p>
+<h4 id="6-2-2-法线纹理"><a href="#6-2-2-法线纹理" class="headerlink" title="6.2.2 - 法线纹理"></a>6.2.2 - 法线纹理</h4><p>而法线纹理中存储的就是表面的法线方向。由于<strong>法线方向的分量范围</strong>在**[-1，1]<strong>，而</strong>像素的分量范围<strong>为</strong>[0,1]<strong>，因此我们需要做一个映射，通常使用的映射就是:<br>$$<br>pixel = \frac{normal + 1}{2}<br>$$<br>这就要求，我们在Shader中对法线纹理进行纹理采样后，还需要对结果进行一次反映射的过程，以得到原先的法线方向。反映射的过程实际就是使用上面映射函数的逆函数:<br>$$<br>normal = pixel * 2 -1<br>$$<br>在实际制作中,我们往往会采用另一种坐标空间，即模型顶点的</strong>切线空间**(tangent space)来存储法线。</p>
+<p>对于模型的每个顶点，它都有一个属于自己的切线空间，这个切线空间的原点就是该顶点本身，而z轴是顶点的法线方向(n)，x轴是顶点的切线方向(t)，而y轴可由法线和切线叉积而得，也被称为是副切线（bitangent，b)或副法线，如图7.12所示。</p>
+<p><img src="/image/UnityShaderLearning/image-20230704192202607.png" alt="image-20230704192202607"></p>
+<p>总体来说，使用模型空间来存储法线的优点如下。</p>
+<ul>
+<li><strong>实现简单，更加直观。</strong>我们甚至都不需要模型原始的法线和切线等信息，也就是说，计算更少。生成它也非常简单，而如果要生成切线空间下的法线纹理，由于模型的切线一般是和UV方向相同，因此想要得到效果比较好的法线映射就要求纹理映射也是连续的。</li>
+<li><strong>在纹理坐标的缝合处和尖锐的边角部分，可见的突变(缝隙）较少，即可以提供平滑的边界。这是因为模型空间下的法线纹理存储的是同一坐标系下的法线信息，因此在边界处通过插值得到的法线可以平滑变换。</strong>而切线空间下的法线纹理中的法线信息是依靠纹理坐标的方向得到的结果，可能会在边缘处或尖锐的部分造成更多可见的缝合迹象。</li>
+</ul>
+<p><strong>但使用切线空间有更多优点。</strong></p>
+<ul>
+<li><strong>自由度很高。</strong>模型空间下的法线纹理记录的是绝对法线信息，仅可用于创建它时的那个模型,而应用到其他模型上效果就完全错误了。而切线空间下的法线纹理记录的是相对法线信息,这意味着，即便把该纹理应用到一个完全不同的网格上,也可以得到一个合理的结果。</li>
+<li><strong>可进行UV动画。</strong>比如,我们可以移动一个纹理的UV坐标来实现一个凹凸移动的效果,但使用模型空间下的法线纹理会得到完全错误的结果。原因同上。这种UV动画在水或者火山眯岩这种类型的物体上会经常用到。</li>
+<li><strong>可以重用法线纹理。</strong>比如，一个砖块，我们仅使用一张法线纹理就可以用到所有的6个面上。原因同上。</li>
+<li><strong>可压缩。</strong>由于切线空间下的法线纹理中法线的Z方向总是正方向，因此我们可以仅存储XY方向，而推导得到Z方向。而模型空间下的法线纹理由于每个方向都是可能的，因此必须存储3个方向的值,不可压缩。</li>
+</ul>
+<p>切线空间下的法线纹理的前两个优点足以让很多人放弃模型空间下的法线纹理而选择它。从上面的优点可以看出，切线空间在很多情况下都优于模型空间，而且可以节省美术人员的工作。因此，在本书中,我们使用的也是切线空间下的法线纹理。</p>
+<p>我们需要在计算光照模型中统一各个方向矢量所在的坐标空间。由于<strong>法线纹理</strong>中存储的法线是<strong>切线空间</strong>下的方向，因此我们通常有两种选择:</p>
+<ul>
+<li>一种选择是在<strong>切线空间</strong>下进行光照计算，此时我们需要把光照方向、视角方向变换到切线空间下;</li>
+<li>另一种选择是在<strong>世界空间</strong>下进行光照计算,此时我们需要把采样得到的法线方向变换到世界空间下，再和世界空间下的光照方向和视角方向进行计算。</li>
+</ul>
+<blockquote>
+<p>从<strong>效率</strong>上来说，<strong>第一种方法往往要优于第二种方法</strong>，因为我们可以在顶点着色器中就完成对光照方向和视角方向的变换，而第二种方法由于要先对法线纹理进行采样，所以变换过程必须在片元着色器中实现，这意味着我们需要在片元着色器中进行一次矩阵操作。</p>
+<p>但从<strong>通用性角度</strong>来说，<strong>第二种方法要优于第一种方法</strong>,因为有时我们需要在<strong>世界空间下进行一些计算</strong>，例如在使用 <strong>Cubemap进行环境映射</strong>时，我们需要<strong>使用世界空间下的反射方向对Cubemap进行采样</strong>。如果同时需要进行法线映射，我们就需要把法线方向变换到世界空间下。</p>
+</blockquote>
+<h4 id="6-2-3-在切线空间下计算"><a href="#6-2-3-在切线空间下计算" class="headerlink" title="6.2.3 - 在切线空间下计算"></a>6.2.3 - 在切线空间下计算</h4><p><strong>基本思路：</strong></p>
+<ul>
+<li><p>在<strong>顶点着色器</strong>中把<strong>视角方向</strong>和<strong>光照方向</strong>从<strong>模型空间</strong>变换到<strong>切线空间</strong>中</p>
+<blockquote>
+<p>我们需要知道从模型空间到切线空间的变换矩阵，这个变换矩阵的逆矩阵即从切线空间到模型空间的变换矩阵是非常容易求得的。如果一个变换中仅存在<strong>平移</strong>和<strong>旋转变换</strong>，那么这个<strong>变换的逆矩阵</strong>就等于它的<strong>转置矩阵</strong>，而从<strong>模型空间</strong>到<strong>切线空间</strong>的变换矩阵就是从切线空间到模型空间的变换矩阵的转置矩阵。</p>
+</blockquote>
+</li>
+<li><p>在<strong>片元着色器</strong>中通过纹理采样得到<strong>切线空间</strong>下的法线，然后再与切线空间下的视角方向、光源方向等计算</p>
+</li>
+</ul>
+<p><strong>实现如下：</strong></p>
+<ol>
+<li><p>添加属性</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line"> _MainTex (&quot;Texture&quot;, 2D) = &quot;white&quot; &#123;&#125;</span><br><span class="line"> _Color (&quot;Color&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line"> _Specular (&quot;Specular&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line"> _Gloss (&quot;&quot;, Range(8.0, 256)) = 20</span><br><span class="line"> _BumpMap (&quot;BumpMap&quot;, 2D) = &quot;Bump&quot; &#123;&#125;</span><br><span class="line"> _BumpScale (&quot;BumpScale&quot;, Float) = 1.0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，**_Color<strong>、</strong>_Specular<strong>、</strong>_Gloss**都是我们为了实现之前的Blinn-Phong光照模型所需的必要参数</p>
+<p><strong>_BumpMap</strong>是我们需要的法线纹理，**_BumpScale**用于控制纹理的凹凸程度</p>
+</blockquote>
+</li>
+<li><p>配置光照模式、声明变量、引入内置文件</p>
+</li>
+<li><p>修改顶点着色器的输入结构体</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : POSITION;</span><br><span class="line"> float3 normal : NORMAL;</span><br><span class="line"> float4 tangent : TANGENT;    </span><br><span class="line"> float4 uv : TEXCOORD0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>我们使用<strong>TANGENT</strong>语义来描述<strong>tangent</strong>，即告诉Unity把顶点的<strong>切线方向</strong>填充到<strong>tangent</strong>中</p>
+</li>
+<li><p>需要注意的是，和法线方向<strong>normal</strong> 不同，<strong>tangent</strong>的类型是<strong>float4</strong>，而非 float3，这是因为我们需要使用<strong>tangent.w分量</strong>来决定切线空间中的第三个坐标轴——副切线的方向性。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>修改片元着色器的输入结构体</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line"> float4 vertex : SV_POSITION;</span><br><span class="line"> float4 uv : TEXCOORD0;</span><br><span class="line"> float3 lightDir : TEXCOORD1;</span><br><span class="line"> float3 viewDir : TEXCOORD2;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>定义顶点着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line"> v2f o;</span><br><span class="line"> o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> //为了减少寄存器的使用，将贴图存储到一个纹理坐标中</span><br><span class="line"> o.uv.xy = v.uv.xy * _MainTex_ST.xy + _MainTex_ST.zw;</span><br><span class="line"> o.uv.zw = v.uv.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;</span><br><span class="line"></span><br><span class="line"> // o.uv.xy = TRANSFORM_TEX(v.uv.xy, _MainTex);</span><br><span class="line"> // o.uv.zw = TRANSFORM_TEX(v.uv.xy, _BumpMap);</span><br><span class="line"></span><br><span class="line"> TANGENT_SPACE_ROTATION;</span><br><span class="line"></span><br><span class="line"> o.lightDir = mul(rotation, ObjSpaceLightDir(v.vertex)).xyz;</span><br><span class="line"> o.viewDir = mul(rotation, ObjSpaceViewDir(v.vertex)).xyz;</span><br><span class="line"></span><br><span class="line"> return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>由于我们使用了两张纹理，我们使用<strong>float4</strong>类型的 <strong>uv</strong>去保存它们，其中<strong>xy分量</strong>存储**_Main<strong>的Tex纹理坐标，</strong>zw分量<strong>存储</strong>_BumpMap**纹理坐标。这样做的好处是可以减少插值寄存器的使用数目。</p>
+</li>
+<li><p>然后我们使用Unity内置的<strong>宏</strong>来计算得到从模型空间到切线空间的变换矩阵 <strong>rotation</strong></p>
+</li>
+<li><p>然后，我们使用Unity的内置函数<strong>ObjSpaceLightDir</strong>和<strong>ObjSpaceViewDir</strong>来得到模型空间下的光照和视角方向，再使用变换矩阵将它们从模型空间变换到切线空间中。</p>
+</li>
+</ul>
+</blockquote>
+</li>
+<li><p>我们在顶点着色器中完成了大部分工作，在片元着色器中只需要采样得到切线空间下的法线方向，再在切线空间下进行光照计算即可</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">fixed3 tangentLightDir = normalize(i.lightDir);</span><br><span class="line">fixed3 tangentViewDir = normalize(i.viewDir);</span><br><span class="line"></span><br><span class="line">fixed4 packedNormal = tex2D(_BumpMap, i.uv.zw);</span><br><span class="line">fixed3 tangentNormal;</span><br><span class="line"></span><br><span class="line">tangentNormal = UnpackNormal(packedNormal);</span><br><span class="line">tangentNormal.xy *= _BumpScale;</span><br><span class="line">tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));</span><br><span class="line"></span><br><span class="line">fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;</span><br><span class="line"></span><br><span class="line">fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;</span><br><span class="line"></span><br><span class="line">fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, tangentLightDir));</span><br><span class="line"></span><br><span class="line">fixed3 halfDir = normalize(tangentLightDir + tangentViewDir);</span><br><span class="line">fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss);</span><br><span class="line"></span><br><span class="line">	return fixed4(ambient + diffuse + specular, 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们先用<strong>tex2D</strong>对法线纹理**_BumpMap**进行采样。因为法线纹理中存储的是把法线经过映射得到的像素值，因此我们需要把它们反映射回来。</p>
+<p>我们需要在Unity中把这个法线纹理设置为Normal map，然后只用Unity的内置函数UnpackNormal来获得正确的法线方向。</p>
+<p>使用**_BumpScale<strong>对法线的值进行缩放，由于法线都是单位矢量,因此</strong>tangentNormal.z<strong>分量可以由</strong>tangentNormal.xy**计算而得。由于我们使用的是切线空间下的法线纹理，因此可以保证法线方向的z分量为正。</p>
+</blockquote>
+</li>
+<li><p>最后添加合适的回调函数</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Specular&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<h4 id="6-2-4-在世界空间下计算"><a href="#6-2-4-在世界空间下计算" class="headerlink" title="6.2.4 - 在世界空间下计算"></a>6.2.4 - 在世界空间下计算</h4><p><strong>基本思路：</strong></p>
+<ul>
+<li>在顶点着色器中计算从切线空间到世界空间的变换矩阵，然后将它传递给片元着色器</li>
+<li>在片元着色器中把法线纹理中的<strong>法线方向</strong>从<strong>切线空间</strong>变换到<strong>世界空间</strong>下</li>
+</ul>
+<blockquote>
+<p>尽管这种方法需要更多的计算，但在需要使用Cubemap进行环境映射的情况下，我们就需要这种方法。</p>
+</blockquote>
+<p><strong>实现如下：</strong></p>
+<ol>
+<li><p>复制之前的代码，修改顶点着色器的输出v2f</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line">    float4 vertex : SV_POSITION;</span><br><span class="line">    float4 uv : TEXCOORD0;</span><br><span class="line">    float4 TtoW0 : TEXCOORD1;</span><br><span class="line">    float4 TtoW1 : TEXCOORD2;</span><br><span class="line">    float4 TtoW2 : TEXCOORD4;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>插值寄存器最多只能存储<strong>float4</strong>大小的变量，对于矩阵这样的变量，我们可以把它们按行拆成多个变量再进行存储。上面代码中的<strong>TtoW0</strong>、<strong>TtoW1</strong>和 <strong>TtoW2</strong> 就依次存储了从切线空间到世界空间的变换矩阵的每一行。实际上，对方向矢量的变换只需要使用3×3大小的矩阵，也就是说，每一行只需要使用float3类型的变量即可。但为了充分利用插值寄存器的存储空间，我们把世界空间下的顶点位置存储在这些变量的w分量中。</p>
+</blockquote>
+</li>
+<li><p>修改顶点着色器，计算从切线空间到世界空间的变换矩阵</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line">    v2f o;</span><br><span class="line">    o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    //为了减少寄存器的使用，将贴图存储到一个纹理坐标中</span><br><span class="line">    o.uv.xy = v.uv.xy * _MainTex_ST.xy + _MainTex_ST.zw;</span><br><span class="line">    o.uv.zw = v.uv.xy * _BumpMap_ST.xy + _BumpMap_ST.zw;</span><br><span class="line"></span><br><span class="line">    // o.uv.xy = TRANSFORM_TEX(v.uv.xy, _MainTex);</span><br><span class="line">    // o.uv.zw = TRANSFORM_TEX(v.uv.xy, _BumpMap);</span><br><span class="line">    </span><br><span class="line">    float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;</span><br><span class="line">    fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);</span><br><span class="line">    fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);</span><br><span class="line">    fixed3 worldBinormal = cross(worldNormal, worldTangent) * v.tangent.w;</span><br><span class="line"></span><br><span class="line">    o.TtoW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, worldPos.x);</span><br><span class="line">    o.TtoW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, worldPos.y);    </span><br><span class="line">    o.TtoW2 = float4(worldTangent.z, worldBinormal.z, worldNormal.z, worldPos.z);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>修改片元着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"> fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    float3 worldPos = float3(i.TtoW0.w, i.TtoW1.w, i.TtoW2.w);</span><br><span class="line"></span><br><span class="line">    fixed3 lightDir = normalize(UnityWorldSpaceLightDir(worldPos));</span><br><span class="line">    fixed3 viewDir = normalize(UnityWorldSpaceViewDir(worldPos));</span><br><span class="line"></span><br><span class="line">    fixed3 bump = UnpackNormal(tex2D(_BumpMap, i.uv.zw));</span><br><span class="line">    bump.xy *= _BumpScale;</span><br><span class="line">    bump.z = sqrt(1.0 - saturate(dot(bump.xy, bump.xy)));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    bump = normalize(half3(dot(i.TtoW0.xyz, bump), dot(i.TtoW1.xyz, bump), dot(i.TtoW2.xyz, bump)));</span><br><span class="line"></span><br><span class="line">    fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;</span><br><span class="line"></span><br><span class="line">    fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;</span><br><span class="line"></span><br><span class="line">    fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(bump, lightDir));</span><br><span class="line"></span><br><span class="line">    fixed3 halfDir = normalize(lightDir + viewDir);</span><br><span class="line">fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(bump, halfDir)), _Gloss);</span><br><span class="line"></span><br><span class="line">	return fixed4(ambient + diffuse + specular, 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>我们首先从<strong>TtoW0</strong>、<strong>TtoW1</strong>和 <strong>TtoW2</strong>的<strong>w分量</strong>中构建世界空间下的坐标。</li>
+<li>然后，使用内置的<strong>UnityWorldSpaceLightDir</strong>和 <strong>UnityWorldSpaceViewDir</strong>函数得到世界空间下的光照和视角方向。</li>
+<li>接着，我们使用内置的 <strong>UnpackNormal</strong>函数对法线纹理进行采样和解码（<strong>需要把法线纹理的格式标识成Normal map</strong>)，并使用 <strong>BumpScale</strong>对其进行缩放。</li>
+<li>最后,我们使用TtoW0、TtoW1和 TtoW2存储的变换矩阵把法线变换到世界空间下。这是通过使用点乘操作来实现矩阵的每一行和法线相乘来得到的。</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>从视觉表现上，在切线空间下和在世界空间下计算光照几乎没有任何差别。</p>
+<h4 id="6-2-5-Unity中的法线纹理类型"><a href="#6-2-5-Unity中的法线纹理类型" class="headerlink" title="6.2.5 - Unity中的法线纹理类型"></a>6.2.5 - Unity中的法线纹理类型</h4><p>当把法线纹理的纹理类型标识成<strong>Normal map</strong>时，可以使用 Unity的内置函数 <strong>UnpackNormal</strong>来得到正确的法线方向</p>
+<p>当我们需要使用那些包含了法线映射的内置的Unity Shader时,必须把使用的法线纹理按上面的方式标识成<strong>Normal map</strong>才能得到正确结果(即便你忘了这么做，Unity 也会在材质面板中提醒你修正这个问题)，这是因为这些Unity Shader都使用了内置的<strong>UnpackNormal</strong> 函数来采样法线方向。那么,当我们把纹理类型设置成 Normal map时到底发生了什么呢?为什么要这么做呢?</p>
+<p>简单来说，这么做可以让Unity 根据不同平台对法线方向时，需要把纹理类型标识为Normal map纹理进行压缩（例如使用 <strong>DXT5nm</strong>格式)，再通过 <strong>UnpackNormal</strong>函数来针对不同的压缩格式对法线纹理进行正确的采样。我们可以在 UnityCGcginc里找到UnpackNormal函数的内部实现:</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">inline fixed3 UnpackNormalDXT5nm (fixed4 packednormal)</span><br><span class="line">&#123;</span><br><span class="line">	fixed3 normal;</span><br><span class="line">	normal.xy=packednormal .wy * 2-1;</span><br><span class="line">	normal.z = sqrt(l- saturate(dot(normal.xy, normal.xy)));</span><br><span class="line">	return normal;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline fixed3 UnpackNormal(fixed4 packednormal)</span><br><span class="line">&#123;</span><br><span class="line">#if defined (UNITY NO DXT5nm)</span><br><span class="line">	return packednormal.xyz *2- 1;</span><br><span class="line">#else</span><br><span class="line">	return UnpackNormalDXT5nm(packednormal);</span><br><span class="line">#endif</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从代码中可以看出，在某些平台上由于使用了<strong>DXT5nm</strong>的压缩格式，因此需要针对这种格式对法线进行解码。在 <strong>DXT5nm</strong>格式的法线纹理中，纹素的<strong>a通道</strong>(即<strong>w分量</strong>)对应了<strong>法线的r分量</strong>，<strong>g通道对应了法线的y分量</strong>，而纹理的<strong>r</strong>和<strong>b</strong>通道则会被<strong>舍弃</strong>，法线的<strong>z分量</strong>可以由<strong>xy分量推导</strong>而得。</p>
+<p>为什么之前的普通纹理不能按这种方式压缩,而<strong>法线</strong>就需要使用<strong>DXT5nm</strong>格式来进行压缩呢?这是因为，按我们之前的处理方式，法线纹理被当成一个和普通纹理无异的图，但实际上，它<strong>只有两个通道是真正必不可少的</strong>，因为第<strong>三个通道的值可以用另外两个推导出来</strong>（法线是单位向量，并且切线空间下的法线方向的z分量始终为正)。使用这种压缩方法就可以减少法线纹理占用的内存空间。</p>
+</blockquote>
+<p>当我们把纹理类型设置成<strong>Normal map</strong>后，还有一个复选框是<code>Create from Grayscale</code>，这个复选框就是用于<strong>从高度图中生成法线纹理的</strong>。<strong>高度图</strong>本身记录的是相对高度，是一张<strong>灰度图</strong>，<strong>白色表示相对更高</strong>,<strong>黑色表示相对更低</strong>。当我们把张高度图导入Unity后，除了需要把它的纹理类型设置成Normal map外,还需要勾选 Create from Grayscale,然后，我们就可以把它和切线空间下的法线纹理同等对待了。</p>
+<p>当勾选了<strong>Create from Grayscale</strong>后，还多出了两个选项——<strong>Bumpiness</strong>和 <strong>Filtering</strong>。其中<strong>Bumpiness</strong>用于控制<strong>凹凸程度</strong>，而<strong>Filtering</strong> 决定我们使用哪种方式来计算凹凸程度，它有两种选项:一种是<strong>Smooth</strong>，这使得生成后的法线纹理会比较<strong>平滑</strong>;另一种是<strong>Sharp</strong>，它会使用<strong>Sobel滤波</strong>(一种边缘检测时使用的滤波器）来生成法线。<strong>Sobel滤波</strong>的实现非常简单，我们只需要在一个3×3的滤波器中计算x和y方向上的导数，然后从中得到法线即可。具体方法是:对于高度图中的每个像素，我们考虑它与水平方向和竖直方向上的像素差，把它们的差当成该点对应的法线在x和y方向上的位移，然后使用之前提到的映射函数存储成到法线纹理的<strong>r和g分量</strong>即可。</p>
+<h3 id="6-3-渐变映射"><a href="#6-3-渐变映射" class="headerlink" title="6.3 - 渐变映射"></a>6.3 - 渐变映射</h3><p>实现如下：</p>
+<ol>
+<li><p>在Properties语义块中声明以下属性：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line">    _Color (&quot;Color&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">    _RampTex (&quot;Ramp Tex&quot;, 2D) = &quot;white&quot; &#123;&#125;</span><br><span class="line">    _Specular (&quot;Specular&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">    _Gloss (&quot;&quot;, Range(8.0, 256)) = 20</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>配置光照模式、声明变量、引入内置文件</p>
+</li>
+<li><p>修改顶点着色器的输入结构体</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line">    float4 vertex : POSITION;</span><br><span class="line">    float4 uv : TEXCOORD0;</span><br><span class="line">    float3 normal : NORMAL;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line">    float2 uv : TEXCOORD2;</span><br><span class="line">    float4 vertex : SV_POSITION;</span><br><span class="line"></span><br><span class="line">    float3 worldNormal : TEXCOORD0;</span><br><span class="line">    float3 worldPos : TEXCOORD1;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>修改顶点着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line">    v2f o;</span><br><span class="line">    o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"></span><br><span class="line">    o.worldNormal = UnityObjectToWorldNormal(v.normal);</span><br><span class="line">    o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;</span><br><span class="line">    o.uv = TRANSFORM_TEX(v.uv, _RampTex);</span><br><span class="line">    return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>修改片元着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line">    fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));</span><br><span class="line"></span><br><span class="line">    fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br><span class="line"></span><br><span class="line">    fixed halfLambert = dot(worldNormal,worldLightDir) * 0.5 + 0.5;</span><br><span class="line">    </span><br><span class="line">    fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;</span><br><span class="line"></span><br><span class="line">    fixed3 diffuse =  _LightColor0.rgb * diffuseColor;</span><br><span class="line"></span><br><span class="line">    fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));</span><br><span class="line">    fixed3 halfDir = normalize(worldLightDir + viewDir);</span><br><span class="line"></span><br><span class="line">    fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(0, dot(worldNormal, halfDir))), _Gloss);</span><br><span class="line"></span><br><span class="line">    return fixed4(ambient + diffuse + specular, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在上面的代码中，我们使用半兰伯特模型，通过对法线方向和光照方向的点积做一次0.5倍的缩放以及一个0.5大小的偏移来计算半兰伯特部分 <strong>halfLambert</strong>。这样，我们得到的halfLambert的范围被映射到了**[0，1]**之间。</li>
+<li>之后，我们使用 <strong>halfLambert</strong> 来构建一个<strong>纹理坐标</strong>,并用这个纹理坐标对渐变纹理 <strong>RampTex</strong>进行采样。由于 <strong>RampTex</strong>实际就是一个<strong>一维纹理</strong>(它在纵轴方向上颜色不变)，因此纹理坐标的u和v方向我们都使用了<strong>halfLambert</strong>。</li>
+<li>然后，把从渐变纹理采样得到的颜色和材质颜色 <strong>Color</strong>相乘，得到最终的漫反射颜色。剩下的代码就是计算高光反射和环境光，并把它们的结果进行相加。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>最后添加合适的回调函数</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Specular&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<blockquote>
+<p>需要注意的是,我们需要把渐变纹理的 <strong>Wrap Mode</strong>设为<strong>Clamp</strong>模式,以防止对纹理进行采样时由于浮点数精度而造成的问题。</p>
+<p>使用Repeat模式中在高光区域有一些黑点。这是由浮点精度造成的,当我们使用<strong>fixed2(halfLambert,halfLambert)<strong>对渐变纹理进行采样时,虽然理论上halfLambert 的值在[0,1]之间,<br>但可能会有1.000 01这样的值出现。如果我们使用的是</strong>Repeat模式</strong>,此时就会舍弃整数部分,只保留小数部分，得到的值就是0.00001，对应了渐变图中最左边的值，即黑色。因此，就会出现图中这样在高光区域反而有黑点的情况。我们只需要把渐变纹理的<strong>Wrap Mode</strong>设为<strong>Clamp模式</strong>就可以解决这种问题。</p>
+</blockquote>
+<h3 id="6-4-遮罩映射"><a href="#6-4-遮罩映射" class="headerlink" title="6.4 - 遮罩映射"></a>6.4 - 遮罩映射</h3><p><strong>遮罩纹理（mask texture）</strong>允许我们可以保护某些区域,使它们免于某些修改。</p>
+<p>例如，我们希望模型表面某些区域的反光强烈一些，而某些区域弱一些。为了得到更加细腻的效果，我们就可以使用一张遮罩纹理来控制光照。</p>
+<p>另一种常见的应用是在制作地形材质时需要混合多张图片，例如表现草地的纹理、表现石子的纹理、表现裸露土地的纹理等，使用遮罩纹理可以控制如何混合这些纹理。</p>
+<p><strong>实现如下：</strong></p>
+<ol>
+<li><p>在Properties语义块中声明以下属性：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line">    _MainTex (&quot;Texture&quot;, 2D) = &quot;white&quot; &#123;&#125;</span><br><span class="line">    _Color (&quot;Color&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">    _Specular (&quot;Specular&quot;, Color) = (1.0, 1.0, 1.0, 1.0)</span><br><span class="line">    _Gloss (&quot;&quot;, Range(8.0, 256)) = 20</span><br><span class="line">    _BumpMap (&quot;BumpMap&quot;, 2D) = &quot;Bump&quot; &#123;&#125;</span><br><span class="line">    _BumpScale (&quot;BumpScale&quot;, Float) = 1.0</span><br><span class="line">    _SpecularScale (&quot;SpecularScale&quot;, Float) = 1.0</span><br><span class="line">    _SpecularMask (&quot;SpecularMask&quot;, 2D) = &quot;Bump&quot; &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>配置光照模式、声明变量、引入内置文件</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sampler2D _MainTex;</span><br><span class="line">float4 _MainTex_ST;</span><br><span class="line"></span><br><span class="line">fixed4 _Color;</span><br><span class="line">sampler2D _BumpMap;</span><br><span class="line">float _BumpScale;</span><br><span class="line">sampler2D _SpecularMask;</span><br><span class="line">float _SpecularScale;</span><br><span class="line">fixed4 _Specular;</span><br><span class="line">float _Gloss;</span><br></pre></td></tr></table></figure>
+
+<p>我们为主要纹理**_MainTex<strong>、法线纹理</strong>_BumpMap<strong>、遮罩纹理</strong>_SpecularMask<strong>定义了他们共同使用的纹理属性变量</strong>_MainTex_ST**。在属性中修改主要纹理的平铺系数和偏移系数会同时影响3个纹理的采样。这样做可以节省需要存储的纹理坐标数目。</p>
+</blockquote>
+</li>
+<li><p>修改顶点着色器的输入结构体</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">struct appdata</span><br><span class="line">&#123;</span><br><span class="line">    float4 vertex : POSITION;</span><br><span class="line">    float4 uv : TEXCOORD0;</span><br><span class="line">    float3 normal : NORMAL;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line">    float2 uv : TEXCOORD2;</span><br><span class="line">    float4 vertex : SV_POSITION;</span><br><span class="line"></span><br><span class="line">    float3 worldNormal : TEXCOORD0;</span><br><span class="line">    float3 worldPos : TEXCOORD1;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>修改顶点着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line">    v2f o;</span><br><span class="line">    o.vertex = UnityObjectToClipPos(v.vertex);</span><br><span class="line"></span><br><span class="line">    o.worldNormal = UnityObjectToWorldNormal(v.normal);</span><br><span class="line">    o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;</span><br><span class="line">    o.uv = TRANSFORM_TEX(v.uv, _RampTex);</span><br><span class="line">    return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>修改片元着色器</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    fixed3 lightDir = normalize(i.lightDir);</span><br><span class="line">    fixed3 viewDir = normalize(i.viewDir);</span><br><span class="line"></span><br><span class="line">    //解析法线贴图</span><br><span class="line">    fixed3 tangentNormal = UnpackNormal(tex2D(_BumpMap, i.uv));</span><br><span class="line">    tangentNormal.xy *= _BumpScale;</span><br><span class="line">    tangentNormal.z = sqrt(1.0 - saturate(dot(tangentNormal.xy, tangentNormal.xy)));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    fixed3 albedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;</span><br><span class="line"></span><br><span class="line">    fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;</span><br><span class="line"></span><br><span class="line">    fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(tangentNormal, lightDir));</span><br><span class="line"></span><br><span class="line">    fixed3 halfDir = normalize(lightDir + viewDir);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	fixed specularMask = tex2D(_SpecularMask, i.uv).r * _SpecularScale;</span><br><span class="line">    fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0, dot(tangentNormal, halfDir)), _Gloss) * specularMask;</span><br><span class="line"></span><br><span class="line">	return fixed4(ambient + diffuse + specular, 1.0);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>环境光照和漫反射光照和之前使用过的代码完全一样。在计算高光反射时，我们首先对遮罩纹理**_SpecularMask<strong>进行采样。由于本书使用的遮罩纹理中每个纹素的rgb分量其实都是一样的，表明了该点对应的高光反射强度，在这里我们选择使用r分量来计算掩码值。然后，我们用得到的掩码值和</strong>_SpecularScale**相乘，一起来控制高光反射的强度。</li>
+<li>需要说明的是，我们使用的这张遮罩纹理其实有很多空间被浪费了——它的rgb分量存储的都是同一个值。在实际的游戏制作中，我们往往会充分利用遮罩纹理中的每一个颜色通道来存储不同的表面属性。</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>在真实的游戏制作过程中，遮罩纹理已经不止限于保护某些区域使它们免于某些修改，而是可以存储任何我们希望逐像素控制的表面属性。通常，我们会充分利用一张纹理的RGBA四个通道，用于存储不同的属性。例如，我们可以把高光反射的强度存储在R通道，把边缘光照的强度存储在G通道，把高光反射的指数部分存储在B通道，最后把自发光强度存储在A通道。<br>在游戏《DOTA2》的开发中，开发人员为每个模型使用了4张纹理:一张用于定义模型颜色，一张用于定义表面法线,另外两张则都是遮罩纹理。这样,两张遮罩纹理提供了共8种额外的表面属性，这使得游戏中的人物材质自由度很强，可以支持很多高级的模型属性。</p>
+<h2 id="7-透明效果"><a href="#7-透明效果" class="headerlink" title="7 - 透明效果"></a>7 - 透明效果</h2><p>在 Unity中,我们通常使用两种方法来实现透明效果:</p>
+<ul>
+<li><p>第一种是使用<strong>透明度测试(Alpha Test)</strong>,这种方法其实无法得到真正的半透明效果;</p>
+<blockquote>
+<p>透明度测试:它采用一种“霸道极端”的机制，只要一个片元的透明度不满足条件(通常<br>是小于某个阈值),那么它对应的片元就会被舍弃。</p>
+<p>它产生的效果也很极端，要么完全透明，即看不到，要么完全不透明，就像不透明物体那样。</p>
+</blockquote>
+</li>
+<li><p>另一种是<strong>透明度混合（Alpha Blending)</strong></p>
+<blockquote>
+<p>透明度混合:这种方法可以得到真正的半透明效果。它会使用当前片元的透明度作为混合因子，与已经存储在颜色缓冲中的颜色值进行混合,得到新的颜色。但是,透明度混合需要关闭深度写入，这使得我们要非常小心物体的渲染顺序。</p>
+<p>需要注意的是,透明度混合只关闭了深度写入,但没有关闭深度测试。这意味着，当使用透明度混合渲染一个片元时，还是会比较它的深度值与当前深度缓冲中的深度值，如果它的深度值距离摄像机更远，那么就不会再进行混合操作。这一点决定了，当一个不透明物体出现在一个透明物体的前面，而我们先渲染了不透明物体，它仍然可以正常地遮挡住透明物体。也就是说，对于透明度混合来说，深度缓冲是只读的。</p>
+</blockquote>
+</li>
+</ul>
+<p>对于透明度混合技术，需要关闭<strong>深度写入</strong>，此时我们就需要小心处理透明物体的渲染顺序。</p>
+<p>那么，我们为什么要关闭<strong>深度写入</strong>呢?如果不关闭<strong>深度写入</strong>，一个半透明表面背后的表面本来是可以透过它被我们看到的，但由于深度测试时判断结果是该半透明表面距离摄像机更近，导致后面的表面将会被剔除，我们也就<strong>无法透过半透明表面看到后面的物体了</strong>。但是，我们由此就破坏了深度缓冲的工作机制，关闭深度写入导致渲染顺序将变得非常重要。</p>
+<h3 id="7-1-Unity-Shader的渲染顺序"><a href="#7-1-Unity-Shader的渲染顺序" class="headerlink" title="7.1 - Unity Shader的渲染顺序"></a>7.1 - Unity Shader的渲染顺序</h3><p>Unity为了解决渲染顺序提供了渲染队列，<strong>SubShader</strong>的<strong>Queue</strong>标签来决定我们的模型归于哪个渲染队列，<strong>索引号越小表示越早被渲染</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>队列索引号</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Background</td>
+<td>1000</td>
+<td>这个渲染队列会在任何其他队列之前被渲染，我们通常使用该队列来渲染那些需要绘制在背景上的物体</td>
+</tr>
+<tr>
+<td>Geometry</td>
+<td>2000</td>
+<td>默认的渲染队列，大多数物体都使用这个队列。不透明物体使用这个队列</td>
+</tr>
+<tr>
+<td>AlphaTest</td>
+<td>2450</td>
+<td>需要透明度测试的物体使用这个队列。在 Unity 5中它从 Geometry 队列中被单独分出来，这是因为在所有不透明物体渲染之后再渲染它们会更加高效</td>
+</tr>
+<tr>
+<td>Transparent</td>
+<td>3000</td>
+<td>这个队列中的物体会在所有 Geometry和 AlphaTest物体渲染后，再按从后往前的顺序进行渲染。任何使用了透明度混合（例如关闭了深度写入的 Shader）的物体都应该使用该队列</td>
+</tr>
+<tr>
+<td>Overlay</td>
+<td>4000</td>
+<td>该队列用于实现一些叠加效果。任何需要在最后渲染的物体都应该使用该队列</td>
+</tr>
+</tbody></table>
+<p>因此，如果想通过<strong>透明度测试</strong>实现透明效果，代码中应包含以下：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SubShader</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; &quot;Queue&quot;=&quot;AlphaTest&quot; &#125;</span><br><span class="line">    Pass &#123; </span><br><span class="line">    	...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>如果想通过<strong>透明度混合</strong>测试实现透明效果，代码中应包含以下：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SubShader</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; &quot;Queue&quot;=&quot;Transparent&quot; &#125;</span><br><span class="line">    Pass &#123; </span><br><span class="line">    	Zwrite off</span><br><span class="line">    	...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中，<strong>ZWrite Off</strong>用于关闭深度写入，在这里我们选择把它写在Pass中。我们也可以把它写在 SubShader 中，这意味着该SubShader下的所有Pass都会关闭深度写入。</p>
+</blockquote>
+<h3 id="7-3-透明度测试"><a href="#7-3-透明度测试" class="headerlink" title="7.3 - 透明度测试"></a>7.3 - 透明度测试</h3><blockquote>
+<p>透明度测试:只要一个片元的透明度不满足条件(通常是小于某个阈值)，那么它对应的片元就会被舍弃。被舍弃的片元将不会再进行任何处理，也不会对颜色缓冲产生任何影响;否则，就会按照普通的不透明物体的处理方式来处理它。</p>
+</blockquote>
+<p>通常，我们会在片元着色器中使用<strong>clip</strong>函数来进行透明度测试。clip是CG 中的一个函数，如果给定参数的任何一个分量是负数，就会舍弃当前像素的输出颜色。</p>
+<p>Shader：<strong>Chapter8-AlphaTest</strong></p>
+<p>实现如下：</p>
+<ol>
+<li><p>定义属性，声明一个范围在[0，1]的属性<code>_Cutoff</code>用来控制是否透明</p>
+</li>
+<li><p>定义Tag</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SubShader</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; </span><br><span class="line">        &quot;Queue&quot;=&quot;AlphaTest&quot;</span><br><span class="line">        &quot;IgnoreProjector&quot;=&quot;True&quot;</span><br><span class="line">        &quot;RenderType&quot;=&quot;TransparentCutout&quot; </span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>透明度测试使用的渲染队列是名为<code>AlphaTest</code>的队列，因此我们需要把<code>Queue</code>标签设置为<code>AlphaTest</code>。</li>
+<li>而 RenderType标签可以让Unity把这个Shader归入到提前定义的组(这里就是<code>TransparentCutout</code>组)中,以指明该Shader是一个使用了透明度测试的 Shader。RenderType标签通常被用于着色器替换功能。</li>
+<li>把<code>IgnoreProjector</code>设置为<code>True</code>，这意味着这个 Shader 不会受到投影器(Projectors）的影响。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>包含内置文件、声明变量、定义顶点着色器以及它的输入和输出结构体</p>
+</li>
+<li><p>修改片元着色器：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line">    fixed3 WorldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));</span><br><span class="line"></span><br><span class="line">    fixed4 texColor = tex2D(_MainTex, i.uv);</span><br><span class="line"></span><br><span class="line">    clip(texColor.a - _Cutoff);</span><br><span class="line"></span><br><span class="line">    fixed3 albedo = texColor.rgb * _Color.rgb;</span><br><span class="line">    fixed3 ambient =  UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;</span><br><span class="line"></span><br><span class="line">    fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, WorldLightDir));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    return fixed4(ambient + diffuse, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用clip函数判断参数<code>texColor.a</code>是否小于材质参数<code>_Cutoff</code>,是就舍弃该片元的输出。</p>
+</blockquote>
+</li>
+<li><p>选择合适的FallBack</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Transparent/Cutout/VertexLit&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<h3 id="7-4-透明度混合"><a href="#7-4-透明度混合" class="headerlink" title="7.4 - 透明度混合"></a>7.4 - 透明度混合</h3><p>为了进行混合，我们需要使用Unity提供的混合命令：Blend，以下是ShaderLab的Blend命令。</p>
+<table>
+<thead>
+<tr>
+<th align="center">语义</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Blend Off</td>
+<td align="center">关闭混合</td>
+</tr>
+<tr>
+<td align="center">Blend SrcFactor DstFactor</td>
+<td align="center">开启混合，并设置混合因子。源颜色(该片元产生的颜色）会乘以SrcFactor，而目标颜色(已经存在于颜色缓存的颜色）会乘以 DstFactor，然后把两者相加后再存入颜色缓冲</td>
+</tr>
+<tr>
+<td align="center">Blend SrcFactor DstFactor, SrcFactorA DstFactorA</td>
+<td align="center">和上面几乎一样，只是使用不同的因子来混合透明通道</td>
+</tr>
+<tr>
+<td align="center">BlendOp BlendOperation</td>
+<td align="center">并非是把源颜色和目标颜色简单相加后混合，而是使用BlendOperation对它们进行其他操作</td>
+</tr>
+</tbody></table>
+<p>Shader：<strong>Chapter8-AlphaBlend</strong></p>
+<p>实现如下：</p>
+<ol>
+<li><p>定义属性，声明一个范围在[0，1]的属性<code>_AlphaScale</code>用来控制透明度</p>
+</li>
+<li><p>定义Tag</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SubShader</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; </span><br><span class="line">        &quot;Queue&quot;=&quot;Transparent&quot;</span><br><span class="line">        &quot;IgnoreProjector&quot;=&quot;True&quot;</span><br><span class="line">        &quot;RenderType&quot;=&quot;Transparent&quot;  </span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>透明度混合使用的渲染队列是名为<code>Transparent</code>的队列，因此我们需要把<code>Queue</code>标签设置为<code>Transparent</code>。</li>
+<li>而 RenderType标签可以让Unity把这个Shader归入到提前定义的组(这里就是<code>Transparent</code>组)中,以指明该Shader是一个使用了透明度混合的 Shader。RenderType标签通常被用于着色器替换功能。</li>
+<li>把<code>IgnoreProjector</code>设置为<code>True</code>，这意味着这个 Shader 不会受到投影器(Projectors）的影响。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>与透明度测试不同的是，我们还需要在Pass中为透明的混合进行合适的混合状态设置</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</span><br><span class="line"></span><br><span class="line">    Zwrite Off</span><br><span class="line">    Blend SrcAlpha OneMinusSrcAlpha</span><br></pre></td></tr></table></figure>
+
+<p>Pass的标签仍和之前一样，即把<code>LightMode</code>设为<code>ForwardBase</code>，这是为了让 Unity 能够按前向渲染路径的方式为我们正确提供各个光照变量。</p>
+<p>除此之外，我们还把该Pass 的深度写入（ZWrite)设置为关闭状态（Off)</p>
+<p>然后，我们开启并设置了该Pass 的混合模式。我们将源颜色（该片元着色器产生的颜色）的混合因子设为<code>SrcAlpha</code>，把目标颜色(已经存在于颜色缓冲中的颜色）的混合因子设为<code>OneMinusSrcAlpha</code>,以得到合适的半透明效果。</p>
+</blockquote>
+</li>
+<li><p>包含内置文件、声明变量、定义顶点着色器以及它的输入和输出结构体</p>
+</li>
+<li><p>修改片元着色器：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    fixed3 worldNormal = normalize(i.worldNormal);</span><br><span class="line">    fixed3 WorldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));</span><br><span class="line"></span><br><span class="line">    fixed4 texColor = tex2D(_MainTex, i.uv);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    fixed3 albedo = texColor.rgb * _Color.rgb;</span><br><span class="line">    fixed3 ambient =  UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;</span><br><span class="line"></span><br><span class="line">    fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, WorldLightDir));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    return fixed4(ambient + diffuse, texColor.a * _AlphaScale);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>唯一的更改的设置了该片元着色器返回值中的透明通道</p>
+</blockquote>
+</li>
+<li><p>选择合适的FallBack</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fallback &quot;Transparent/vertexLit&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<blockquote>
+<p>由于网格有复杂结构，这个透明效果仍不够好，仍然需要使用深入写入来优化</p>
+</blockquote>
+<h3 id="7-5-开启深度写入的半透明效果"><a href="#7-5-开启深度写入的半透明效果" class="headerlink" title="7.5 - 开启深度写入的半透明效果"></a>7.5 - 开启深度写入的半透明效果</h3><p>Shader：<strong>Chapter8-AlphaBlendZWrite</strong></p>
+<p>实现如下：</p>
+<p>使用<strong>Chapter8-AlphaBlend</strong>中的代码，在此基础上在<strong>原来的Pass前面</strong>添加一个新的Pass即可</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    Zwrite On</span><br><span class="line">    ColorMask 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这个新添加的Pass的目的仅仅是为了把模型的深度信息写入深度缓冲中,从而剔除模型中被自身遮挡的片元。因此，Pass的第一行开启了深度写入。</li>
+<li>在第二行，我们使用了一个新的渲染命<code>ColorMask</code>。在ShaderLab 中，<code>ColorMask</code> 用于设置颜色通道的写掩码(write mask)。当<code>ColorMask</code>设为0时，意味着该Pass 不写入任何颜色通道，即不会输出任何颜色。这正是我们需要的——该Pass只需写入深度缓存即可。</li>
+</ul>
+</blockquote>
+<h3 id="7-6-ShaderLab的混合指令"><a href="#7-6-ShaderLab的混合指令" class="headerlink" title="7.6 - ShaderLab的混合指令"></a>7.6 - ShaderLab的混合指令</h3><h4 id="7-6-1-混合等式和参数"><a href="#7-6-1-混合等式和参数" class="headerlink" title="7.6.1 - 混合等式和参数"></a>7.6.1 - 混合等式和参数</h4><blockquote>
+<p>混合是一个逐片元的操作,而且它不是可编程的，但却是高度可配置的。也就是说，我们可以设置混合时使用的运算操作、混合因子等来影响混合。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Blend SrcFactor DstFactor</td>
+<td>开启混合，并设置混合因子。源颜色（该片元产生的颜色）会乘以SrcFactor，而目标颜色(已经存在于颜色缓存的颜色）会乘以DstFactor，然后把两者相加后再存入颜色缓冲中</td>
+</tr>
+<tr>
+<td>Blend SrcFactor DstFactor, SrcFactor A DstFactorA</td>
+<td>和上面几乎一样，只是使用不同的因子来混合透明通道</td>
+</tr>
+</tbody></table>
+<h4 id="7-6-2-常见的混合类型"><a href="#7-6-2-常见的混合类型" class="headerlink" title="7.6.2 - 常见的混合类型"></a>7.6.2 - 常见的混合类型</h4><p>通过混合操作和混合因子命令的组合，我们可以得到一些类似 Photoshop混合模式中的混合效果:</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// Normal 正常，即透明度混合</span><br><span class="line">Blend SrcAlpha OneMinusSrcAlpha</span><br><span class="line"></span><br><span class="line">// Soft Additive 柔和相加</span><br><span class="line">Blend OneMinusDstColor One</span><br><span class="line"></span><br><span class="line">// Multiply 正片叠底</span><br><span class="line">Blend DstColor Zero</span><br><span class="line"></span><br><span class="line">// 2x Multiply 两倍相乘</span><br><span class="line">Blend DstColor SrcColor</span><br><span class="line"></span><br><span class="line">// Darken 变暗</span><br><span class="line">BlendOp Min</span><br><span class="line">Blend One One	// When using Min operation, these factors are ignored</span><br><span class="line"></span><br><span class="line">//  Lighten 变亮</span><br><span class="line">BlendOp Max</span><br><span class="line">Blend One One // When using Max operation, these factors are ignored</span><br><span class="line"></span><br><span class="line">// Screen 滤色</span><br><span class="line">Blend OneMinusDstColor One</span><br><span class="line">//等同于</span><br><span class="line">Blend One OneMinusSrcColor</span><br><span class="line"></span><br><span class="line">// Linear Dodge 线性减淡</span><br><span class="line">Blend One One</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="7-7-双面渲染的透明效果"><a href="#7-7-双面渲染的透明效果" class="headerlink" title="7.7 - 双面渲染的透明效果"></a>7.7 - 双面渲染的透明效果</h3><h4 id="7-7-1-透明度测试的双面渲染"><a href="#7-7-1-透明度测试的双面渲染" class="headerlink" title="7.7.1 - 透明度测试的双面渲染"></a>7.7.1 - 透明度测试的双面渲染</h4><p>这节的代码和透明度测试的代码几乎一样，只是在Pass语义块中加了一行：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</span><br><span class="line"></span><br><span class="line">    Cull off</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h4 id="7-7-2-透明度混合的双面渲染"><a href="#7-7-2-透明度混合的双面渲染" class="headerlink" title="7.7.2 - 透明度混合的双面渲染"></a>7.7.2 - 透明度混合的双面渲染</h4><blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">SubShader</span><br><span class="line">&#123;</span><br><span class="line">    Tags &#123; </span><br><span class="line">        &quot;Queue&quot;=&quot;Transparent&quot;</span><br><span class="line">        &quot;IgnoreProjector&quot;=&quot;True&quot;</span><br><span class="line">        &quot;RenderType&quot;=&quot;Transparent&quot;  </span><br><span class="line">        &#125;</span><br><span class="line">    Pass</span><br><span class="line">    &#123; </span><br><span class="line">        Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</span><br><span class="line">        Cull Front</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Pass</span><br><span class="line">    &#123;</span><br><span class="line">        Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125; </span><br><span class="line">        Cull Back</span><br><span class="line">        ...</span><br></pre></td></tr></table></figure>
+
+<p>为此，我们选择把双面渲染的工作分成两个Pass-第一Pass只渲染背面，第二个Pass只渲染正面，由于Unity会顺序执行SubShader中的各个Pass,因此我们可以保证背面总是在正面被渲染之前渲染，从而可以保证正确的深度渲染关系。</p>
+</blockquote>
+<h2 id="8-复杂光照"><a href="#8-复杂光照" class="headerlink" title="8 - 复杂光照"></a>8 - 复杂光照</h2><h3 id="8-1-Unity的渲染路径"><a href="#8-1-Unity的渲染路径" class="headerlink" title="8.1 - Unity的渲染路径"></a>8.1 - Unity的渲染路径</h3><p>在Unity中，<strong>渲染路径（Render Path）</strong>决定了光照是如何应用到Unity Shader中的。如果要和光源打交道，那么我们需要为每个Pass指定它使用的渲染路径。</p>
+<p><strong>LightMode标签支持的渲染路径选项：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">标签名</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Always</td>
+<td align="center">不管使用哪种渲染路径，该Pass总是会被渲染，但不会计算任何光照</td>
+</tr>
+<tr>
+<td align="center">ForwardBase</td>
+<td align="center">用于<strong>前向渲染</strong>。该Pass 会计算环境光、最重要的平行光、逐顶点/SH光源和 Lightmaps</td>
+</tr>
+<tr>
+<td align="center">ForwardAdd</td>
+<td align="center">用于<strong>前向渲染</strong>。该Pass会计算额外的逐像素光源，每个Pass对应一个光源</td>
+</tr>
+<tr>
+<td align="center">Deferred</td>
+<td align="center">用于<strong>延迟渲染</strong>。该Pass会渲染G缓冲（G-buffer)</td>
+</tr>
+<tr>
+<td align="center">ShadowCaster</td>
+<td align="center">把物体的深度信息渲染到阴影映射纹理（shadowmap）或一张深度纹理中</td>
+</tr>
+</tbody></table>
+<h4 id="8-1-1-向前渲染路径"><a href="#8-1-1-向前渲染路径" class="headerlink" title="8.1.1 - 向前渲染路径"></a>8.1.1 - 向前渲染路径</h4><p><strong>向前渲染路径的原理：</strong></p>
+<p>每进行一次完整的向前渲染，我们需要渲染该对象的图元，并计算两个缓冲区的信息，一个是<strong>颜色缓冲区</strong>，一个是<strong>深度缓冲区</strong>。我们利用<strong>深度缓冲</strong>来决定一个片元是否可见，如果可见就更新颜色缓冲区中的颜色值。</p>
+<blockquote>
+<p>对于每个逐像素光源，我们都需要进行上面一次完整的渲染流程。如果一个物体在多个逐像素光源的影响区域内，那么该物体就需要执行多个 Pass，每个 Pass计算一个逐像素光源的光照结果，然后在帧缓冲中把这些光照结果混合起来得到最终的颜色值。假设，场景中有N个物体，每个物体受M个光源的影响，那么要渲染整个场景一共需要N*M个 Pass。可以看出，如果有大量逐像素光照，那么需要执行的Pass数目也会很大。因此，渲染引擎通常会限制每个物体的逐像素光照的数目。</p>
+</blockquote>
+<p><strong>Unity中的向前渲染：</strong></p>
+<p>一共Pass不仅仅可以用来计算逐像素光照，它也可以用来计算逐顶点等其他光照。</p>
+<p>在Unity中，向前渲染路径有3种处理光照的方式，<strong>逐顶点处理</strong>，<strong>逐像素处理</strong>，<strong>球谐函数处理（Spherical Harmonics，SH）</strong>。</p>
+<p>光源模式指的是该光源是否是<strong>重要的（Important）</strong>，如果一个光源被设置成重要的，那么它就会被逐像素处理。</p>
+<p>Unity会根据场景中各个光源的设置以及这些光源对物体的影响程度（例如距离物体的远近、光源强度等），对这些光源进行一个重要度的排序。其中,一定数目的光源会按逐像素的方式处理，然后最多有4个光源按逐顶点的方式处理,剩下的光源可以按 SH方式处理。Unity 使用的判断规则如下。</p>
+<ul>
+<li>场景中最亮的平行光总是按逐像素处理的。</li>
+<li>渲染模式被设置成 Not Important的光源,会按逐顶点或者SH处理。</li>
+<li>渲染模式被设置成Important的光源,会按逐像素处理。</li>
+<li>如果根据以上规则得到的逐像素光源数量小于<strong>Quality Setting</strong> 中的逐像素光源数量(PixelLight Count)，会有更多的光源以逐像素的方式进行渲染。</li>
+</ul>
+<p>Unity的光照在Pass中进行计算，向前渲染有两种Pass：<strong>Base Pass</strong>和<strong>Additional Pass</strong>。</p>
+<p><img src="/image/UnityShaderLearning/image-20230706104114037.png" alt="image-20230706104114037"></p>
+<blockquote>
+<p>对于前向渲染来说，一个Unity Shader通常会定义一个 Base Pass(Base Pass也可以定义多次，例如需要双面渲染等情况)以及Additional Pass。一个 Base Pass仅会执行一次(定义了多个 Base Pass的情况除外),<br>而一个Additional Pass会根据影响该物体的其他逐像素光源的数目被多次调用，即每个逐像素光源会执行一次Additional Pass。</p>
+</blockquote>
+<p><strong>向前渲染路径中可以使用的内置光照变量：</strong></p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>_LightColor0</td>
+<td>float4</td>
+<td>该Pass处理的逐像素光源的颜色</td>
+</tr>
+<tr>
+<td>_WorldSpaceLightPos0</td>
+<td>float4</td>
+<td><code>_WorldSpaceLightPos0.xyz</code>是该 Pass处理的逐像素光源的位置。如果该光源是平行光，那么<code>_WorldSpaceLightPos0.w</code>是0,其他光源类型w值为1</td>
+</tr>
+<tr>
+<td>_LightMatrix0</td>
+<td>float4×4</td>
+<td>从世界空间到光源空间的变换矩阵。可以用于采样cookie和光强衰减（attenuation)纹理</td>
+</tr>
+<tr>
+<td>unity_4LightPosX0, unity_4LightPosY0,unity_4LightPosZ0</td>
+<td>float4</td>
+<td>仅用于 Base Pass。前4个非重要的点光源在世界空间中的位置</td>
+</tr>
+<tr>
+<td>unity_4LightAtten0</td>
+<td>float4</td>
+<td>仅用于Base Pass。存储了前4个非重要的点光源的衰减因子</td>
+</tr>
+<tr>
+<td>unity_LightColor</td>
+<td>half4[4]</td>
+<td>仅用于Base Pass。存储了前4个非重要的点光源的颜色</td>
+</tr>
+</tbody></table>
+<p><strong>向前渲染中可以使用的内置光照函数：</strong></p>
+<table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>float3 WorldSpaceLightDir(float4 v)</td>
+<td>仅可用于前向渲染中。输入一个模型空间中的顶点位置，返回世界空间中从该点到光源的光照方向。内部实现使用了Unity WorldSpaceLightDir函数。没有被归一化</td>
+</tr>
+<tr>
+<td>float3 UnityWorldSpaceLightDir(float4 v)</td>
+<td>仅可用于前向渲染中。输入一个世界空间中的顶点位置，返回世界空间中从该点到光源的光照方向。没有被归一化</td>
+</tr>
+<tr>
+<td>float3 ObjSpaceLightDir(float4 v)</td>
+<td>仅可用于前向渲染中。输入一个模型空间中的顶点位置，返回模型空间中从该点到光源的光照方向。没有被归一化</td>
+</tr>
+<tr>
+<td>float3 Shade4PointLights (…)</td>
+<td>仅可用于前向渲染中。计算四个点光源的光照，它的参数是已经打包进矢量的光照数据，通常就是表9.2中的内置变量，如 unity_4LightPosX0，unity_4LightPosY0,unity_ 4LightPosZ0、unity LightColor和 unity_4LightAtten0等。前向渲染通常会使用这个函数来计算逐顶点光照</td>
+</tr>
+</tbody></table>
+<h4 id="8-1-2-顶点渲染路径"><a href="#8-1-2-顶点渲染路径" class="headerlink" title="8.1.2 - 顶点渲染路径"></a>8.1.2 - 顶点渲染路径</h4><p>顶点照明渲染路径是对硬件配置要求最少、运算性能最高，但同时也是得到的效果最差的一种类型，它不支持那些逐像素才能得到的效果，例如<strong>阴影法线映射</strong>、<strong>高精度的高光反射</strong>等。实际上，它仅仅是前向渲染路径的一个<strong>子集</strong>，也就是说，所有可以在顶点照明渲染路径中实现的功能都可以在<strong>前向渲染路径</strong>中完成。就如它的名字一样，顶点照明渲染路径只是使用了逐顶点的方式来计算光照，并没有什么神奇的地方。实际上，我们在上面的前向渲染路径中也可以计算一些逐顶点的光源。但如果选择使用顶点照明渲染路径，那么Unity 会只填充那些逐顶点相关的光源变量,意味着我们不可以使用一些逐像素光照变量。</p>
+<p>顶点照明渲染路径通常在一个 Pass中就可以完成对物体的渲染。在这个Pass中，我们会计算我们关心的所有光源对该物体的照明，并且这个计算是按逐顶点处理的。这是Unity 中最快速的渲染路径，并且具有最广泛的硬件支持。</p>
+<h4 id="8-1-3-延迟渲染路径"><a href="#8-1-3-延迟渲染路径" class="headerlink" title="8.1.3 - 延迟渲染路径"></a>8.1.3 - 延迟渲染路径</h4><p>前向渲染的问题是:当场景中包含大量实时光源时，前向渲染的性能会急速下降。例如，如果我们在场景的某一块区域放置了多个光源，这些光源影响的区域互相重叠，那么为了得到最终的光照效果，我们就需要为该区域内的每个物体执行多个 Pass来计算不同光源对该物体的光照结果，然后在颜色缓存中把这些结果混合起来得到最终的光照。然而，每执行一个 Pass我们都需要重新渲染一遍物体,但很多计算实际上是重复的。</p>
+<p>延迟渲染主要包含了两个Pass 。<strong>在第一个Pass中</strong>，我们不进行任何光照计算,而是仅仅计算哪些片元是可见的,这主要是通过深度缓冲技术来实现，当发现一个片元是可见的,我们就把它的相关信息存储到G缓冲区中。然后，<strong>在第二个 Pass中</strong>，我们利用G缓冲区的各个片元信息，例如表面法线、视角方向、漫反射系数等，进行真正的光照计算。</p>
+<p>对于延迟渲染路径来说，它最适合在场景中光源数目很多、如果使用前向渲染会造成性能瓶颈的情况下使用。而且，延迟渲染路径中的每个光源都可以按逐像素的方式处理。但是，延迟渲染也有一些缺点。</p>
+<ul>
+<li>不支持真正的抗锯齿（anti-aliasing）功能。</li>
+<li>不能处理半透明物体。</li>
+<li>对显卡有一定要求。如果要使用延迟渲染的话，显卡必须支持 MRT (Multiple RenderTargets)、Shader Mode 3.0及以上、深度渲染纹理以及双面的模板缓冲。</li>
+</ul>
+<p>当使用延迟渲染时，Unity要求我们提供两个Pass。</p>
+<p>(1）第一个 Pass用于渲染G缓冲。在这个 Pass中，我们会把物体的漫反射颜色、高光反射颜色、平滑度、法线、自发光和深度等信息渲染到屏幕空间的G缓冲区中。对于每个物体来说，这个Pass仅会执行一次。</p>
+<p>(2）第二个Pass用于计算真正的光照模型。这个 Pass 会使用上一个Pass中渲染的数据来计算最终的光照颜色，再存储到帧缓冲中。</p>
+<h3 id="8-2-Unity的光源类型"><a href="#8-2-Unity的光源类型" class="headerlink" title="8.2 - Unity的光源类型"></a>8.2 - Unity的光源类型</h3><p>Unity一共支持四种光源类型：平行光、点光源、聚光灯和面光源（Area Light），面光源仅在烘焙时才可发挥作用。</p>
+<h4 id="8-2-1-在向前渲染中处理不同的光源类型"><a href="#8-2-1-在向前渲染中处理不同的光源类型" class="headerlink" title="8.2.1 - 在向前渲染中处理不同的光源类型"></a>8.2.1 - 在向前渲染中处理不同的光源类型</h4><p>Shader：<strong>Chapter9-ForwardRendering</strong></p>
+<ol>
+<li><p>使用Blinn-Phone光照模型，并为向前渲染定义了<strong>Bass Pass</strong> 和 <strong>Additional Pass</strong>来处理多个光源。</p>
+</li>
+<li><p>定义第一个Pass - Base Pass</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    // Base Shader</span><br><span class="line">    Tags &#123; &quot;LightMode&quot; = &quot;ForwardBase&quot; &#125;</span><br><span class="line">    </span><br><span class="line">    CGPROGRAM</span><br><span class="line"></span><br><span class="line">     // Apparently need to add this declaration </span><br><span class="line">    #pragma multi_compile_fwdbase  </span><br></pre></td></tr></table></figure>
+
+<p>除了设置渲染路径以外，还是用了#pragma编译指令。 <code>#pragma multi_compile_fwdbase</code>可以保证我们在Shader中使用的光照衰减等光照变量可以被正确赋值。</p>
+</blockquote>
+</li>
+<li><p>在Base Pass中计算环境光，我们希望环境光只计算一次，因此在之后的<strong>Additional Pass</strong>就不会在计算这个部分。与之类似的还有自发光。</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>然后，我们在<strong>Base Pass</strong> 中处理了场景中的最重要的平行光。我们可以使用**_WorldSpaceLightPos0<strong>来得到这个平行光的方向（位置对平行光来说没有意义),使用</strong>_LightColor0<strong>来得到它的颜色和强度(_LightColor0已经是颜色和强度相乘后的结果)，由于平行光可以认为是没有衰减的，因此这里我们直接令衰减值为</strong>1.0**。</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">fixed3 diffuse =  _LightColor0.rgb * _Diffuse.rgb * max(0, dot(worldNormal,worldLight));</span><br><span class="line"></span><br><span class="line">fixed3 specular = _LightColor0.rgb * _Specular.rgb * pow(max(0,dot(worldNormal, halfDir)),_Gloss);</span><br><span class="line"></span><br><span class="line">fixed atten = 1.0;</span><br><span class="line">fixed3 color = ambient + (diffuse + specular) * atten;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">return fixed4(color, 1.0);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果场景中包含了多个平行光，Unity 会选择最亮的平行光传递给Base Pass-进行逐像素处理，其他平行光会按照逐顶点或在Additional Pass中按逐像素的方式处理。</li>
+<li>如果场景中没有任何平行光，那么 Base Pass 会当成全黑的光源处理。每一个光源有5个属性:位置、方向、颜色、强度以及衰减。对于Base Pass来说，它处理的逐像素光源类型一定是平行光。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>接下来，需要对场景其他像素定义Additional Pass</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    // Additional Shader</span><br><span class="line">    Tags &#123; &quot;LightMode&quot; = &quot;ForwardAdd&quot; &#125;</span><br><span class="line"></span><br><span class="line">    Blend One One</span><br><span class="line"></span><br><span class="line">    CGPROGRAM</span><br><span class="line">   // Apparently need to add this declaration</span><br><span class="line">    #pragma multi_compile_fwdadd</span><br></pre></td></tr></table></figure>
+
+<p>除了设置渲染路径标签外，我们同样使用了<code>#pragma multi_compile_fwdadd</code>指令，如前面所<br>说，这个指令可以保证我们在<strong>Additional Pass</strong> 中访问到正确的光照变量。与<strong>Base Pass</strong>不同的是,我们还使用 <strong>Blend</strong> 命令开启和设置了混合模式。这是因为，我们希望 <strong>Additional Pass</strong>计算得到的光照结果可以在帧缓存中与之前的光照结果进行叠加。如果没有使用<strong>Blend</strong>命令的话，<strong>AdditionalPass</strong> 会直接覆盖掉之前的光照结果。在本例中，我们选择的混合系数是<code>Blend One One</code>，这不是必需的，我们可以设置成 Unity支持的任何混合系数。常见的还有<code>Blend SrcAlpha One</code></p>
+</blockquote>
+</li>
+<li><p>通常来说，<strong>Additional Pass</strong>中的光照处理和<strong>Base Pass</strong>中的处理方式是一样的，只需要去掉<strong>Base Pass</strong>中的<strong>环境光</strong>、<strong>自发光</strong>、<strong>逐顶点光照</strong>、<strong>SH光照的部分</strong>，并添加<strong>对不同光源的支持</strong>。</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#ifdef USING_DIRECTIONAL_LIGHT</span><br><span class="line">    fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz);</span><br><span class="line">#else</span><br><span class="line">    fixed3 worldLight = normalize(_WorldSpaceLightPos0.xyz - i.worldPos.xyz);</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，我们首先判断了当前处理的逐像素光源的类型，这是通过使用#ifdef指令判断是否定义了<code>USING_DIRECTIONAL_LIGHT</code>来得到的。如果当前前向渲染 Pass 处理的光源类型是平行光，那么Unity的底层渲染引擎就会定义USING DIRECTIONAL LIGHT。</p>
+<ul>
+<li>如果判断得知是平行光的话,光源方向可以直接由 <code>WorldSpaceLightPos0.xyz</code>得到;</li>
+<li>如果是点光源或聚光灯,那么 <code>WorldSpaceLightPos0.xyz</code>表示的是世界空间下的光源位置，而想要得到光源方向的话，我们就需要用这个位置减去世界空间下的顶点位置。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>最后，我们需要处理不同光源的衰减：</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#ifdef USING_DIRECTIONAL_LIGHT</span><br><span class="line">    fixed atten = 1.0;</span><br><span class="line">#else</span><br><span class="line">    #if defined(POINT)</span><br><span class="line">        float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz;</span><br><span class="line">        fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;</span><br><span class="line">    #elif  defined(SPOT)</span><br><span class="line">        float4 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1));</span><br><span class="line">        fixed atten = (lightCoord.z &gt; 0) * tex2D(_LightTexture0, lightCoord.xy / lightCoord.w + 0.5).w * tex2D(_LightTextureB0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;</span><br><span class="line">    #else</span><br><span class="line">        fixed atten = 1.0;</span><br><span class="line">    #endif</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>我们同样通过判断是否定义了<code>USING_DIRECTIONAL_LIGHT</code>来决定当前处理的光源类型。</p>
+<ul>
+<li>如果是平行光的话，衰减值为1.0。</li>
+<li>如果是其他光源类型,那么处理更复杂一些。Unity选择了使用一张纹理作为查找表（Lookup Table，LUT),以在片元着色器中得到光源的衰减。我们首先得到光源空间下的坐标，然后使用该坐标对衰减纹理进行采样得到衰减值。</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>当我们创建一个光源时，默认情况下它的 Render Mode(可以在 Light组件中设置)是Auto。这意味着，Unity 会在背后为我们判断哪些光源会按逐像素处理，而哪些按逐顶点或SH的方式处理。</p>
+<blockquote>
+<p>由于我们没有更改Edit Project Settings - Quality →Pixel Light Count中的数值,因此默认情况下一个物体可以接收除最亮的平行光外的4个逐像素光照。</p>
+</blockquote>
+<h3 id="8-3-Unity的光照衰减"><a href="#8-3-Unity的光照衰减" class="headerlink" title="8.3 - Unity的光照衰减"></a>8.3 - Unity的光照衰减</h3><blockquote>
+<p>Unity默认使用一张纹理：<code>_LightTexture0</code> 作为查找表来在片元着色器中计算逐像素光照的衰减</p>
+</blockquote>
+<p>为了对**_LightTexture0**纹理采样得到给定点到该光源的衰减值;首先我们要得到该点在光源空间中的位置</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float3 lightCoord = mul(unity_WorldToLight, float4(i.worldPos, 1)).xyz;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>然后，我们可以使用这个坐标的模的平方对衰减纹理进行采样，得到衰减值</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fixed atten = tex2D(_LightTexture0, dot(lightCoord, lightCoord).rr).UNITY_ATTEN_CHANNEL;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现，在上面的代码中，我们使用了光源空间中顶点距离的平方(通过dot函数来得到)来对纹理采样，之所以没有使用距离值来采样是因为这种方法可以避免开方操作。然后，我们使用宏<strong>UNITY_ATTEN_CHANNEL</strong> 来得到衰减纹理中衰减值所在的分量，以得到最终的衰减值。</p>
+</blockquote>
+<h3 id="8-4-Unity的阴影"><a href="#8-4-Unity的阴影" class="headerlink" title="8.4 - Unity的阴影"></a>8.4 - Unity的阴影</h3><h4 id="8-4-1-阴影是如何产生的"><a href="#8-4-1-阴影是如何产生的" class="headerlink" title="8.4.1 - 阴影是如何产生的"></a>8.4.1 - 阴影是如何产生的</h4><p>在实时渲染中，我们最常使用的是一种名为Shadow Map的技术，它的原理是：</p>
+<p>首先会把摄像机放在于光源重合的位置，那么场景中该光源的阴影区域就是那些摄像机看不到的地方。</p>
+<p>在向前渲染路径中，如果场景中最重要的平行光开启了阴影，Unity就会为该光源计算阴<strong>影映射纹理（Shadowmap）</strong>，它本质上是一张深度图，记录了从该光源位置出发，能够看到的场景中距离它最近的表面位置（深度信息）。</p>
+<p>由于我们只需要深度信息，因此Unity使用<strong>LightMode</strong>标签为<strong>ShadowCaster</strong>的Pass来更新<strong>阴影映射纹理</strong>。</p>
+<ul>
+<li><p>如果我们想要一个物体<strong>接收来自其他物体的阴影</strong>，就必须在Shader中对阴影映射纹理（包括屏幕空间的阴影图）进行采样，然后把采样结果和最后的光照结果相乘来产生阴影效果。</p>
+</li>
+<li><p>如果我们想要一个物体<strong>向其他物体投射阴影</strong>，就必须把该物体<strong>加入到光源的阴影映射纹理的计算中</strong>，从而让其他物体在对阴影映射纹理采样时可以得到该物体的相关信息。</p>
+<blockquote>
+<p>在Unity中，这个过程是通过为该物体执行<code>LightMode</code>为<code>ShadowCaster</code>的Pass来实现的，如果使用了屏幕空间的投影映射技术，Unity还会使用这个Pass产生一张摄像机的深度纹理。</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="8-4-2-不透明物体的阴影"><a href="#8-4-2-不透明物体的阴影" class="headerlink" title="8.4.2 - 不透明物体的阴影"></a>8.4.2 - 不透明物体的阴影</h4><p><strong>1.让物体投射阴影</strong></p>
+<blockquote>
+<p>在 Unity中,我们可以选择是否让一个物体投射或接收阴影。这是通过设置Mesh Renderer组件中的<code>Cast Shadows</code>和 <code>Receive Shadows</code>属性来实现的。</p>
+<p>在光源组件中，将<code>Strength</code>设置为0.3,阴影类型为软阴影</p>
+<p>在默认情况下，计算光源的阴影映射纹理会剔除物体的背面，但对于内置的平面来说他只有一个面，在本例中，由于它右侧的平面在光源空间下没有任何正面，因此不会添加到阴影映射纹理中。可以将<code>Cast Shadows</code>设置为<code>Two Sided</code>来允许对物体所有面都计算阴影信息。</p>
+</blockquote>
+<p>最简单的方法是适合合适的FallBack，Unity会为我们选择<strong>LightMode</strong>为<strong>ShadowCaster</strong>的Pass。</p>
+<blockquote>
+<p>可以在Untiy的内置着色器中找到他：<code>builtin_shaders-2023.1.2f1 -&gt; DefaultResourcesExtra -&gt; Normal-VertexLit.shader</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Pass &#123;</span><br><span class="line">    Name &quot;ShadowCaster&quot;</span><br><span class="line">    Tags &#123; &quot;LightMode&quot; = &quot;ShadowCaster&quot; &#125;</span><br><span class="line"></span><br><span class="line">CGPROGRAM</span><br><span class="line">#pragma vertex vert</span><br><span class="line">#pragma fragment frag</span><br><span class="line">#pragma target 2.0</span><br><span class="line">#pragma multi_compile_shadowcaster</span><br><span class="line">#pragma multi_compile_instancing // allow instanced shadow pass for most of the shaders</span><br><span class="line">#include &quot;UnityCG.cginc&quot;</span><br><span class="line"></span><br><span class="line">struct v2f &#123;</span><br><span class="line">V2F_SHADOW_CASTER;</span><br><span class="line">UNITY_VERTEX_OUTPUT_STEREO</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">v2f vert( appdata_base v )</span><br><span class="line">&#123;</span><br><span class="line">v2f o;</span><br><span class="line">UNITY_SETUP_INSTANCE_ID(v);</span><br><span class="line">UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);</span><br><span class="line">TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)</span><br><span class="line">return o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">float4 frag( v2f i ) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">SHADOW_CASTER_FRAGMENT(i)</span><br><span class="line">&#125;</span><br><span class="line">ENDCG</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它的实际作用是将深度信息写入渲染目标中，这个Pass是可以在多个Unity Shader中通用的，因此可以直接使用FallBack回调。</p>
+</blockquote>
+<p><strong>2.让物体接受阴影</strong></p>
+<ol>
+<li><p>为<strong>Base Pass</strong>包含一个新的内置文件，这个文件包含我们计算阴影所用的宏</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;AutoLight.cginc&quot;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+<li><p>为顶点着色器输出结构体<strong>v2f</strong>添加一个内置宏<strong>SHADOW_COORDS</strong></p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">struct v2f</span><br><span class="line">&#123;</span><br><span class="line">    float4 vertex : SV_POSITION;</span><br><span class="line">    float3 worldNormal : TEXCOORD0;</span><br><span class="line">    float3 worldPos : TEXCOORD1;</span><br><span class="line">    SHADOW_COORDS(2)</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这个宏的作用是声明一个用于阴影纹理采样的坐标</li>
+<li>它的参数需要的是下一个可用的插值寄存器的索引值，这里是2。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>在<strong>顶点着色器</strong>返回之前添加另一个内置宏<strong>TRANSFER_SHADOW</strong></p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">v2f vert (appdata v)</span><br><span class="line">&#123;</span><br><span class="line">    v2f o;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    // Pass shadow coordinates to pixel shader</span><br><span class="line">    TRANSFER_SHADOW(o);</span><br><span class="line"></span><br><span class="line">    return o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个宏用于计算在v2f中声明的阴影纹理坐标</p>
+</blockquote>
+</li>
+<li><p>接着，在<strong>片元着色器</strong>中计算阴影值，这里同样使用了一个内置宏<strong>SHADOW_ATTENUATION</strong></p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fixed shadow = SHADOW_ATTENUATION(i);</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，这些宏会使用上下文变量来进行相关计算，例如<strong>TRANSFER_SHADOW</strong>会使用<code>v.vertex</code>或<code>a.pos</code>来计算，因此为了能够让这些宏正确工作，我们需要保证自定义的变量名和这些宏中使用的变量名相匹配。</p>
+<p>我们需要保证:<code>a2f</code>结构体中的顶点坐标变量名必须是<code>vertex</code>，顶点着色器的输出结构体<code>v2f</code>必须命名为<code>v</code>，且<code> v2f</code>中的顶点位置变量必须命名为<code>pos</code>.</p>
+</blockquote>
+</li>
+<li><p>完成了上面的操作之后，我们只需要把阴影值<strong>shadow</strong>和<strong>漫反射</strong>以及<strong>高光反射颜色</strong>相乘即可。</p>
+</li>
+</ol>
+<h4 id="8-4-3-统一管理光照衰减和阴影"><a href="#8-4-3-统一管理光照衰减和阴影" class="headerlink" title="8.4.3 - 统一管理光照衰减和阴影"></a>8.4.3 - 统一管理光照衰减和阴影</h4><p><strong>光照衰减</strong>和<strong>阴影</strong>对物体最终的渲染结果的影响本质上是相同的，都是把光照衰减因子和阴影值及光照结果相乘得到最终的渲染结果。在Unity中，提供了一个方法来同时计算两个信息：<strong>UNITY_LIGHT_ATTENUATION</strong></p>
+<p>代码与Shadow类似，只有以下部分进行变更：</p>
+<ul>
+<li><p>在片元着色器中使用宏<strong>UNITY_LIGHT_ATTENUATION</strong>来计算光照衰减和阴影</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag(v2f i) : SV_Target &#123;</span><br><span class="line"></span><br><span class="line">    // UNITY_LIGHT_ATTENUATION not only compute attenuation, but also shadow infos</span><br><span class="line">    UNITY_LIGHT_ATTENUATION(atten, i, i.worldPos);</span><br><span class="line"></span><br><span class="line">    return fixed4((diffuse + specular) * atten, 1.0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<p>由于我们使用了<strong>UNITY_LIGHT_ATTENUATION</strong>，我们的<strong>Base Pass</strong>和<strong>Additional Pass</strong>的代码得以统一，不需要在<strong>Base Pass</strong>中单独处理阴影，也不需要在<strong>Additional Pass</strong>中判断光源的类型来处理光照衰减。</p>
+<h4 id="8-4-4-透明物体的阴影"><a href="#8-4-4-透明物体的阴影" class="headerlink" title="8.4.4 - 透明物体的阴影"></a>8.4.4 - 透明物体的阴影</h4><blockquote>
+<p>对于大多数不透明物体来说，把 Fallback 设为VertexLit 就可以得到正确的阴影。但对于透明物体来说，我们就需要小心处理它的阴影。透明物体的实现通常会使用透明度测试或透明度混合，我们需要小心设置这些物体的FallBack,</p>
+</blockquote>
+<p><strong>Alpha Test</strong></p>
+<p>Shader：<strong>Chapter9-AlphaTestWithShadow</strong></p>
+<ul>
+<li><p>沿用了之前的<strong>Chapter8-AlphaTest</strong>的代码，在此基础上添加AutoLight内置文件以及宏，详见8.4.2 - 不透明物体的阴影 - 让物体接受阴影</p>
+</li>
+<li><p>并且更改回调函数为</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FallBack &quot;Transparent/Cutout/VertexLit&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如果使用了VertexLit，由于这个Pass没有进行任何透明的测试的计算，会把整个物体的深度信息渲染到深度图和阴影映射纹理中，会产生错误的结果。</p>
+<p>由于一些面背对光源，没有进入阴影映射纹理的计算中，可以使<strong>Mesh Renderer</strong>中的<strong>Cast Shadows</strong>属性设置为<strong>Two Sided</strong>，强制计算所有面的深度信息。</p>
+</blockquote>
+</li>
+</ul>
+<p><strong>Alpha Blend</strong></p>
+<blockquote>
+<p>在Unity中，所有内置的半透明Shader是不会产生任何阴影效果的，我们可以使用一些dirty trick来强制为半透明物体生成阴影：比如将他们的FallBack设置为VertexLit，Diffuse这些不透明物体使用的Shader。</p>
+</blockquote>
+<h3 id="8-5-标准Unity-Shader"><a href="#8-5-标准Unity-Shader" class="headerlink" title="8.5 - 标准Unity Shader"></a>8.5 - 标准Unity Shader</h3><p>本书提供了两个这样标准的Unity Shader—<strong>BumpedDiffuse</strong>和 <strong>BumpedSpecular</strong>。这两个Unity Shader都包含了对法线纹理、多光源、光照衰减和阴影的相关处理，唯一不同的是，<strong>BumpedDifuse</strong>使用了<strong>Phong光照模型</strong>，而<strong>BumpedSpecular</strong>使用了<strong>Blinn-Phong光照模型</strong>。</p>
 
         </div>
 
