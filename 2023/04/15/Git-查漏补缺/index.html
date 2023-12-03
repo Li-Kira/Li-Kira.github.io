@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>Git 查漏补缺 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Git 查漏补缺</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 15, 2023&nbsp;&nbsp;23:27:29</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Git/">Git</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="Git-LFS"><a href="#Git-LFS" class="headerlink" title="Git LFS"></a>Git LFS</h2><p>在Github提交大文件时会遇到文件大小限制，你可以使用<strong>Git LFS</strong>解决这个问题。</p>
+<p>Git LFS官网: <a target="_blank" rel="noopener" href="https://git-lfs.com/">https://git-lfs.com/</a></p>
+<blockquote>
+<p>或者你也可以使用<a target="_blank" rel="noopener" href="https://www.sourcetreeapp.com/"><strong>Sourcetree</strong></a>,这是一个Git客户端，集成了Git LFS。</p>
+<p>官方教程参考：<a target="_blank" rel="noopener" href="https://www.atlassian.com/git/tutorials/git-lfs">https://www.atlassian.com/git/tutorials/git-lfs</a></p>
+</blockquote>
+<h3 id="创建Git-LFS仓库"><a href="#创建Git-LFS仓库" class="headerlink" title="创建Git LFS仓库"></a>创建Git LFS仓库</h3><p>创建仓库后运行 <code>git lfs install</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs install</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这将在你的仓库中安装一个特殊的 pre-push Git 钩子，该钩子将在你执行 git push 的时候传输 Git LFS 文件到服务器上。</p>
+</blockquote>
+<h3 id="使用-Git-LFS-跟踪文件"><a href="#使用-Git-LFS-跟踪文件" class="headerlink" title="使用 Git LFS 跟踪文件"></a>使用 Git LFS 跟踪文件</h3><p>在向仓库添加新的大型文件之前，需要指定文件类型。</p>
+<p>比如我想往我的仓库内丢一个checkpoint，那么我可以指定以下文件：<code>.pth</code></p>
+<ul>
+<li><p>在任何目录中追踪所有<code>pth</code>文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;*.pth&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>pth</code>周围的引号” “很重要,不要忘了，省略将导致当前目录下为每个<code>pth</code>文件创建单独条目</p>
+</blockquote>
+</li>
+<li><p>在任何目录中跟踪名为 <code>Yuuka.pth</code> 的文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;Yuuka.pth&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>在<code> models</code>目录和所有子目录中跟踪所有文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;models/&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>仅在<code> models</code> 目录中跟踪所有文件，而不是子目录</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;models/*&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>在 <code>models/Yuuka</code> 目录中跟踪所有 <code>pth</code>文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;models/Yuuka/*.pth&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>在任何名为 models的目录中跟踪所有<code>pth</code>文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git lfs track <span class="string">&quot;**/models/*.pth&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="删除-Git-LFS-文件"><a href="#删除-Git-LFS-文件" class="headerlink" title="删除 Git LFS 文件"></a><strong>删除 Git LFS 文件</strong></h3><p>Git LFS 命令行客户端不支持删除服务器上的文件，因此如何删除他们取决于你的托管服务提供商。</p>
+<h3 id="在SourceTree中使用LFS"><a href="#在SourceTree中使用LFS" class="headerlink" title="在SourceTree中使用LFS"></a>在SourceTree中使用LFS</h3><ul>
+<li><strong>Tools</strong> -&gt; <strong>Options</strong> -&gt; <strong>Git</strong> and press <strong>Update Embedded</strong></li>
+<li>勾选<strong>Enable the Bitbucket LFS Media Adapter</strong></li>
+<li><strong>Repository</strong> -&gt; <strong>Git LFS</strong> -&gt; <strong>Initialize Repository</strong></li>
+<li><strong>Repository</strong> -&gt; <strong>Git LFS</strong> -&gt; <strong>Track / untrack files …</strong> 将需要包含的大文件的后缀添加到其中。</li>
+</ul>
+<h2 id="Git-指定分支"><a href="#Git-指定分支" class="headerlink" title="Git 指定分支"></a>Git 指定分支</h2><p>安装正常操作clone仓库后默认是把main分支的内容拉取下来，如果想要拉取其他分支，应在git clone指定中添加如下命令行选项：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> -b 分支名称 url</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>单杠和双杠的区别：</strong></p>
+<p><code>-</code>后面跟着的是单字符参数，可以设置多个参数在横线后面，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xcvf ×××</span><br></pre></td></tr></table></figure>
+
+<p><code>--</code>后面跟着的是字符串参数，只能选择一个参数放在<code>--</code>后面，如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+
+<p>在选项需要加参数的时候，可以使用如下格式实现：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch --set-upstream-to origin/remote_branch  your_branch</span><br><span class="line">git branch --set-upstream-to=origin/remote_branch  your_branch</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="问题收集"><a href="#问题收集" class="headerlink" title="问题收集"></a>问题收集</h2><h3 id="“The-remote-disconnected-Check-your-Internet-connection-and-try-again”"><a href="#“The-remote-disconnected-Check-your-Internet-connection-and-try-again”" class="headerlink" title="“The remote disconnected. Check your Internet connection and try again”"></a>“The remote disconnected. Check your Internet connection and try again”</h3><p><a target="_blank" rel="noopener" href="https://github.com/desktop/desktop/issues/4746">https://github.com/desktop/desktop/issues/4746</a></p>
+<p>更改缓冲区大小或者使用Git LFS</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global http.postBuffer 1048576000</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h3 id="“The-push-operation-includes-a-file-which-exceeds-GitHub’s-file-size-restriction-of-100MB-Please-remove-the-file-from-history-and-try-again-”"><a href="#“The-push-operation-includes-a-file-which-exceeds-GitHub’s-file-size-restriction-of-100MB-Please-remove-the-file-from-history-and-try-again-”" class="headerlink" title="“The push operation includes a file which exceeds GitHub’s file size restriction of 100MB.Please remove the file from history and try again.”"></a>“The push operation includes a file which exceeds GitHub’s file size restriction of 100MB.Please remove the file from history and try again.”</h3><blockquote>
+<p>大文件已经提交，然而在本地又被删除：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/19573031/cant-push-to-github-because-of-large-file-which-i-already-deleted">Can’t push to GitHub because of large file which I already deleted</a></p>
+</blockquote>
+<ol>
+<li><p>备份仓库</p>
+</li>
+<li><p>Git GUI工具，确定包含大文件的提交。</p>
+</li>
+<li><p>使用以下命令</p>
+<blockquote>
+<p>🚨<strong>警告：</strong></p>
+<p>这将删除该文件的所有历史记录。问题在于该文件仍然存在于历史记录中。</p>
+<p>此命令更改您的提交哈希值，这可能是一个真正的问题，特别是在共享存储库上。未经理解后果，不应执行此操作。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git filter-branch --tree-filter <span class="string">&#x27;rm -f largefile.zip&#x27;</span> HEAD</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>或者使用<code>git filter-repo</code></p>
+<blockquote>
+<p><strong>🚨警告：</strong></p>
+<p>git-filter-branch具有大量的陷阱，会生成损坏的历史记录。在继续之前，按Ctrl-C中止，然后使用另一种过滤工具，如“git filter-repo”（<a target="_blank" rel="noopener" href="https://github.com/newren/git-filter-repo/%EF%BC%89%E3%80%82%E6%9C%89%E5%85%B3%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AF%EF%BC%8C%E8%AF%B7%E5%8F%82%E8%A7%81filter-branch%E6%89%8B%E5%86%8C%E9%A1%B5%EF%BC%9B%E8%A6%81%E6%B6%88%E9%99%A4%E6%AD%A4%E8%AD%A6%E5%91%8A%EF%BC%8C%E8%AF%B7%E5%B0%86FILTER_BRANCH_SQUELCH_WARNING">https://github.com/newren/git-filter-repo/）。有关详细信息，请参见filter-branch手册页；要消除此警告，请将FILTER_BRANCH_SQUELCH_WARNING</a> = 1设置为True。</p>
+</blockquote>
+<ol>
+<li><p>安装<code>git filter-repo</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git git-filter-repo install </span><br></pre></td></tr></table></figure></li>
+<li><p>要删除具有路径前缀<code>example/path/to/something</code>的任何文件，您可以运行</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git filter-repo --path example/path/to/something--invert-paths </span><br></pre></td></tr></table></figure></li>
+<li><p>要删除没有路径前缀<code>example/path/to/something</code>的任何文件，您可以运行</p>
+<p>git filter-repo –path example/path/to/something</p>
+</li>
+</ol>
+<p>​    </p>
+<h3 id="“How-to-resolve-a-Merge-Conflict-in-GitHub-Desktop”"><a href="#“How-to-resolve-a-Merge-Conflict-in-GitHub-Desktop”" class="headerlink" title="“How to resolve a Merge Conflict in GitHub Desktop”"></a><strong>“How to resolve a Merge Conflict in GitHub Desktop”</strong></h3><p>解决Merge冲突</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=MIVW0sijSjY">https://www.youtube.com/watch?v=MIVW0sijSjY</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/04/15/Git-%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/">https://li-kira.github.io/2023/04/15/Git-%E6%9F%A5%E6%BC%8F%E8%A1%A5%E7%BC%BA/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Git/"># Git</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/05/13/Unity-%E4%BB%A3%E7%90%86%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/">Unity 代理相关问题</a>
+            
+            
+            <a class="next" rel="next" href="/2023/04/12/VITS-WebUI/">VITS_WebUI</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

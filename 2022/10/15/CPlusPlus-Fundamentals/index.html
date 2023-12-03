@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>C++ Fundamentals | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">C++ Fundamentals</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 15, 2022&nbsp;&nbsp;16:48:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/C/">C++</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>视频地址：</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=18c3MTX0PK0&amp;list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&amp;index=2">https://www.youtube.com/watch?v=18c3MTX0PK0&amp;list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&amp;index=2</a></p>
+</blockquote>
+<h2 id="How-C-works"><a href="#How-C-works" class="headerlink" title="How C++ works"></a>How C++ works</h2><ul>
+<li><p>Preprocessor Statement：在编译之前，读取库文件的过程</p>
+</li>
+<li><p><strong>Compile：</strong>当执行Preprocessor Statement之后，会进行编译过程。这个过程会将C++代码转化为机器代码。</p>
+<ul>
+<li><p>在属性中可以决定编译出来的应用的配置</p>
+</li>
+<li><p>C/C++中的配置决定了文件是如何被编译的</p>
+</li>
+<li><p>头文件不会被编译，只有<code>cpp</code>文件会被编译，当他们被包含进<code>cpp</code>文件中他们才会被编译。</p>
+<p><code>cpp</code>文件会被编译成目标文件，visual studio使用的扩展名是<code>.obj</code></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Linker：</strong>当<code>cpp</code>文件被编译成<code>.obj</code>文件之后，会被链接器组合在一起为<code>.exe</code>文件</p>
+</li>
+</ul>
+<p><strong>Multiple File</strong></p>
+<ul>
+<li>声明：告诉编译器这个函数存在</li>
+<li>定义：告诉这个编译器这个函数是什么，哪些是这个函数的主体</li>
+</ul>
+<p>当定义了一个函数，在其他地方同样声明了一个函数，可以通过编译，但是链接器会寻找这个函数定义的地方，如果找不到会发生编译器错误</p>
+<p><strong>Link Error</strong></p>
+<p>当我们包含一个头文件时，我们只是将它复制到该位置。如果有多个文件包含包含同一个头文件时，这个<strong>头文件</strong>中的函数如果是不是声明而是<strong>定义</strong>，可能会触发链接错误：<strong>重定向</strong>。</p>
+<p><strong>解决方法：</strong>在头文件的相关函数中使用<code>static</code> 或者 <code>inline</code>，或者头文件中仅声明</p>
+<ul>
+<li><strong>static：</strong>可以让包含该头文件的<code>cpp</code>文件生成一个只在内部生效的版本，并且对其他人不可见。</li>
+<li><strong>inline：</strong>可以将<strong>函数主体</strong>替换到包含该头文件的<code>cpp</code>文件中调用该函数的地方。</li>
+<li><strong>头文件中仅声明：</strong>在头文件中声明，在<code>cpp</code>文件中实现主体</li>
+</ul>
+<h2 id="Using-Libraries-in-C-Static-Linking"><a href="#Using-Libraries-in-C-Static-Linking" class="headerlink" title="Using Libraries in C++ (Static Linking)"></a>Using Libraries in C++ (Static Linking)</h2><blockquote>
+<p>视频地址：<br><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=or1dAmUO8k0&amp;list=RDCMUCQ-W1KE9EYfdxhL6S4twUNw&amp;start_radio=1&amp;rv=or1dAmUO8k0&amp;t=10">https://www.youtube.com/watch?v=or1dAmUO8k0&amp;list=RDCMUCQ-W1KE9EYfdxhL6S4twUNw&amp;start_radio=1&amp;rv=or1dAmUO8k0&amp;t=10</a></p>
+</blockquote>
+<p>库通常包含两个部分：<code>include</code>和<code>lib</code></p>
+<ul>
+<li><strong>include：</strong>包含一堆头文件，可以直接使用其中的函数。</li>
+<li><strong>lib：</strong>头文件中的函数在预构建的二进制文件中，这些二进制文件就在这个文件夹。</li>
+</ul>
+<p><strong>静态链接和动态链接的区别</strong></p>
+<ul>
+<li>静态链接：库实际上直接被编译进可执行的文件如：<code>.exe</code>文件中。</li>
+<li>动态链接：动态链接是在运行时执行<strong>Link</strong>的，有一个加载的过程的库函数，可以在Windows API中找到。在运行时有一个独立的文件比如：<code>.dll</code>文件，和可执行文件放在一起，当运行时被加载。</li>
+</ul>
+<p><strong>静态链接库的操作</strong></p>
+<ul>
+<li><p>在<code>属性-&gt; c++ -&gt;常规-&gt;附加包含目录</code>中，将<strong>include</strong>文件夹的绝对路径放进去。</p>
+<p>或者可以使用宏：<code>$(SolutionDir)</code>将相对路径填进去。这个宏的路径是你的解决方案的路径。</p>
+</li>
+<li><p>在<code>属性-&gt; Linker -&gt;输入-&gt;附加依赖项</code>中，添加<code>.lib</code>文件的路径。</p>
+<p>如果你不添加路径，可以在<code>Linker -&gt;常规</code>中修改<code>附加库目录</code>，添加包含相关的<code>lib</code>文件的路径进去，附加依赖项只需要添加文件的名称即可。</p>
+</li>
+</ul>
+<h2 id="C-Header-Files"><a href="#C-Header-Files" class="headerlink" title="C++ Header Files"></a>C++ Header Files</h2><p>头文件是一个公共访问的区域，一般只存放函数的声明，而定义是在相关的<code>cpp</code>文件中实现的。</p>
+<p>每次创建头文件会出现以下代码，这是一条预处理指令，只包含该文件一次，防止多次包含同一个头文件。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> once</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>头文件引用符号的区别：</strong></p>
+<ul>
+<li>“”：从当前文件路径开始搜索头文件</li>
+<li>&lt;&gt;：从include路径文件夹中搜索头文件</li>
+</ul>
+<h2 id="How-to-DEBUG-C-in-VISUAL-STUDIO"><a href="#How-to-DEBUG-C-in-VISUAL-STUDIO" class="headerlink" title="How to DEBUG C++ in VISUAL STUDIO"></a>How to DEBUG C++ in VISUAL STUDIO</h2><p>两个重要的debug方法：断点和读取内存</p>
+<p><strong>断点调试</strong></p>
+<p>通过在程序块左侧添加红色的断点，来控制代码的停止和执行，以下是对于停止状态下的操作：</p>
+<ul>
+<li>step into：如果有函数，就进入这个函数</li>
+<li>step over：跳到下一行</li>
+<li>step out：跳出当前函数，到达被调用的地方</li>
+</ul>
+<blockquote>
+<p>黄色箭头：表示停留在当前位置，还没有执行该位置的内容。</p>
+<p>Local：当前的所有变量</p>
+<p>Watch：可以选择搜索需要监视的变量</p>
+</blockquote>
+<p>此外还有C++性能分析器：</p>
+<blockquote>
+<p>教程：<a target="_blank" rel="noopener" href="https://blog.csdn.net/u011942101/article/details/123656944">https://blog.csdn.net/u011942101/article/details/123656944</a></p>
+</blockquote>
+<h2 id="BEST-Visual-Studio-Setup-for-C-Projects"><a href="#BEST-Visual-Studio-Setup-for-C-Projects" class="headerlink" title="BEST Visual Studio Setup for C++ Projects"></a>BEST Visual Studio Setup for C++ Projects</h2><p>Visual Studio的原始设置有些奇怪，修改以下能够提高代码管理的效率。</p>
+<ul>
+<li><p>优化目录结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">├─Dependencies</span><br><span class="line">├─res</span><br><span class="line">├─src</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Dependencies</strong>用来存储我们使用的外部库，<strong>res</strong>用来存储资源文件，<strong>src</strong>用来存储大部分cpp文件和头文件。</p>
+</blockquote>
+</li>
+<li><p>在<strong>属性</strong>-&gt;<strong>常规-</strong>&gt;<strong>常规属性</strong>修改属性：</p>
+<p><strong>输出目录：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(SolutionDir)bin\$(Platform)\$(Configuration)\</span><br></pre></td></tr></table></figure>
+
+<p><strong>中间目录：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(SolutionDir)bin\intermediates\$(Platform)\$(Configuration)\</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Static-in-C"><a href="#Static-in-C" class="headerlink" title="Static in C++"></a>Static in C++</h2><p>Static在C++中有两种含义，取决于在什么样的情况下</p>
+<ul>
+<li><p>在类或者结构体<strong>外使用Static：</strong></p>
+<ul>
+<li><p>由于在全局变量中不允许声明两个一样的变量，当我们在一个cpp文件中定义了一个变量，我们需要在其他声明到这个变量的地方加上<strong>extern</strong>，否则会触发链接器错误。</p>
+</li>
+<li><p>而<strong>Static</strong>有点像在类中的私有变量，链接器不会在定义这个变量或者函数之外的翻译单元查找这个变量或者函数。因此可以在其他地方声明相同的变量，但是要加上<strong>Static</strong></p>
+</li>
+</ul>
+</li>
+<li><p>在类或者结构体<strong>内使用Static：</strong></p>
+<ul>
+<li>与所有的实例共享内存，创建实例时只会有<strong>该静态变量一个实例</strong>。当有一个实例改变了，那么他会更新到所有创建的实例中。</li>
+<li>在使用静态变量时需要提前声明。</li>
+<li>静态方法不能访问非静态变量</li>
+</ul>
+</li>
+</ul>
+<h2 id="Class"><a href="#Class" class="headerlink" title="Class"></a>Class</h2><ul>
+<li><p><strong>Inheritance in C++：</strong>使用<code>：</code>就能继承类中的变量和函数</p>
+</li>
+<li><p><strong>虚函数：</strong>使用<strong>virtual</strong>在基类中，<strong>override</strong>在继承类中，能够正确重写继承类中的方法。</p>
+</li>
+<li><p><strong>Interfaces in C++ (Pure Virtual Functions)：</strong>使用<strong>virtual</strong>关键字，并且将方法赋值为0，这个类就会变成接口，无法被实例化，只能实例化实现了其中方法的类。</p>
+<blockquote>
+<p>C++中没有专门的接口类，只能用纯虚函数的方法</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Visibility-in-C"><a href="#Visibility-in-C" class="headerlink" title="Visibility in C++"></a>Visibility in C++</h2><p>在C++中有三种可见性修饰词：<strong>private</strong>、<strong>protected</strong>、<strong>public</strong></p>
+<blockquote>
+<p>c#中有internal，用于限制访问在当前程序集中。</p>
+</blockquote>
+<ul>
+<li><strong>private：</strong>只有<strong>这个类</strong>以及<strong>friend</strong>才能访问，继承的也不行</li>
+<li><strong>protected：</strong>这个类以及继承它的子类都能访问</li>
+<li><strong>public：</strong>所有人都能访问它</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2022/10/15/CPlusPlus-Fundamentals/">https://li-kira.github.io/2022/10/15/CPlusPlus-Fundamentals/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/C/"># C++</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/11/11/CSharp-Fundamentals/">C# Fundamentals</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

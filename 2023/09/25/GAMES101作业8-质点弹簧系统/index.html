@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>GAMES101作业8 - 质点弹簧系统 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">GAMES101作业8 - 质点弹簧系统</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 25, 2023&nbsp;&nbsp;1:42:18</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CG/">CG</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="实现要求："><a href="#实现要求：" class="headerlink" title="实现要求："></a>实现要求：</h2><ul>
+<li>连接绳子约束，正确的构造绳子</li>
+<li>半隐式欧拉法</li>
+<li>显式欧拉法 </li>
+<li>显式 Verlet</li>
+<li>阻尼</li>
+</ul>
+<p>你应该修改的函数是:</p>
+<ul>
+<li>rope.cpp 中的 <strong>Rope::rope(…)</strong></li>
+<li>rope.cpp 中的 <strong>void Rope::simulateEuler(…)</strong></li>
+<li>rope.cpp 中的 <strong>void Rope::simulateVerlet(…)</strong></li>
+</ul>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p>本次作业只能在Linux上面进行，需要在作业路径输入以下指令，将会自动安装依赖。需要安装OpenGL, Freetype，RandR这几样依赖。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install libglu1-mesa-dev freeglut3-dev mesa-common-dev</span><br><span class="line">sudo apt install xorg-dev</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="构造绳子"><a href="#构造绳子" class="headerlink" title="构造绳子"></a>构造绳子</h2><p>根据代码框架，可以得知一个Rope由<strong>num_nodes</strong>个节点和<strong>num_nodes-1</strong>条线段组成，我们将每个节点视为带质量的质点，质点之间的线段是一个弹簧，因此，我们需要为每个质点创建它的位置信息以及质量信息，并且为每个线段指定它的头节点和尾节点以及弹簧系数<strong>k</strong>，然后让每个顶点被视为pinned，即无法移动的状态。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Rope::<span class="built_in">Rope</span>(Vector2D start, Vector2D end, <span class="type">int</span> num_nodes, <span class="type">float</span> node_mass, <span class="type">float</span> k, vector&lt;<span class="type">int</span>&gt; pinned_nodes)</span><br><span class="line">&#123;</span><br><span class="line"><span class="comment">// TODO (Part 1): Create a rope starting at `start`, ending at `end`, and containing `num_nodes` nodes.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//        Comment-in this part when you implement the constructor</span></span><br><span class="line"><span class="comment">//        for (auto &amp;i : pinned_nodes) &#123;</span></span><br><span class="line"><span class="comment">//            masses[i]-&gt;pinned = true;</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; num_nodes; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        Vector2D pos = start + (end - start) * ((<span class="type">double</span>)i / ((<span class="type">double</span>)num_nodes - <span class="number">1.0</span>));</span><br><span class="line">        masses.<span class="built_in">push_back</span>(<span class="keyword">new</span> <span class="built_in">Mass</span>(pos, node_mass, <span class="literal">false</span>));</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; num_nodes - <span class="number">1</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        springs.<span class="built_in">push_back</span>(<span class="keyword">new</span> <span class="built_in">Spring</span>(masses[i], masses[i+<span class="number">1</span>], k));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;i : pinned_nodes) &#123;</span><br><span class="line">            masses[i]-&gt;pinned = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>按照下面命令创建工程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">mkdir</span> build</span><br><span class="line">$ <span class="built_in">cd</span> build</span><br><span class="line">$ cmake . .</span><br><span class="line">$ make</span><br></pre></td></tr></table></figure>
+
+<p>之后，可以使用命令<code>./ropesim</code>来运行仿真，我们可以看到我们构造出来了这样一条绳子，但是他现在还不能移动，我们需要完善之后的代码让他动起来。</p>
+<p><img src="/image/GAMES101/08-SpringMassSystem/image-20231102220412878.png" alt="image-20231102220412878"></p>
+<h2 id="显式-半隐式欧拉法"><a href="#显式-半隐式欧拉法" class="headerlink" title="显式/半隐式欧拉法"></a>显式/半隐式欧拉法</h2><p>使用胡克定律来表示弹簧连接的两个质点之间的力以及他们之间的距离的比例，这里的<strong>l</strong>是未发生弹性形变的弹簧长度，在这里为s-&gt;rest_length。<br>$$<br>f_{b\to a} = -K_s \frac{b-a}{\vert \vert b-a \vert \vert}(\vert \vert b-a \vert \vert - l)<br>$$<br>下面的代码根据胡克定律为每个绳子上的质点添加作用力：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> &amp;s : springs)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// TODO (Part 2): Use Hooke&#x27;s law to calculate the force on a node</span></span><br><span class="line">    <span class="type">float</span> l = (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position).<span class="built_in">norm</span>();</span><br><span class="line">    s-&gt;m1-&gt;forces += -(s-&gt;k) * (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line">    s-&gt;m2-&gt;forces += -(s-&gt;k) * (s-&gt;m2-&gt;position - s-&gt;m1-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接着我们要根据加速度来更新每个质点的下一时刻的位置<br>$$<br>F=ma \<br>v(t+1) = v(t) + a(t) * dt \<br>x(t+1) = x(t) + v(t) * dt \<br>x(t+1) = x(t) + v(t+1) * dt<br>$$<br>下面使用半隐式欧拉法编写代码，首先计算出加速度<strong>a</strong>，然后使用加速更新速度，最后使用速度更新加速度。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> &amp;m : masses)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!m-&gt;pinned)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// TODO (Part 2): Add the force due to gravity, then compute the new velocity and position</span></span><br><span class="line">        Vector2D a = m-&gt;forces / m-&gt;mass + gravity;</span><br><span class="line">        m-&gt;velocity += a * <span class="type">delta_t</span>; </span><br><span class="line">        m-&gt;position += m-&gt;velocity * <span class="type">delta_t</span>; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Reset all forces on each mass</span></span><br><span class="line">    m-&gt;forces = <span class="built_in">Vector2D</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此外，为了得到更好的视觉效果，可以在<strong>application.cpp</strong>中改变质点的个数。</p>
+<p>在<strong>application.cpp</strong>这里可以得知，<strong>蓝色绳子</strong>使用的是<strong>Euler方法</strong>，<strong>绿色绳子</strong>使用的是<strong>Verlet方法</strong>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">2</span>; i++) &#123;</span><br><span class="line"><span class="keyword">if</span> (i == <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">1.0</span>);</span><br><span class="line">  rope = ropeEuler;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="built_in">glColor3f</span>(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">0.0</span>);</span><br><span class="line">  rope = ropeVerlet;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/GAMES101/08-SpringMassSystem/image-20231103013426210.png" alt="image-20231103013426210"></p>
+<h2 id="显式-Verlet"><a href="#显式-Verlet" class="headerlink" title="显式 Verlet"></a>显式 Verlet</h2><p>Verlet 是另一种精确求解所有约束的方法。这种方法的优点是只处理仿真中顶点的位置并且保证四阶精度。和欧拉法不同，Verlet 积分按如下的方式来更新下一步位置:<br>$$<br>x(t+1) = x(t) + [x(t) - x(t-1)] + a(t) * dt * dt<br>$$<br>代码编写中，我们先实现每个弹簧上受的作用力，然后对于每个质点，我们记录一个中间时刻的位置，然后计算加速度，使用上面的公式计算下一时刻的位置，最后将中间时刻的位置作为上一时刻的位置供下次更新时使用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Rope::simulateVerlet</span><span class="params">(<span class="type">float</span> <span class="type">delta_t</span>, Vector2D gravity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;s : springs)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// TODO (Part 3): Simulate one timestep of the rope using explicit Verlet （solving constraints)</span></span><br><span class="line">        <span class="type">float</span> l = (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position).<span class="built_in">norm</span>();</span><br><span class="line">        s-&gt;m1-&gt;forces += -(s-&gt;k) * (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line">        s-&gt;m2-&gt;forces += -(s-&gt;k) * (s-&gt;m2-&gt;position - s-&gt;m1-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;m : masses)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!m-&gt;pinned)</span><br><span class="line">        &#123;</span><br><span class="line">            Vector2D temp_position = m-&gt;position;</span><br><span class="line">            <span class="comment">// TODO (Part 3.1): Set the new position of the rope mass</span></span><br><span class="line">            Vector2D a = m-&gt;forces / m-&gt;mass + gravity;</span><br><span class="line">            m-&gt;position =  temp_position + (temp_position - m-&gt;last_position) + a * <span class="type">delta_t</span> * <span class="type">delta_t</span>;</span><br><span class="line">            m-&gt;last_position = temp_position;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Reset all forces on each mass</span></span><br><span class="line">        m-&gt;forces = <span class="built_in">Vector2D</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="阻尼"><a href="#阻尼" class="headerlink" title="阻尼"></a>阻尼</h2><p>向显式 Verlet加入阻尼，只要定义一个阻尼系数设置为 0.00005，然后更新质点的方向即可，</p>
+<p>加入阻尼系数的公式：<br>$$<br>x(t+1) = x(t) + (1 - dampingfactor) * [x(t) - x(t-1)] + a(t) * dt * dt<br>$$<br>然后根据公式敲即可，完整代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Rope::simulateVerlet</span><span class="params">(<span class="type">float</span> <span class="type">delta_t</span>, Vector2D gravity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;s : springs)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// TODO (Part 3): Simulate one timestep of the rope using explicit Verlet （solving constraints)</span></span><br><span class="line">        <span class="type">float</span> l = (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position).<span class="built_in">norm</span>();</span><br><span class="line">        s-&gt;m1-&gt;forces += -(s-&gt;k) * (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line">        s-&gt;m2-&gt;forces += -(s-&gt;k) * (s-&gt;m2-&gt;position - s-&gt;m1-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;m : masses)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!m-&gt;pinned)</span><br><span class="line">        &#123;</span><br><span class="line">            Vector2D temp_position = m-&gt;position;</span><br><span class="line">            <span class="comment">// TODO (Part 3.1): Set the new position of the rope mass</span></span><br><span class="line">            <span class="comment">//Vector2D a = m-&gt;forces / m-&gt;mass + gravity;</span></span><br><span class="line">            <span class="comment">//m-&gt;position =  temp_position + (temp_position - m-&gt;last_position) + a * delta_t * delta_t;</span></span><br><span class="line">            <span class="comment">//m-&gt;last_position = temp_position;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// TODO (Part 4): Add global Verlet damping</span></span><br><span class="line">            Vector2D a = m-&gt;forces / m-&gt;mass + gravity;</span><br><span class="line">            <span class="type">float</span> damping_factor = <span class="number">0.00005</span>;</span><br><span class="line">            m-&gt;position = temp_position + (<span class="number">1</span> - damping_factor) * (temp_position - m-&gt;last_position) + a * <span class="type">delta_t</span> * <span class="type">delta_t</span>;</span><br><span class="line">            m-&gt;last_position = temp_position;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// Reset all forces on each mass</span></span><br><span class="line">        m-&gt;forces = <span class="built_in">Vector2D</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>而向半隐式欧拉法中加入阻尼，需要设置一个<strong>kd</strong>，然后将这个系数用于影响加速度，最终的代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Rope::simulateEuler</span><span class="params">(<span class="type">float</span> <span class="type">delta_t</span>, Vector2D gravity)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;s : springs)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// TODO (Part 2): Use Hooke&#x27;s law to calculate the force on a node</span></span><br><span class="line">        <span class="type">float</span> l = (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position).<span class="built_in">norm</span>();</span><br><span class="line">        s-&gt;m1-&gt;forces += -(s-&gt;k) * (s-&gt;m1-&gt;position - s-&gt;m2-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line">        s-&gt;m2-&gt;forces += -(s-&gt;k) * (s-&gt;m2-&gt;position - s-&gt;m1-&gt;position) / l * (l - s-&gt;rest_length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;m : masses)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (!m-&gt;pinned)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// TODO (Part 2): Add the force due to gravity, then compute the new velocity and position</span></span><br><span class="line">            <span class="comment">//Vector2D a = m-&gt;forces / m-&gt;mass + gravity;</span></span><br><span class="line">            <span class="comment">//m-&gt;velocity += a * delta_t; </span></span><br><span class="line">            <span class="comment">//m-&gt;position += m-&gt;velocity * delta_t; </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">// TODO (Part 2): Add global damping</span></span><br><span class="line">            <span class="type">float</span> kd = <span class="number">0.05</span>;</span><br><span class="line">            Vector2D a = m-&gt;forces / m-&gt;mass + gravity - kd * m-&gt;velocity / m-&gt;mass;</span><br><span class="line">            m-&gt;velocity += a * <span class="type">delta_t</span>; </span><br><span class="line">            m-&gt;position += m-&gt;velocity * <span class="type">delta_t</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Reset all forces on each mass</span></span><br><span class="line">        m-&gt;forces = <span class="built_in">Vector2D</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>加入阻尼之后，欧拉法衰减的速度会比显示Verlet方法衰减的速度要快。</p>
+<p><img src="/image/GAMES101/08-SpringMassSystem/image-20231103013656256.png" alt="image-20231103013656256"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/09/25/GAMES101%E4%BD%9C%E4%B8%9A8-%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/">https://li-kira.github.io/2023/09/25/GAMES101%E4%BD%9C%E4%B8%9A8-%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/C/"># C++</a>
+                    
+                        <a href="/tags/CG/"># CG</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/09/26/OpenGL%E5%9F%BA%E7%A1%80/">OpenGL基础</a>
+            
+            
+            <a class="next" rel="next" href="/2023/09/20/GAMES101%E4%BD%9C%E4%B8%9A7-%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/">GAMES101作业7 - 路径追踪</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

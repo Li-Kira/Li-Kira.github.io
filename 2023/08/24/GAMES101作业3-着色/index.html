@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>GAMES101作业3 - 着色 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">GAMES101作业3 - 着色</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 24, 2023&nbsp;&nbsp;18:19:38</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CG/">CG</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>代码地址：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Li-Kira/CodeLib/tree/main/CG/GAMES101/Homework03-%E7%9D%80%E8%89%B2">https://github.com/Li-Kira/CodeLib/tree/main/CG/GAMES101/Homework03-%E7%9D%80%E8%89%B2</a></p>
+<p>如何在vs中包含文件include folder：</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=PjxRNzyaxiw">https://www.youtube.com/watch?v=PjxRNzyaxiw</a></p>
+</blockquote>
+<h2 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h2><p>在开始作业之前，需要配置一下环境。</p>
+<ul>
+<li>项目-&gt;属性-&gt;C++-&gt;语言-&gt;C++语言标准 选择<code>ISO C++17标准</code></li>
+</ul>
+<p><img src="/image/GAMES101/03-Shading/image-20230824181758053.png" alt="image-20230824181758053"></p>
+<ul>
+<li>修改模型文件路径</li>
+</ul>
+<p>在<code>main.cpp</code>中，将路径修改为我们存储模型的路径</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">std::string filename = <span class="string">&quot;output.png&quot;</span>;</span><br><span class="line">objl::Loader Loader;</span><br><span class="line">std::string obj_path = <span class="string">&quot;E:/Code/CG/CGHomework/Homework03/models/spot/&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Load .obj File</span></span><br><span class="line"><span class="type">bool</span> loadout = Loader.<span class="built_in">LoadFile</span>(<span class="string">&quot;E:/Code/CG/CGHomework/Homework03/models/spot/spot_triangulated_good.obj&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更改着色器</li>
+</ul>
+<p>在<code>main.cpp</code>中，由于默认着色器是<code>phong_fragment_shader</code>，如果没有实现，想要观察normal shader的效果，可以将其中的参数求改为<code>normal_fragment_shader</code>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::function&lt;Eigen::Vector3f(fragment_shader_payload)&gt; active_shader = normal_fragment_shader;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>作业文档有提示可以使用<code>./Rasterizer output.png normal</code>，用输入参数的方式更改着色器，使用visual studio想要用参数调试可以使用以下方法：</p>
+<p>项目-&gt;属性-&gt;调试中的<code>命令参数</code>可以填入我们运行时需要的参数。</p>
+</blockquote>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ul>
+<li>在光栅化三角形的函数中实现插值算法</li>
+<li>添加投影矩阵</li>
+<li>在<code>Phong Shader</code>中实现Blinn-Phong光照模型</li>
+<li>在<code>Bump Shader</code>中实现凹凸映射</li>
+<li>在<code>Displacement Shader</code>中实现位移纹理</li>
+<li>（附加题）尝试更多模型</li>
+<li>（附加题）使用双线性插值进行纹理采样：在 Texture 类中实现一个新方法<code>getColorBilinear</code></li>
+</ul>
+<h2 id="实现插值算法"><a href="#实现插值算法" class="headerlink" title="实现插值算法"></a>实现插值算法</h2><p>以下是完整代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Screen space rasterization</span></span><br><span class="line"><span class="type">void</span> rst::rasterizer::<span class="built_in">rasterize_triangle</span>(<span class="type">const</span> Triangle&amp; t, <span class="type">const</span> std::array&lt;Eigen::Vector3f, <span class="number">3</span>&gt;&amp; view_pos) </span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> From your HW3, get the triangle rasterization code.</span></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Inside your rasterization loop:</span></span><br><span class="line">    <span class="comment">//    * v[i].w() is the vertex view space depth value z.</span></span><br><span class="line">    <span class="comment">//    * Z is interpolated view space depth for the current pixel</span></span><br><span class="line">    <span class="comment">//    * zp is depth between zNear and zFar, used for z-buffer</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// float Z = 1.0 / (alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());</span></span><br><span class="line">    <span class="comment">// float zp = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();</span></span><br><span class="line">    <span class="comment">// zp *= Z;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Interpolate the attributes:</span></span><br><span class="line">    <span class="comment">// auto interpolated_color</span></span><br><span class="line">    <span class="comment">// auto interpolated_normal</span></span><br><span class="line">    <span class="comment">// auto interpolated_texcoords</span></span><br><span class="line">    <span class="comment">// auto interpolated_shadingcoords</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Use: fragment_shader_payload payload( interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &amp;*texture : nullptr);</span></span><br><span class="line">    <span class="comment">// Use: payload.view_pos = interpolated_shadingcoords;</span></span><br><span class="line">    <span class="comment">// Use: Instead of passing the triangle&#x27;s color directly to the frame buffer, pass the color to the shaders first to get the final color;</span></span><br><span class="line">    <span class="comment">// Use: auto pixel_color = fragment_shader(payload);</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> v = t.<span class="built_in">toVector4</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//bounding box的实现</span></span><br><span class="line">    <span class="type">float</span> x_max = v[<span class="number">0</span>].<span class="built_in">x</span>(), x_min = v[<span class="number">0</span>].<span class="built_in">x</span>(), y_max = v[<span class="number">0</span>].<span class="built_in">y</span>(), y_min = v[<span class="number">0</span>].<span class="built_in">y</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> i : v)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (i[<span class="number">0</span>] &lt; x_min)</span><br><span class="line">            x_min = i[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span> (i[<span class="number">0</span>] &gt; x_max)</span><br><span class="line">            x_max = i[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">if</span> (i[<span class="number">1</span>] &lt; y_min)</span><br><span class="line">            y_min = i[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">if</span> (i[<span class="number">1</span>] &gt; y_max)</span><br><span class="line">            y_max = i[<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//以下是未进行抗锯齿处理的版本</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> x = x_min; x &lt; x_max; x++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> y = y_min; y &lt; y_max; y++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">bool</span> isInsideTriangle = <span class="built_in">insideTriangle</span>(x, y, t.v);</span><br><span class="line">            <span class="keyword">if</span> (isInsideTriangle)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">auto</span> result = <span class="built_in">computeBarycentric2D</span>(x + <span class="number">0.5</span>, y + <span class="number">0.5</span>, t.v);</span><br><span class="line">                <span class="type">float</span> alpha, beta, gamma;</span><br><span class="line">                std::<span class="built_in">tie</span>(alpha, beta, gamma) = result;</span><br><span class="line">                <span class="type">float</span> w_reciprocal = <span class="number">1.0</span> / (alpha / v[<span class="number">0</span>].<span class="built_in">w</span>() + beta / v[<span class="number">1</span>].<span class="built_in">w</span>() + gamma / v[<span class="number">2</span>].<span class="built_in">w</span>());</span><br><span class="line">                <span class="type">float</span> z_interpolated = alpha * v[<span class="number">0</span>].<span class="built_in">z</span>() / v[<span class="number">0</span>].<span class="built_in">w</span>() + beta * v[<span class="number">1</span>].<span class="built_in">z</span>() / v[<span class="number">1</span>].<span class="built_in">w</span>() + gamma * v[<span class="number">2</span>].<span class="built_in">z</span>() / v[<span class="number">2</span>].<span class="built_in">w</span>();</span><br><span class="line">                z_interpolated *= w_reciprocal;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (z_interpolated &lt; depth_buf[<span class="built_in">get_index</span>(x, y)])</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="keyword">auto</span> interpolated_color = <span class="built_in">interpolate</span>(alpha, beta, gamma, t.color[<span class="number">0</span>], t.color[<span class="number">1</span>], t.color[<span class="number">2</span>], <span class="number">1</span>);</span><br><span class="line">                    <span class="keyword">auto</span> interpolated_normal = <span class="built_in">interpolate</span>(alpha, beta, gamma, t.normal[<span class="number">0</span>], t.normal[<span class="number">1</span>], t.normal[<span class="number">2</span>], <span class="number">1</span>);</span><br><span class="line">                    <span class="keyword">auto</span> interpolated_texcoords = <span class="built_in">interpolate</span>(alpha, beta, gamma, t.tex_coords[<span class="number">0</span>], t.tex_coords[<span class="number">1</span>], t.tex_coords[<span class="number">2</span>], <span class="number">1</span>);</span><br><span class="line">                    <span class="keyword">auto</span> interpolated_shadingcoords = <span class="built_in">interpolate</span>(alpha, beta, gamma, view_pos[<span class="number">0</span>], view_pos[<span class="number">0</span>], view_pos[<span class="number">0</span>], <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">                    <span class="function">fragment_shader_payload <span class="title">payload</span><span class="params">(interpolated_color, interpolated_normal.normalized(), interpolated_texcoords, texture ? &amp;*texture : <span class="literal">nullptr</span>)</span></span>;</span><br><span class="line">                    payload.view_pos = interpolated_shadingcoords;</span><br><span class="line">                    <span class="keyword">auto</span> pixel_color = <span class="built_in">fragment_shader</span>(payload);</span><br><span class="line">                    Vector2i vertex;</span><br><span class="line">                    vertex &lt;&lt; x, y;</span><br><span class="line"></span><br><span class="line">                    depth_buf[<span class="built_in">get_index</span>(x, y)] = z_interpolated;</span><br><span class="line">                    frame_buf[<span class="built_in">get_index</span>(x, y)] = <span class="built_in">fragment_shader</span>(payload);</span><br><span class="line">                    <span class="built_in">set_pixel</span>(vertex, pixel_color);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/image/GAMES101/03-Shading/image-20230824181952294.png" alt="image-20230824181952294"></p>
+<h2 id="Blinn-Phong"><a href="#Blinn-Phong" class="headerlink" title="Blinn-Phong"></a>Blinn-Phong</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Eigen::Vector3f <span class="title">phong_fragment_shader</span><span class="params">(<span class="type">const</span> fragment_shader_payload&amp; payload)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Eigen::Vector3f ka = Eigen::<span class="built_in">Vector3f</span>(<span class="number">0.005</span>, <span class="number">0.005</span>, <span class="number">0.005</span>);</span><br><span class="line">    Eigen::Vector3f kd = payload.color;</span><br><span class="line">    Eigen::Vector3f ks = Eigen::<span class="built_in">Vector3f</span>(<span class="number">0.7937</span>, <span class="number">0.7937</span>, <span class="number">0.7937</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> l1 = light&#123;&#123;<span class="number">20</span>, <span class="number">20</span>, <span class="number">20</span>&#125;, &#123;<span class="number">500</span>, <span class="number">500</span>, <span class="number">500</span>&#125;&#125;;</span><br><span class="line">    <span class="keyword">auto</span> l2 = light&#123;&#123;<span class="number">-20</span>, <span class="number">20</span>, <span class="number">0</span>&#125;, &#123;<span class="number">500</span>, <span class="number">500</span>, <span class="number">500</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;light&gt; lights = &#123;l1, l2&#125;;</span><br><span class="line">    Eigen::Vector3f amb_light_intensity&#123;<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>&#125;;</span><br><span class="line">    Eigen::Vector3f eye_pos&#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> p = <span class="number">150</span>;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f color = payload.color;</span><br><span class="line">    Eigen::Vector3f point = payload.view_pos;</span><br><span class="line">    Eigen::Vector3f normal = payload.normal;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f result_color = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; light : lights)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* </span></span><br><span class="line">        <span class="comment">// components are. Then, accumulate that result on the *result_color* object.</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> l = (light.position - point).<span class="built_in">normalized</span>();</span><br><span class="line">        <span class="keyword">auto</span> v = (eye_pos - point).<span class="built_in">normalized</span>();</span><br><span class="line">        <span class="keyword">auto</span> h = (v + l).<span class="built_in">normalized</span>();</span><br><span class="line">        <span class="type">double</span> r2 = (light.position - point).<span class="built_in">dot</span>(light.position - point);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">auto</span> diffuse = kd.<span class="built_in">cwiseProduct</span>((light.intensity / r2) * std::<span class="built_in">max</span>(<span class="number">0.0f</span>, normal.<span class="built_in">dot</span>(l)));</span><br><span class="line">        <span class="keyword">auto</span> specular = ks.<span class="built_in">cwiseProduct</span>((light.intensity / r2) * std::<span class="built_in">pow</span>(std::<span class="built_in">max</span>(<span class="number">0.0f</span>, normal.<span class="built_in">dot</span>(h)), p));</span><br><span class="line">        </span><br><span class="line">        result_color += (diffuse + specular);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> ambient = ka.<span class="built_in">cwiseProduct</span>(amb_light_intensity);</span><br><span class="line">    result_color += ambient;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result_color * <span class="number">255.f</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>需要注意的是，ambient只需要计算一次。</p>
+</blockquote>
+<p><img src="/image/GAMES101/03-Shading/image-20230825181557386.png" alt="image-20230825181557386"></p>
+<h2 id="Texture-mapping"><a href="#Texture-mapping" class="headerlink" title="Texture mapping"></a>Texture mapping</h2><p>在编写纹理映射的Shader之前，需要考虑纹理的越界问题，以下是对<code>Texture.hpp</code>的修改。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Eigen::Vector3f <span class="title">getColor</span><span class="params">(<span class="type">float</span> u, <span class="type">float</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (u &lt; <span class="number">0</span>) u = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (u &gt; <span class="number">1</span>) u = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (v &lt; <span class="number">0</span>) v = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (v &gt; <span class="number">1</span>) v = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> u_img = u * width;</span><br><span class="line">    <span class="keyword">auto</span> v_img = (<span class="number">1</span> - v) * height;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> color = image_data.<span class="built_in">at</span>&lt;cv::Vec3b&gt;(v_img, u_img);</span><br><span class="line">    <span class="keyword">return</span> Eigen::<span class="built_in">Vector3f</span>(color[<span class="number">0</span>], color[<span class="number">1</span>], color[<span class="number">2</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>大致的代码跟<code>phong shader</code>的差不多，多了从纹理中获取颜色的过程，即以下的代码。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Eigen::Vector3f return_color = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line"><span class="keyword">if</span> (payload.texture)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> Get the texture value at the texture coordinates of the current fragment</span></span><br><span class="line">    return_color = payload.texture-&gt;<span class="built_in">getColor</span>(payload.tex_coords.<span class="built_in">x</span>(), payload.tex_coords.<span class="built_in">y</span>());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>完整代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Eigen::Vector3f <span class="title">texture_fragment_shader</span><span class="params">(<span class="type">const</span> fragment_shader_payload&amp; payload)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Eigen::Vector3f return_color = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">    <span class="keyword">if</span> (payload.texture)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> Get the texture value at the texture coordinates of the current fragment</span></span><br><span class="line">        return_color = payload.texture-&gt;<span class="built_in">getColor</span>(payload.tex_coords.<span class="built_in">x</span>(), payload.tex_coords.<span class="built_in">y</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    Eigen::Vector3f texture_color;</span><br><span class="line">    texture_color &lt;&lt; return_color.<span class="built_in">x</span>(), return_color.<span class="built_in">y</span>(), return_color.<span class="built_in">z</span>();</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f ka = Eigen::<span class="built_in">Vector3f</span>(<span class="number">0.005</span>, <span class="number">0.005</span>, <span class="number">0.005</span>);</span><br><span class="line">    Eigen::Vector3f kd = texture_color / <span class="number">255.f</span>;</span><br><span class="line">    Eigen::Vector3f ks = Eigen::<span class="built_in">Vector3f</span>(<span class="number">0.7937</span>, <span class="number">0.7937</span>, <span class="number">0.7937</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> l1 = light&#123;&#123;<span class="number">20</span>, <span class="number">20</span>, <span class="number">20</span>&#125;, &#123;<span class="number">500</span>, <span class="number">500</span>, <span class="number">500</span>&#125;&#125;;</span><br><span class="line">    <span class="keyword">auto</span> l2 = light&#123;&#123;<span class="number">-20</span>, <span class="number">20</span>, <span class="number">0</span>&#125;, &#123;<span class="number">500</span>, <span class="number">500</span>, <span class="number">500</span>&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    std::vector&lt;light&gt; lights = &#123;l1, l2&#125;;</span><br><span class="line">    Eigen::Vector3f amb_light_intensity&#123;<span class="number">10</span>, <span class="number">10</span>, <span class="number">10</span>&#125;;</span><br><span class="line">    Eigen::Vector3f eye_pos&#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">10</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> p = <span class="number">150</span>;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f color = texture_color;</span><br><span class="line">    Eigen::Vector3f point = payload.view_pos;</span><br><span class="line">    Eigen::Vector3f normal = payload.normal;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector3f result_color = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; light : lights)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// <span class="doctag">TODO:</span> For each light source in the code, calculate what the *ambient*, *diffuse*, and *specular* </span></span><br><span class="line">        <span class="comment">// components are. Then, accumulate that result on the *result_color* object.</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> l = (light.position - point).<span class="built_in">normalized</span>();</span><br><span class="line">        <span class="keyword">auto</span> v = (eye_pos - point).<span class="built_in">normalized</span>();</span><br><span class="line">        <span class="keyword">auto</span> h = (v + l).<span class="built_in">normalized</span>();</span><br><span class="line">        <span class="type">double</span> r2 = (light.position - point).<span class="built_in">dot</span>(light.position - point);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">auto</span> diffuse = kd.<span class="built_in">cwiseProduct</span>((light.intensity / r2) * std::<span class="built_in">max</span>(<span class="number">0.0f</span>, normal.<span class="built_in">dot</span>(l)));</span><br><span class="line">        <span class="keyword">auto</span> specular = ks.<span class="built_in">cwiseProduct</span>((light.intensity / r2) * std::<span class="built_in">pow</span>(std::<span class="built_in">max</span>(<span class="number">0.0f</span>, normal.<span class="built_in">dot</span>(h)), p));</span><br><span class="line"></span><br><span class="line">        result_color += (diffuse + specular);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> ambient = ka.<span class="built_in">cwiseProduct</span>(amb_light_intensity);</span><br><span class="line">    result_color += ambient;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result_color * <span class="number">255.f</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/image/GAMES101/03-Shading/image-20230825190612168.png" alt="image-20230825190612168"></p>
+<h2 id="Bump-mapping"><a href="#Bump-mapping" class="headerlink" title="Bump mapping"></a>Bump mapping</h2><p>凹凸纹理需要对发现normal进行的数值进行更改，读取凹凸纹理内的uv值。</p>
+<p>关于TBN的计算详解在之后的路径追踪，目前根据注释写就可以了。</p>
+<p>u和v是纹理坐标的x和y，w和h是纹理的宽度和高度。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> x = normal.<span class="built_in">x</span>();</span><br><span class="line"><span class="type">float</span> y = normal.<span class="built_in">y</span>();</span><br><span class="line"><span class="type">float</span> z = normal.<span class="built_in">z</span>();</span><br><span class="line">Eigen::Vector3f t = Eigen::<span class="built_in">Vector3f</span>(x * y / <span class="built_in">sqrt</span>(x * x + z * z), <span class="built_in">sqrt</span>(x * x + z * z), z * y / <span class="built_in">sqrt</span>(x * x + z * z));</span><br><span class="line">Eigen::Vector3f b = normal.<span class="built_in">cross</span>(t);</span><br><span class="line">Eigen::Matrix3f TBN;</span><br><span class="line">TBN.<span class="built_in">col</span>(<span class="number">0</span>) = t;</span><br><span class="line">TBN.<span class="built_in">col</span>(<span class="number">1</span>) = b;</span><br><span class="line">TBN.<span class="built_in">col</span>(<span class="number">2</span>) = normal;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> u = payload.tex_coords.<span class="built_in">x</span>();</span><br><span class="line"><span class="type">float</span> v = payload.tex_coords.<span class="built_in">y</span>();</span><br><span class="line"><span class="type">float</span> w = payload.texture-&gt;width;</span><br><span class="line"><span class="type">float</span> h = payload.texture-&gt;height;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> dU = kh * kn * (payload.texture-&gt;<span class="built_in">getColor</span>(u + <span class="number">1.0</span> / w, v).<span class="built_in">norm</span>() - payload.texture-&gt;<span class="built_in">getColor</span>(u, v).<span class="built_in">norm</span>());</span><br><span class="line"><span class="type">float</span> dV = kh * kn * (payload.texture-&gt;<span class="built_in">getColor</span>(u, v + <span class="number">1.0</span> / h).<span class="built_in">norm</span>() - payload.texture-&gt;<span class="built_in">getColor</span>(u, v).<span class="built_in">norm</span>());</span><br><span class="line"><span class="function">Eigen::Vector3f <span class="title">ln</span><span class="params">(-dU, -dV, <span class="number">1</span>)</span></span>;</span><br><span class="line">normal = (TBN * ln).<span class="built_in">normalized</span>();</span><br><span class="line"></span><br><span class="line">Eigen::Vector3f result_color = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">result_color = normal;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> result_color * <span class="number">255.f</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/image/GAMES101/03-Shading/image-20230825194422300.png" alt="image-20230825194422300"></p>
+<h2 id="Displacement-mapping"><a href="#Displacement-mapping" class="headerlink" title="Displacement mapping"></a>Displacement mapping</h2><p>位移纹理需要在凹凸纹理的基础上对point进行更改。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="function">Eigen::Vector3f <span class="title">ln</span><span class="params">(-dU, -dV, <span class="number">1</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//位移贴图需要加这一段</span></span><br><span class="line">point += kn * normal * payload.texture-&gt;<span class="built_in">getColor</span>(u, v).<span class="built_in">norm</span>();</span><br><span class="line">normal = (TBN * ln).<span class="built_in">normalized</span>();</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/image/GAMES101/03-Shading/image-20230825194859615.png" alt="image-20230825194859615"></p>
+<h2 id="附加题-双线性插值"><a href="#附加题-双线性插值" class="headerlink" title="附加题 - 双线性插值"></a>附加题 - 双线性插值</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Eigen::Vector3f <span class="title">getColorBilinear</span><span class="params">(<span class="type">float</span> u, <span class="type">float</span> v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (u &lt; <span class="number">0</span>) u = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (u &gt; <span class="number">1</span>) u = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (v &lt; <span class="number">0</span>) v = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (v &gt; <span class="number">1</span>) v = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> u_img = u * width;</span><br><span class="line">    <span class="keyword">auto</span> v_img = (<span class="number">1</span> - v) * height;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> u_floor = std::<span class="built_in">floor</span>(u_img);</span><br><span class="line">    <span class="type">float</span> v_floor = std::<span class="built_in">floor</span>(v_img);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> u00 = image_data.<span class="built_in">at</span>&lt;cv::Vec3b&gt;(v_floor, u_floor);</span><br><span class="line">    <span class="keyword">auto</span> u01 = image_data.<span class="built_in">at</span>&lt;cv::Vec3b&gt;(v_floor + <span class="number">1</span>, u_floor);</span><br><span class="line">    <span class="keyword">auto</span> u11 = image_data.<span class="built_in">at</span>&lt;cv::Vec3b&gt;(v_floor, u_floor + <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">auto</span> u10 = image_data.<span class="built_in">at</span>&lt;cv::Vec3b&gt;(v_floor + <span class="number">1</span>, u_floor + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> s_u = u_img - u_floor;</span><br><span class="line">    <span class="type">float</span> s_v = v_img - v_floor;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> u0 = u00 + s_u * (u10 - u00);</span><br><span class="line">    <span class="keyword">auto</span> u1 = u01 + s_u * (u11 - u01);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> interpolated_color = u0 + s_v * (u1 - u0);</span><br><span class="line">    <span class="keyword">return</span> Eigen::<span class="built_in">Vector3f</span>(interpolated_color[<span class="number">0</span>], interpolated_color[<span class="number">1</span>], interpolated_color[<span class="number">2</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="/image/GAMES101/03-Shading/%E4%BD%9C%E4%B8%9A3-%E5%8F%8C%E7%BA%BF%E6%80%A7%E6%8F%92%E5%80%BC.png" alt="作业3-双线性插值"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/08/24/GAMES101%E4%BD%9C%E4%B8%9A3-%E7%9D%80%E8%89%B2/">https://li-kira.github.io/2023/08/24/GAMES101%E4%BD%9C%E4%B8%9A3-%E7%9D%80%E8%89%B2/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/C/"># C++</a>
+                    
+                        <a href="/tags/CG/"># CG</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/08/29/GAMES101%E4%BD%9C%E4%B8%9A4-%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF/">GAMES101作业4 - 贝塞尔曲线</a>
+            
+            
+            <a class="next" rel="next" href="/2023/08/15/GAMES101%E4%BD%9C%E4%B8%9A2-%E5%85%89%E6%A0%85%E5%8C%96/">GAMES101作业2 - 光栅化</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

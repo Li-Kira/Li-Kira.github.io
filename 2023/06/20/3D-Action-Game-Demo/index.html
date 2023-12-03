@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>3D Action Game Demo | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">3D Action Game Demo</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 20, 2023&nbsp;&nbsp;0:37:40</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Demo/">Demo</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>这个项目是一个俯视角的3D动作游戏Demo，包含角色控制、敌人行为、关卡互动系统，以及一些简单的UI控制。</p>
+<p><video src="/image/3DActionGameDemo/3D Action Game Demo.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video></p>
+<h2 id="Character-Controller"><a href="#Character-Controller" class="headerlink" title="Character Controller"></a>Character Controller</h2><h3 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h3><p>下面是用来展示角色预制件的结构图，可以看到，根对象上有<strong>Player</strong>、<strong>Player Lights</strong>、<strong>Damage Caster</strong>以及<strong>CheckPlane</strong>这几个子对象，它们的具体作用如下</p>
+<ul>
+<li><strong>Player：</strong>包含角色的Mesh和Rig，用来<strong>渲染角色实体</strong>以及<strong>控制角色动画</strong>，除此之外<strong>VFX</strong>也在这里面</li>
+<li><strong>Player Lights：</strong>跟随角色移动的光照，用来丰富画面</li>
+<li><strong>Damage Caster：</strong>包含所有的判定盒，用来判定攻击是否与怪物发生碰撞</li>
+<li><strong>CheckPlane：</strong>随角色移动的不被渲染的平面，用来识别鼠标的位置，进而更改角色的旋转</li>
+</ul>
+<p><img src="/image/3DActionGameDemo/image-20231130210841295.png" alt="image-20231130210841295"></p>
+<p>角色的动画机上面的动画也在使用图表可视化地展示出来，包含以下动画片段，其中一些动画在特别的位置插入了动画事件，用来响应一些玩家控制的行为。</p>
+<p><img src="/image/3DActionGameDemo/image-20231130210854377.png" alt="image-20231130210854377"></p>
+<h3 id="Player-Movement"><a href="#Player-Movement" class="headerlink" title="Player Movement"></a>Player Movement</h3><p>角色的移动实现如图，使用了一个<strong>PlayerInput</strong>用来获取设备输入，然后将值传给<strong>Movement</strong>脚本中的**_movementVelocity<strong>，在</strong>Movement<strong>中使用</strong>CalculatePlayerMovement**函数计算移动。</p>
+<p><img src="/image/3DActionGameDemo/image-20231202215858112.png" alt="image-20231202215858112"></p>
+<p>角色在对角线上需要归一化，使得对角线上的速度一致，旋转需要匹配摇杆的朝向。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">_movementVelocity.Set(_playerInput.HorizontalInput,<span class="number">0f</span>,_playerInput.VerticalInput);</span><br><span class="line"><span class="comment">//归一化运动速度，使得在对角线上速度一致</span></span><br><span class="line">_movementVelocity.Normalize();</span><br><span class="line"></span><br><span class="line"><span class="comment">//匹配旋转速度与相机速度</span></span><br><span class="line">_movementVelocity = Quaternion.Euler(<span class="number">0</span>, <span class="number">-45f</span>, <span class="number">0</span>) * _movementVelocity;</span><br><span class="line">_movementVelocity *= MoveSpeed * Time.deltaTime;</span><br><span class="line"></span><br><span class="line"><span class="comment">//角色转向</span></span><br><span class="line"><span class="keyword">if</span> (_movementVelocity != Vector3.zero)</span><br><span class="line">    transform.rotation = Quaternion.LookRotation(_movementVelocity);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Camera"><a href="#Camera" class="headerlink" title="Camera"></a>Camera</h3><p>相机使用的是<strong>Cinemachine</strong>的<strong>Virtual Camera</strong>，将<strong>Follow</strong>和<strong>Look At</strong>都设置为<strong>Player</strong>，阻尼<strong>Damping</strong>设置为0，相机距离<strong>Camera Distance</strong>设置为32，<strong>Aim</strong>类型从<strong>composer</strong>设置为<strong>None</strong>，并在<strong>Transform</strong>中设置<strong>Rotation</strong>为：X = 45, Y = -45，用来模拟<strong>正交视图</strong>，同时将<strong>FOV</strong>设置为25，<strong>Near Clip</strong>设置为10，<strong>Far Clip</strong>设置为60。</p>
+<blockquote>
+<p>为什么不直接用正交视图呢？因为有些<strong>VFX</strong>不适用。</p>
+</blockquote>
+<h3 id="State-Machine"><a href="#State-Machine" class="headerlink" title="State Machine"></a>State Machine</h3><p>角色的状态包括：<strong>Normal</strong>、<strong>Attacking</strong>、<strong>Dead</strong>、<strong>BeingHit</strong>、<strong>Slide</strong>以及<strong>Spawn</strong>，它们处理的相关活动如下：</p>
+<ul>
+<li><strong>Normal：</strong>角色移动、下坠状态</li>
+<li><strong>Attacking：</strong>包括三段Combo的攻击状态，可以被<strong>Slide</strong>打断</li>
+<li><strong>Dead：</strong>角色死亡状态，将会直接退出状态机，失去对角色的控制，并且触发着色器中的消融特效</li>
+<li><strong>BeingHit：</strong>角色受击状态，会朝着受击的方向强制位移一段距离，触发效应的VFX特效，并且会无敌一段时间</li>
+<li><strong>Slide：</strong>角色闪避状态，会中断<strong>Normal</strong>、<strong>Attacking</strong>状态，往前位移一段距离，并且会无敌一段时间</li>
+<li><strong>Spawn：</strong>角色重生状态，重生期间无敌，并且触发着色器中的显现特效</li>
+</ul>
+<h3 id="Animator"><a href="#Animator" class="headerlink" title="Animator"></a>Animator</h3><p>角色的动画机包含的状态如下：</p>
+<p><img src="/image/3DActionGameDemo/image-20231203160426109.png" alt="image-20231203160426109"></p>
+<p>其中，攻击状态由三个Combo动画组成：</p>
+<p><img src="/image/3DActionGameDemo/image-20231203160434701.png" alt="image-20231203160434701"></p>
+<p>某些动画片段会包含动画事件，如下图所示：</p>
+<p><img src="/image/3DActionGameDemo/image-20231203205421896.png" alt="image-20231203205421896"></p>
+<h3 id="Combo"><a href="#Combo" class="headerlink" title="Combo"></a>Combo</h3><p>在Attacking状态中，只有当Combo_1或者Combo_2的时候才能执行Combo的切换，并且通过插值时间，使得在动画快要结束时才能切换Combo。此外，Slide可以打断所有Attack。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (Time.time &lt; attackStartTime + AttackSlideDuration)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">float</span> timepassed = Time.time - attackStartTime;</span><br><span class="line">    <span class="built_in">float</span> lerptime = timepassed / AttackSlideDuration;</span><br><span class="line">    _movementVelocity = Vector3.Lerp(transform.forward * AttackSlideSpeed, Vector3.zero, lerptime);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//翻滚中断攻击</span></span><br><span class="line"><span class="keyword">if</span> (_playerInput.SpaceButtonDown &amp;&amp; _characterController.isGrounded)</span><br><span class="line">&#123;</span><br><span class="line">    SwitchStateTo(CharacterState.Slide);</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (_playerInput.MouseButtonDown &amp;&amp; _characterController.isGrounded)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//获取正在播放的动画名称</span></span><br><span class="line">    <span class="built_in">string</span> currentClipName = _animator.GetCurrentAnimatorClipInfo(<span class="number">0</span>)[<span class="number">0</span>].clip.name;</span><br><span class="line">    <span class="comment">//获取该动画播放的时间，1 代表在动画的结尾，0.5 代表中间。</span></span><br><span class="line">    attackAnimationDuration = _animator.GetCurrentAnimatorStateInfo(<span class="number">0</span>).normalizedTime;</span><br><span class="line">    <span class="comment">//只用当Combo_1或者Combo_2的时候才能执行Combo的切换</span></span><br><span class="line">    <span class="keyword">if</span> (currentClipName != <span class="string">&quot;LittleAdventurerAndie_ATTACK_03 &quot;</span> &amp;&amp; attackAnimationDuration &gt; <span class="number">0.5f</span> &amp;&amp; attackAnimationDuration &lt; <span class="number">0.7f</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        _playerInput.MouseButtonDown = <span class="literal">false</span>;</span><br><span class="line">        SwitchStateTo(CharacterState.Attacking);</span><br><span class="line">        </span><br><span class="line">        CalculatePlayerMovement();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Check-Plane"><a href="#Check-Plane" class="headerlink" title="Check Plane"></a>Check Plane</h3><p>为了实现角色跟随鼠标旋转，为<strong>Player</strong>对象添加一个<strong>Plane</strong>，并取消勾选<strong>MeshRender</strong>，这样就不会被渲染。然后新建一个图层<strong>Cursor</strong>，将该<strong>Plane</strong>更改为此图层。使用射线检测是否与该图层发生碰撞，并将碰撞的位置与角色的位置相减得到角色的旋转方向。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">RotateToCursor</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);</span><br><span class="line">    RaycastHit hit;</span><br><span class="line">    <span class="keyword">if</span> (Physics.Raycast(ray,<span class="keyword">out</span> hit,<span class="number">1000</span>,<span class="number">1</span>&lt;&lt;LayerMask.NameToLayer(<span class="string">&quot;CursorTest&quot;</span>)))</span><br><span class="line">    &#123;</span><br><span class="line">        Vector3 cursorPos = hit.point;</span><br><span class="line">        transform.rotation = Quaternion.LookRotation(cursorPos - transform.position, Vector3.up);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开发中可以使用<strong>OnDrawGizmos</strong>将鼠标位置绘画出来，使用<strong>RotateToCursor</strong>脚本，用于旋转角色的朝向。在角色控制器中的状态机中，当切换至新状态时计算角色的朝向。</p>
+<h3 id="VFX"><a href="#VFX" class="headerlink" title="VFX"></a>VFX</h3><p>角色的VFX包括：脚步、治疗以及剑气，使用<strong>PlayerVFXManager</strong>脚本来管理它们</p>
+<p><img src="/image/3DActionGameDemo/image-20231203205709156.png" alt="image-20231203205709156"></p>
+<p>其中，<strong>Player Run VFX</strong>修改了动画机的状态函数，只用当奔跑的时候才会触发。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">override</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnStateEnter</span>(<span class="params">Animator animator, AnimatorStateInfo stateInfo, <span class="built_in">int</span> layerIndex</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(animator.GetComponent&lt;PlayerVFXManager&gt;() != <span class="literal">null</span>)</span><br><span class="line">        animator.GetComponent&lt;PlayerVFXManager&gt;().update_footstep(<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">override</span> <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnStateExit</span>(<span class="params">Animator animator, AnimatorStateInfo stateInfo, <span class="built_in">int</span> layerIndex</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(animator.GetComponent&lt;PlayerVFXManager&gt;() != <span class="literal">null</span>)</span><br><span class="line">        animator.GetComponent&lt;PlayerVFXManager&gt;().update_footstep(<span class="literal">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Enemy-Behavior"><a href="#Enemy-Behavior" class="headerlink" title="Enemy Behavior"></a>Enemy Behavior</h2><p>敌人的结构图如下，包含<strong>Enemy Mesh和 Rig</strong>、<strong>VFX组</strong>以及<strong>DamageCaster</strong></p>
+<p><img src="/image/3DActionGameDemo/image-20231203211240357.png" alt="image-20231203211240357"></p>
+<h3 id="Enemy-Movement"><a href="#Enemy-Movement" class="headerlink" title="Enemy Movement"></a>Enemy Movement</h3><p>烘焙场景的<strong>Navigation</strong>，更改高度，使得怪物无法通过较高地势的区域。</p>
+<p><img src="/image/3DActionGameDemo/image-20231203201505469.png" alt="image-20231203201505469"></p>
+<p>烘焙之后的场景如下图所示，怪物只能在此处移动。</p>
+<p><img src="/image/3DActionGameDemo/image-20231203201536122.png" alt="image-20231203201536122"></p>
+<p>使用<strong>Nav Mesh</strong>来引导敌人朝着角色行动，具体行为如下图所示：</p>
+<p><img src="/image/3DActionGameDemo/image-20231203224845281.png" alt="image-20231203224845281"></p>
+<p>在<strong>Awake</strong>中寻找<strong>Tag</strong>为<strong>Player</strong>的对象进行锁定</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (!isPlayer)</span><br><span class="line">&#123;</span><br><span class="line">    _navMeshAgent = GetComponent&lt;NavMeshAgent&gt;();</span><br><span class="line">    TargetPlayer = GameObject.FindWithTag(<span class="string">&quot;Player&quot;</span>).transform;</span><br><span class="line">    _navMeshAgent.speed = MoveSpeed;</span><br><span class="line">    SwitchStateTo(CharacterState.Spawn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>CalculateEnemyMovement</strong>函数来控制怪物移动，将<strong>Nav Mesh Agent</strong>中的<strong>Stopping Distance</strong>重写为2，在靠近角色的时候将状态更改为攻击状态，进行攻击。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">CalculateEnemyMovement</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (Vector3.Distance(TargetPlayer.position, transform.position) &gt;= _navMeshAgent.stoppingDistance)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//_navMeshAgent会将敌人引到目标玩家的位置</span></span><br><span class="line">        _navMeshAgent.SetDestination(TargetPlayer.position);</span><br><span class="line">        <span class="comment">//播放动画</span></span><br><span class="line">        _animator.SetFloat(<span class="string">&quot;Speed&quot;</span>,<span class="number">0.2f</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//让敌人呆在原地</span></span><br><span class="line">        _navMeshAgent.SetDestination(transform.position);</span><br><span class="line">        <span class="comment">//不播放动画</span></span><br><span class="line">        _animator.SetFloat(<span class="string">&quot;Speed&quot;</span>,<span class="number">0f</span>);</span><br><span class="line">        <span class="comment">//切换状态</span></span><br><span class="line">        SwitchStateTo(CharacterState.Attacking);</span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在状态机中，当从正常状态改为攻击状态时，敌人攻击结束后将转向到玩家</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if (!isPlayer)</span><br><span class="line">&#123; </span><br><span class="line">    Quaternion newRotation = Quaternion.LookRotation(TargetPlayer.position - transform.position);</span><br><span class="line">    transform.rotation = newRotation;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Enemy-BeingHit"><a href="#Enemy-BeingHit" class="headerlink" title="Enemy BeingHit"></a>Enemy BeingHit</h3><p>角色和玩家共用一个伤害判断脚本</p>
+<p><img src="/image/3DActionGameDemo/image-20231203234835643.png" alt="image-20231203234835643"></p>
+<p>当敌人被玩家击中时，会触发着色器的闪烁效果，以及一个方向为被击中方向的粒子特效，因此，需要一个函数来处理这个方向，我们将它放在造成伤害的函数中，每次敌人或者玩家被击中就会触发。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">AddImpact</span>(<span class="params">Vector3 attackerPos, <span class="built_in">float</span> force</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Vector3 impactDir = transform.position - attackerPos;</span><br><span class="line">    impactDir.Normalize();</span><br><span class="line">    impactDir.y = <span class="number">0</span>;</span><br><span class="line">    ImpactOnCharacter = impactDir * force;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ApplyDamage</span>(<span class="params"><span class="built_in">int</span> damage, Vector3 attackerPos = <span class="keyword">new</span> Vector3(</span>))</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (isInvincible)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (_health != <span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        _health.ApplyDamage(damage);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isPlayer)</span><br><span class="line">    &#123;</span><br><span class="line">        GetComponent&lt;EnemyVFXManager&gt;().PlayBeingHitVFX(attackerPos);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    StartCoroutine(MaterialBlink());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isPlayer)</span><br><span class="line">    &#123;</span><br><span class="line">        SwitchStateTo(CharacterState.BeingHit);</span><br><span class="line">        AddImpact(attackerPos, EnemyAttackForce);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        AddImpact(attackerPos,<span class="number">2.5f</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在DamageCaster中处理碰撞造成伤害的行为。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnTriggerEnter</span>(<span class="params">Collider other</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (other.tag == TargetTag &amp;&amp; !DamageTargetList.Contains(other))</span><br><span class="line">    &#123;</span><br><span class="line">        Character _character = other.GetComponent&lt;Character&gt;();</span><br><span class="line">        <span class="keyword">if</span> (_character != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            _character.ApplyDamage(damage,transform.parent.position);</span><br><span class="line">            </span><br><span class="line">            PlayerVFXManager playerVFXManager = transform.parent.GetComponent&lt;PlayerVFXManager&gt;();</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (playerVFXManager != <span class="literal">null</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                RaycastHit hit;</span><br><span class="line"></span><br><span class="line">                Vector3 originPos = transform.position + (-_damageCasterCollider.bounds.extents.z) * transform.forward;</span><br><span class="line"></span><br><span class="line">                <span class="built_in">bool</span> isHit = Physics.BoxCast(originPos, _damageCasterCollider.bounds.extents / <span class="number">2</span>, transform.forward, <span class="keyword">out</span> hit,</span><br><span class="line">                    transform.rotation, _damageCasterCollider.bounds.extents.z, <span class="number">1</span> &lt;&lt; <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (isHit)</span><br><span class="line">                &#123;</span><br><span class="line">                    playerVFXManager.PlaySlash(hit.point + <span class="keyword">new</span> Vector3(<span class="number">0</span>, <span class="number">0.5f</span>, <span class="number">0</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        DamageTargetList.Add(other);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Enemy-Shooting"><a href="#Enemy-Shooting" class="headerlink" title="Enemy Shooting"></a>Enemy Shooting</h3><p>对于远程攻击的怪物的攻击，会生成一个伤害球，与角色发生碰撞。</p>
+<p><img src="/image/3DActionGameDemo/image-20231203235707534.png" alt="image-20231203235707534"></p>
+<p>Enemy Shooting脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _Character = GetComponent&lt;Character&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ShootTheDamageOrb</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Instantiate(DamageOrb, ShootingPoint.position, Quaternion.LookRotation(ShootingPoint.forward));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _Character.RotateToPlayer();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>DamageOrb脚本：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _Rigidbody = GetComponent&lt;Rigidbody&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">FixedUpdate</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    _Rigidbody.MovePosition(transform.position + transform.forward * speed *Time.deltaTime);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnTriggerEnter</span>(<span class="params">Collider other</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Character _character = other.gameObject.GetComponent&lt;Character&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_character != <span class="literal">null</span> &amp;&amp; _character.isPlayer)</span><br><span class="line">    &#123;</span><br><span class="line">        _character.ApplyDamage(Damage,transform.position);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Instantiate(HitVFX, transform.position, Quaternion.identity);</span><br><span class="line">    Destroy(gameObject);</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Enemy-Drop"><a href="#Enemy-Drop" class="headerlink" title="Enemy Drop"></a>Enemy Drop</h3><p>怪物死亡会掉落治疗球，使用碰撞检测捡起，会判断是否是被Tag为<strong>Player</strong>的对象碰撞。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public enum PickUpType</span><br><span class="line">&#123;</span><br><span class="line">    Heal,Coin</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//Heal</span><br><span class="line">public PickUpType Type;</span><br><span class="line">public int Value = 20;</span><br><span class="line"></span><br><span class="line">//Coin</span><br><span class="line">public ParticleSystem CollectedVFX;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">private void OnTriggerEnter(Collider other)</span><br><span class="line">&#123;</span><br><span class="line">    if (other.tag == &quot;Player&quot;)</span><br><span class="line">    &#123;</span><br><span class="line">        other.gameObject.GetComponent&lt;Character&gt;().PickUpItem(this);</span><br><span class="line"></span><br><span class="line">        if (CollectedVFX != null)</span><br><span class="line">        &#123;</span><br><span class="line">            Instantiate(CollectedVFX, transform.position, Quaternion.identity);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        Destroy(gameObject);</span><br><span class="line">        </span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Level"><a href="#Level" class="headerlink" title="Level"></a>Level</h2><h3 id="Enemy-Spawn"><a href="#Enemy-Spawn" class="headerlink" title="Enemy Spawn"></a>Enemy Spawn</h3><p><strong>Spawner</strong>用来控制怪物的生成，<strong>SpawnEnemys</strong>会获取<strong>SpawnPoint</strong>的位置，在这个位置上面生成怪物。</p>
+<p><img src="/image/3DActionGameDemo/image-20231204000844746.png" alt="image-20231204000844746"></p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Awake</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">var</span> spawnArray = transform.parent.GetComponentsInChildren&lt;SpawnPoint&gt;();</span><br><span class="line">    _spawnPointsList = <span class="keyword">new</span> List&lt;SpawnPoint&gt;(spawnArray);</span><br><span class="line">    _charactersList = <span class="keyword">new</span> List&lt;Character&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (_charactersList.Count == <span class="number">0</span> || !isSpawned)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">bool</span> ALL_Spawn_Enermy_Dead = <span class="literal">true</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">foreach</span> (Character _character <span class="keyword">in</span> _charactersList)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (_character.CurrentState != Character.CharacterState.Dead)</span><br><span class="line">        &#123;</span><br><span class="line">            ALL_Spawn_Enermy_Dead = <span class="literal">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//添加监听事件以及函数</span></span><br><span class="line">    <span class="keyword">if</span> (ALL_Spawn_Enermy_Dead)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (OnAllSpawnCharacterDead != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            OnAllSpawnCharacterDead.Invoke();</span><br><span class="line">        &#125;</span><br><span class="line">        _charactersList.Clear();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SpawnEnemys</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (isSpawned)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    isSpawned = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> _spawnPoints <span class="keyword">in</span> _spawnPointsList)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (_spawnPoints.EnemyToSpawn != <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            GameObject spawnedGameObject = Instantiate(_spawnPoints.EnemyToSpawn, _spawnPoints.transform.position,</span><br><span class="line">                _spawnPoints.transform.rotation);</span><br><span class="line">            spawnedGameObject.transform.GetComponent&lt;Character&gt;().SwitchStateTo(Character.CharacterState.Spawn);</span><br><span class="line">            _charactersList.Add(spawnedGameObject.GetComponent&lt;Character&gt;());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnTriggerEnter</span>(<span class="params">Collider other</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (other.tag == <span class="string">&quot;Player&quot;</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        SpawnEnemys();</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDrawGizmos</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Gizmos.color = Color.red;</span><br><span class="line">    Gizmos.DrawWireCube(_Collider.transform.position,_Collider.bounds.size);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Level-1"><a href="#Level-1" class="headerlink" title="Level"></a>Level</h3><p>此外，Spawner还控制着关卡大门的打开，只有当当前关卡怪物都死亡时，才会触发<strong>OnAllSpawnCharacterDead</strong>事件，打开门扉。</p>
+<p><img src="/image/3DActionGameDemo/image-20231204001310893.png" alt="image-20231204001310893"></p>
+<h2 id="GameManager"><a href="#GameManager" class="headerlink" title="GameManager"></a>GameManager</h2><p>此外，游戏UI也有这几种状态：<strong>GamePlay</strong>、<strong>GamePause</strong>、<strong>GameOver</strong>、<strong>GameIsFinished</strong></p>
+<ul>
+<li><strong>GamePlay：</strong>游戏进行状态，会隐藏除了角色状态以外的UI</li>
+<li><strong>GamePause：</strong>游戏暂停状态，会将<code>Time.timeScale</code>设为0，使得游戏停止，由于所有的角色、敌人、关卡行为都是基于<code>Time</code>，此时场景内的所有东西都会停止。</li>
+<li><strong>GameOver：</strong>游戏结束状态，当角色死亡时触发，可以重新开始游戏或者回到开始界面</li>
+<li><strong>GameIsFinished：</strong>游戏通过状态，游戏通过时触发。</li>
+</ul>
+<p><img src="/image/3DActionGameDemo/image-20231204001925350.png" alt="image-20231204001925350"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/06/20/3D-Action-Game-Demo/">https://li-kira.github.io/2023/06/20/3D-Action-Game-Demo/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Demo/"># Demo</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/06/25/VFX-Particle-System-Learning/">VFX - Particle System Learning</a>
+            
+            
+            <a class="next" rel="next" href="/2023/06/09/Diagram/">Diagram</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

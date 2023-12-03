@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>Computer Vision-based Sentiment Analysis and Generation Experience in Unity | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Computer Vision-based Sentiment Analysis and Generation Experience in Unity</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">December 12, 2022&nbsp;&nbsp;0:15:30</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Unity/">Unity</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p><strong>项目地址：</strong><br><img src="https://gh-card.dev/repos/Li-Kira/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity.svg" alt="Li-Kira/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity"></p>
+<h2 id="Unity相关"><a href="#Unity相关" class="headerlink" title="Unity相关"></a>Unity相关</h2><h3 id="Asset"><a href="#Asset" class="headerlink" title="Asset"></a>Asset</h3><blockquote>
+<p><strong>项目结果如表所示：</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Asset Type</strong></th>
+<th align="left"><strong>Explanation</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Fonts</td>
+<td align="left">This folder contains the fonts used in the project.   此文件夹包含项目中使用的字体。</td>
+</tr>
+<tr>
+<td align="left">Materials</td>
+<td align="left">These assets contain the materials used in the development process.这些资产包含了开发过程中使用的材质。</td>
+</tr>
+<tr>
+<td align="left">MLModels</td>
+<td align="left">The ONNX model used for machine learning.机器学习所用到的ONNX模型。</td>
+</tr>
+<tr>
+<td align="left">Prefabs</td>
+<td align="left">These are reusable GameObjects with prebuilt Components.Add them to a scene to build.这些是预制件游戏对象，可以直接将它们添加到要构建的场景中。</td>
+</tr>
+<tr>
+<td align="left">Scripts</td>
+<td align="left">All user-developed code for gameplay appears here. 所有整理后的项目代码都在这里。</td>
+</tr>
+<tr>
+<td align="left">Settings</td>
+<td align="left">These assets store render pipeline settings,such as UniversalRender Pipeline (URP).这些资产存储渲染管道设置：UniversalRender管道(URP)。</td>
+</tr>
+<tr>
+<td align="left">Shaders</td>
+<td align="left">These programs run on the GPU as part of thegraphics pipeline. 这些Shader作为图形管道的一部分在GPU上运行。</td>
+</tr>
+<tr>
+<td align="left">Scenes</td>
+<td align="left">Runnable Unity scenarios that store test cases generated during development and final integration scenarios. 可运行的Unity场景，存储开发中产生的测试案例以及最后的整合场景。</td>
+</tr>
+<tr>
+<td align="left">Textures</td>
+<td align="left">lmage files can consist of texture files for materials andsurfacing, UI overlay elements for user interface, andlightmaps to store lighting information.图像文件:由材质和表面处理的纹理文件、用户界面的UI覆盖元素以及用于存储照明信息的光图组成。</td>
+</tr>
+<tr>
+<td align="left">ThirdParty</td>
+<td align="left">Assets from external sources, development plug-ins, etc. 来自外部的资产、开发包等。</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h3><blockquote>
+<p><strong>Unity URP兼容版本，本项目使用的版本为：12.1.7</strong><br>在顶部导航栏中，选择 <strong>Window &gt; Package Manager</strong> 以打开 <strong>Package Manager</strong> 窗口。选择 <strong>All</strong> 选项卡。此选项卡显示当前运行的 Unity 版本的可用资源包列表。从包列表中选择 <strong>Universal RP</strong>。在 Package Manager 窗口的右下角，选择 <strong>Install</strong>。Unity 会将 URP 直接安装到您的项目中。</p>
+</blockquote>
+<h4 id="Compatibility-（兼容性）"><a href="#Compatibility-（兼容性）" class="headerlink" title="Compatibility （兼容性）"></a>Compatibility （兼容性）</h4><table>
+<thead>
+<tr>
+<th align="left">Package version</th>
+<th align="left">Minimum Unity version</th>
+<th align="left">Maximum Unity version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">12.0.0</td>
+<td align="left">2021.2</td>
+<td align="left">2021.2</td>
+</tr>
+<tr>
+<td align="left">11.0.0</td>
+<td align="left">2021.1</td>
+<td align="left">2021.1</td>
+</tr>
+</tbody></table>
+<h4 id="Graphics-Settings-（图形设置）"><a href="#Graphics-Settings-（图形设置）" class="headerlink" title="Graphics Settings （图形设置）"></a>Graphics Settings （图形设置）</h4><blockquote>
+<p><strong>使用线性色彩空间比使用伽马色彩空间提供更准确的渲染，但是部分VR设备如PICO打包仅支持伽马色彩空间，因此打包到PICO需要更改色彩空间。</strong><br>在 <strong>Player</strong> 设置（菜单：<strong>Edit</strong> &gt; <strong>Project Settings__，然后选择</strong> Player__ 类别）中将 <strong>Color Space</strong> 设置为 <strong>Linear</strong>。</p>
+</blockquote>
+<h4 id="Package-Used-包"><a href="#Package-Used-包" class="headerlink" title="Package Used(包)"></a>Package Used(包)</h4><blockquote>
+<p><strong>以下为项目使用的重要包：</strong></p>
+</blockquote>
+<ul>
+<li><strong>Cinemachine Version 2.8.9:</strong> Smart camera tools for passionate creators. 智能相机工具。</li>
+<li><strong>Input System Version 1.4.2:</strong> A new input system which can be used as a more extensible and customizable alternative to Unity’s classic input system in UnityEngine.Input.一个新的输入系统，可以作为UnityEngine.Input中Unity经典输入系统的一个更可扩展和可定制的替代。</li>
+<li><strong>Universal RP Version 12.1.7:</strong> The Universal Render Pipeline (URP) is a prebuilt Scriptable Render Pipeline, made by Unity. URP provides artist-friendly workflows that let you quickly and easily create optimized graphics across a range of platforms, from mobile to high-end consoles and PCs.通用渲染管线（URP）是一个预先构建的可编写脚本的渲染管线，由Unity制作。URP提供了艺术家友好的工作流程，让你在一系列的平台上，从手机到高端游戏机和PC，快速而轻松地创建优化图形。</li>
+<li><strong>Barracuda Version 3.0.0:</strong> Barracuda is lightweight and cross-platform Neural Net inference library. Barracuda supports inference both on GPU and CPU. Barracuda是轻量级和跨平台的神经网络推理库。Barracuda支持在GPU和CPU上进行推理。</li>
+<li><strong>OpenCVForUnity Version 2.4.9TrialVersion:</strong> OpenCV for Unity is a resource plugin that allows the use of OpenCV 4.4.0 in Unity. Unity 的 OpenCV 是一个资源插件，可在 Unity 中使用 OpenCV 4.4.0。</li>
+<li><strong>PICO Unity Integration SDK Version 2.0.7:</strong> Unity XR SDK v2.x是LTS版本，目前支持Neo 3和PICO4系列。</li>
+<li><strong>Shader Graph Version 12.1.7:</strong> The Shader Graph package adds a visual Shader editing tool to Unity. You can use this tool to create Shaders in a visual way instead of writing code. Specific render pipelines can implement specific graph features. Currently, both the High Definition Rendering Pipeline and the Universal Rendering Pipeline support Shader Graph. Shader Graph软件包为Unity添加了一个可视化的Shader编辑工具。你可以使用这个工具以可视化的方式创建着色器，而不是写代码。特定的渲染管线可以实现特定的图形功能。目前，高清渲染管线和通用渲染管线都支持Shader Graph。</li>
+</ul>
+<blockquote>
+<p><strong>外部服务：</strong></p>
+</blockquote>
+<ul>
+<li><strong>NeteaseCloudMusicApi:</strong> NeteaseCloudMusic Node.js API service. 网易云Node.js API服务。</li>
+</ul>
+<hr>
+<h3 id="Environment-Settings"><a href="#Environment-Settings" class="headerlink" title="Environment Settings"></a>Environment Settings</h3><h4 id="Model-（模型）"><a href="#Model-（模型）" class="headerlink" title="Model （模型）"></a>Model （模型）</h4><p>房间模型来源于Unity Asset Store免费素材：</p>
+<p><a target="_blank" rel="noopener" href="https://assetstore.unity.com/packages/3d/props/furniture/pack-gesta-furniture-1-28237">https://assetstore.unity.com/packages/3d/props/furniture/pack-gesta-furniture-1-28237</a></p>
+<h4 id="Material-材质"><a href="#Material-材质" class="headerlink" title="Material (材质)"></a>Material (材质)</h4><blockquote>
+<p><strong>使用URP渲染管线，需要将材质从Build-in转换成URP兼容的材质，否则材质贴图会出现洋红色的显示错误</strong><br>选择 <strong>Window</strong> &gt; <strong>Rendering</strong> &gt; <strong>Render Pipeline Converter</strong>。Unity 将打开 Render Pipeline Converter 窗口，可以在此窗口内将我们的材质转换为URP材质。</p>
+</blockquote>
+<h4 id="Lighting-（光照）"><a href="#Lighting-（光照）" class="headerlink" title="Lighting （光照）"></a>Lighting （光照）</h4><blockquote>
+<p><strong>在设置自己的光照之前需要清除原来的光照探针，并生成新的光照设置</strong><br><strong>Mesh （网格）</strong> </p>
+</blockquote>
+<p>对于每一个模型文件的导入，需要在<strong>Mesh</strong>的<strong>Import Setting</strong>里面勾选<strong>Generate Lightmap UVs</strong>，如图所示：Generate Lightmap UVs.png</p>
+<blockquote>
+<p><strong>同时需要设置Static Gameobject，由于静态游戏对象不会移动，因此这些计算的结果在运行时仍然有效。这意味着Unity可以节省运行时计算成本，并可能提高性能，对于每一个Mesh的设置如图：Mesh Settings.png</strong><br><strong>Light Mode （光照模式）</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>在Lighting&gt;Mixed Lighting 里面，将光照模式改为Backed Indirect</strong><br>Unity 在 Unity Editor 中为烘焙光源执行计算，并将结果作为光照数据保存到磁盘中。这一过程称为烘焙。在运行时，Unity 将加载烘焙的光照数据，并使用这一数据来照亮场景。由于复杂的计算是预先执行的，因此烘培光源可以减少运行时的着色成本，并减少阴影的渲染成本。</p>
+</blockquote>
+<p><strong>Sky Box （天空盒）</strong></p>
+<blockquote>
+<p><strong>Skybox设置如图：Skybox.png</strong><br>将HDR贴图在<strong>Import Setting</strong>里面转换为Cubemap，并以此生成材质</p>
+</blockquote>
+<p><strong>Reflection Probe （反射探针）</strong></p>
+<blockquote>
+<p><strong>使用前请先清除原先的反射探针，并将新的反射探针的大小调整为能够覆盖整个房间的大小</strong><br><strong>Light source （光源）</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>使用的光源在层级视图显示如下：Light source.png，光源的详细设置如图：Light source Settings.png</strong><br>其中，<strong>Area Light</strong>模拟环境光，<strong>Directional Light</strong>模拟太阳光</p>
+</blockquote>
+<p><strong>Lighting Settings （光照设置）</strong></p>
+<blockquote>
+<p><strong>光源设置如图所示： Lighting Settings.png，烘焙后生成的光照设置文件如图：Lighting Settings File.png</strong><br>同时，在<strong>URP Settings</strong>中将Shadow Resolution调为4096，并且启用<strong>Soft Shadows</strong>，这可以增加场景阴影的细腻度</p>
+</blockquote>
+<h4 id="Post-Process-（后处理）"><a href="#Post-Process-（后处理）" class="headerlink" title="Post Process （后处理）"></a><strong>Post Process （后处理）</strong></h4><blockquote>
+<p><strong>使用前请在Camera&gt;Rendering中启用Post Process，Post Process设置如图：Post Process.png</strong><br>其中<strong>Tonemapping</strong>（色调映射）是将颜色值从高动态范围（HDR）映射到低动态范围（LDR）的过程。在Unity中，对于大多数平台，任意的16位浮点颜色值将被映射为传统的8位值。</p>
+</blockquote>
+<p><strong>Bloom</strong>给人一种极其明亮的光线的错觉，让明亮的像素扩散到暗部去，以达到增强场景视觉氛围的效果。</p>
+<p><strong>Lift Gamma Gain</strong>这种效果可以让你进行三段式调色。Lift Gamma Gain轨迹球遵循ASC CDL标准。当你调整轨迹球上的点的位置时，它将图像的色调向给定色调范围内的那个颜色转移。使用不同的轨迹球来影响图像中的不同范围。调整轨迹球下面的滑块，以抵消该范围的颜色明度。</p>
+<p><strong>White Balance</strong>消除了不真实的色差。</p>
+<hr>
+<h3 id="Media-Player"><a href="#Media-Player" class="headerlink" title="Media Player"></a>Media Player</h3><h4 id="Scripts-Info"><a href="#Scripts-Info" class="headerlink" title="Scripts Info"></a>Scripts Info</h4><table>
+<thead>
+<tr>
+<th align="left">Script  Name</th>
+<th align="left">Type</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">MediaPlayerController</td>
+<td align="left">MonoBehaviour</td>
+<td align="left">媒体播放器控制脚本</td>
+</tr>
+<tr>
+<td align="left">Track</td>
+<td align="left">ScriptableObject</td>
+<td align="left">将歌曲转化为Unity可识别的AudioClip对象脚本</td>
+</tr>
+</tbody></table>
+<p>部分参数/函数信息：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameters/Function 参数/函数</th>
+<th align="left">Type 类型</th>
+<th align="left">Return 返回值</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">trackSources</td>
+<td align="left">Track[]</td>
+<td align="left">trackAudioClip</td>
+<td align="left">存储AudioClip对象的数组</td>
+</tr>
+<tr>
+<td align="left">trackTextUI</td>
+<td align="left">Text</td>
+<td align="left">trackSources[trackIndex].name</td>
+<td align="left">当前播放音轨名称</td>
+</tr>
+<tr>
+<td align="left">trackIndex</td>
+<td align="left">int</td>
+<td align="left">cam.ScreenPointToRay(position);</td>
+<td align="left">当前播放音轨序列</td>
+</tr>
+<tr>
+<td align="left">MediaAudioSource</td>
+<td align="left">AudioSource</td>
+<td align="left">trackSources[trackIndex].trackAudioClip</td>
+<td align="left">AudioClip对象</td>
+</tr>
+<tr>
+<td align="left">updateTrack(int index)</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">更新音轨</td>
+</tr>
+<tr>
+<td align="left">PlayAudio()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">播放音轨</td>
+</tr>
+<tr>
+<td align="left">PauseAudio()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">暂停音轨</td>
+</tr>
+<tr>
+<td align="left">StopAudio()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">停止音轨</td>
+</tr>
+<tr>
+<td align="left">ForwardButton()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">向前音轨</td>
+</tr>
+<tr>
+<td align="left">BackForwardButton()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">向后音轨</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="Painting-System"><a href="#Painting-System" class="headerlink" title="Painting System"></a>Painting System</h3><p>主流的实现方法有以下三种，通过调研选择在该项目中使用第三种实现方式即在UV空间绘图：</p>
+<ul>
+<li>使用顶点绘图</li>
+<li>使用光照贴图绘图</li>
+<li>在UV空间绘图</li>
+</ul>
+<h4 id="Prefabs-Info"><a href="#Prefabs-Info" class="headerlink" title="Prefabs Info"></a>Prefabs Info</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>Prefabs 预制件</strong></th>
+<th align="left"><strong>Parameters 参数</strong></th>
+<th align="left"><strong>Description 描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PaintManager</td>
+<td align="left">如图PaintManager.png</td>
+<td align="left">读取Shader，保存paintable对象的UV信息等</td>
+</tr>
+<tr>
+<td align="left">MousePainter</td>
+<td align="left">如图MousePainter.png</td>
+<td align="left">判断鼠标是否点击，是则执行paint方法</td>
+</tr>
+</tbody></table>
+<h4 id="Scripts-Info-1"><a href="#Scripts-Info-1" class="headerlink" title="Scripts Info"></a>Scripts Info</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>Shaders</strong></th>
+<th align="left"><strong>Scripts</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ExtendIslands</td>
+<td align="left">PaintManager</td>
+</tr>
+<tr>
+<td align="left">TexturePainter</td>
+<td align="left">Paintable</td>
+</tr>
+<tr>
+<td align="left">Paintable</td>
+<td align="left">MousePainter</td>
+</tr>
+</tbody></table>
+<h4 id="Painting-Shader"><a href="#Painting-Shader" class="headerlink" title="Painting Shader"></a>Painting Shader</h4><blockquote>
+<p><strong>为了实现UV空间绘图，我们使用了三个Shader，他们的作用如下：</strong></p>
+</blockquote>
+<ul>
+<li><strong>ExtendIslands:</strong> 转换UV的空间坐标。</li>
+<li><strong>TexturePainter:</strong> 画笔的mask信息以及笔刷颜色、大小等信息。</li>
+<li><strong>Paintable:</strong> 渲染遮罩的样式。</li>
+</ul>
+<h4 id="Vertex-Shader"><a href="#Vertex-Shader" class="headerlink" title="Vertex Shader"></a>Vertex Shader</h4><blockquote>
+<p><strong>在顶点着色器中，rasterizer光栅将重新创建UV，而不是将UV空间坐标转换成屏幕空间坐标</strong><br><strong>同时，由于rasterizer的参数约束在（-1，1）之间，我们需要重新映射UV，这里使用了Unity提供的宏： _ProjectionParams</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt;v2f vert (appdata v)&#123;</span><br><span class="line">              v2f o;</span><br><span class="line">    o.worldPos = mul(unity_ObjectToWorld, v.vertex);</span><br><span class="line">              o.uv = v.uv;</span><br><span class="line">    float4 uv = float4(0, 0, 0, 1);</span><br><span class="line">              uv.xy = float2(1, _ProjectionParams.x) * (v.uv.xy * float2( 2, 2) - float2(1, 1));</span><br><span class="line">    o.vertex = uv; </span><br><span class="line">              return o;</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#### Fragment Shader</span><br><span class="line"></span><br><span class="line">&gt;**在片元着色器中，我们使用mask函数来追踪画笔的世界坐标与每个片元之间的距离**</span><br><span class="line">```plain</span><br><span class="line">float mask(float3 position, float3 center, float radius, float hardness)&#123;</span><br><span class="line">                float m = distance(center, position);</span><br><span class="line">                return 1 - smoothstep(radius * hardness, radius, m);    </span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>同时，在着色器中加入画笔的半径、硬度和强度的参数</strong><br><strong>为了支持多种颜色的混合，对背景颜色和画笔颜色进行插值</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">fixed4 frag (v2f i) : SV_Target&#123;   </span><br><span class="line">                if(_PrepareUV &gt; 0 )&#123;</span><br><span class="line">                    return float4(0, 0, 1, 1);</span><br><span class="line">                &#125;         </span><br><span class="line">​</span><br><span class="line">                float4 col = tex2D(_MainTex, i.uv);</span><br><span class="line">                float f = mask(i.worldPos, _PainterPosition, _Radius, _Hardness);</span><br><span class="line">                float edge = f * _Strength;</span><br><span class="line">                return lerp(col, _PainterColor, edge);</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Mouse-Painter-Scripts"><a href="#Mouse-Painter-Scripts" class="headerlink" title="Mouse Painter Scripts"></a>Mouse Painter Scripts</h4><blockquote>
+<p><strong>为了能让鼠标进行绘画，我们使用了以下三个脚本:</strong></p>
+</blockquote>
+<ul>
+<li><strong>PaintManager:</strong> 从<strong>ExtendIslands Shader</strong>和<strong>TexturePainter Shader</strong>中分别读取<strong>UV信息</strong>以及画笔的<strong>颜色</strong>、<strong>大小</strong>、<strong>硬度</strong>和<strong>强度信息</strong></li>
+<li><strong>Paintable:</strong> 挂载在可以被Paint的对象上，并将该对象的信息保存到渲染缓冲区中。</li>
+<li><strong>MousePainter:</strong> 继承自<strong>PaintManager</strong>，可以通过鼠标点击调用Paint方法。<br><strong>PaintManager</strong></li>
+</ul>
+<blockquote>
+<p><strong>从ExtendIslands Shader和TexturePainter Shader中分别读取UV信息以及画笔的颜色、大小、硬度和强度信息</strong><br><strong>使用CommandBuffer API获取渲染命令列表，当我们需要执行Paint操作时，从渲染缓冲区中执行</strong><br><strong>使用Singleton，通过这种抽象，让我们想要的Painter继承PaintManager，使其能调用其中的Paint方法。比如说目前项目用到的MousePainter，未来嵌入VR可以针对手柄的Input设计我们想要的Painter</strong><br>部分参数/函数信息：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Parameters/Function 参数/函数</strong></th>
+<th align="left"><strong>Type 类型</strong></th>
+<th align="left"><strong>Return 返回值</strong></th>
+<th align="left"><strong>Description 描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">prepareUVID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_PrepareUV”);</td>
+<td align="left">从Shader中提供的物体UV的ID</td>
+</tr>
+<tr>
+<td align="left">positionID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_PainterPosition”);</td>
+<td align="left">从Shader中提供的画笔位置的ID</td>
+</tr>
+<tr>
+<td align="left">hardnessID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_Hardness”);</td>
+<td align="left">从Shader中提供的画笔硬度的ID</td>
+</tr>
+<tr>
+<td align="left">strengthID</td>
+<td align="left">int</td>
+<td align="left">PropertyToID(“_Strength”);</td>
+<td align="left">从Shader中提供的强度位置的ID</td>
+</tr>
+<tr>
+<td align="left">radiusID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_Radius”);</td>
+<td align="left">从Shader中提供的画笔大小的ID</td>
+</tr>
+<tr>
+<td align="left">colorID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_PainterColor”);</td>
+<td align="left">从Shader中提供的画笔颜色的ID</td>
+</tr>
+<tr>
+<td align="left">textureID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_MainTex”);</td>
+<td align="left">从Shader中提供的画笔遮罩的ID</td>
+</tr>
+<tr>
+<td align="left">uvOffsetID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_OffsetUV”);</td>
+<td align="left">从Shader中提供的变换后UV的ID</td>
+</tr>
+<tr>
+<td align="left">uvIslandsID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_UVIslands”);</td>
+<td align="left">从Shader中提供的变换后UV的ID</td>
+</tr>
+<tr>
+<td align="left">command</td>
+<td align="left">CommandBuffer</td>
+<td align="left">command.SetRenderTarget(mask);</td>
+<td align="left">渲染指令</td>
+</tr>
+<tr>
+<td align="left">paint()</td>
+<td align="left">public void</td>
+<td align="left">略</td>
+<td align="left">实现绘画的方法</td>
+</tr>
+</tbody></table>
+<p><strong>Paintable</strong></p>
+<blockquote>
+<p><strong>挂载在能够被绘画的网格模型上，存储模型信息给paint方法使用</strong><br>部分参数/函数信息：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Parameters/Function 参数/函数</strong></th>
+<th align="left"><strong>Type 类型</strong></th>
+<th align="left"><strong>Return 返回值</strong></th>
+<th align="left"><strong>Description 描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">getUVIslands()</td>
+<td align="left">RenderTexture</td>
+<td align="left">uvIslandsRenderTexture</td>
+<td align="left">UV坐标信息</td>
+</tr>
+<tr>
+<td align="left">getMask()</td>
+<td align="left">RenderTexture</td>
+<td align="left">maskRenderTexture</td>
+<td align="left">遮罩信息</td>
+</tr>
+<tr>
+<td align="left">maskTextureID</td>
+<td align="left">int</td>
+<td align="left">Shader.PropertyToID(“_MaskTexture”);</td>
+<td align="left">_MaskTexture</td>
+</tr>
+</tbody></table>
+<p><strong>MousePainter</strong></p>
+<blockquote>
+<p><strong>实现鼠标点击流程：通过相机获取反射射线来判断是否击中，是则执行paint方法操作</strong><br>部分参数/函数信息：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Parameters/Function 参数/函数</strong></th>
+<th align="left"><strong>Type 类型</strong></th>
+<th align="left"><strong>Return 返回值</strong></th>
+<th align="left"><strong>Description 描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">cam</td>
+<td align="left">Camera</td>
+<td align="left"></td>
+<td align="left">Unity相机</td>
+</tr>
+<tr>
+<td align="left">click</td>
+<td align="left">bool</td>
+<td align="left">true/false</td>
+<td align="left">是否点击</td>
+</tr>
+<tr>
+<td align="left">ray</td>
+<td align="left">Ray</td>
+<td align="left">cam.ScreenPointToRay(position);</td>
+<td align="left">从相机返回的射线</td>
+</tr>
+<tr>
+<td align="left">p</td>
+<td align="left">Paintable</td>
+<td align="left">hit.collider.GetComponent<Paintable>()</td>
+<td align="left">执行paint方法</td>
+</tr>
+</tbody></table>
+<p>部分执行脚本片段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">if (click)&#123;</span><br><span class="line">    Vector3 position = Input.mousePosition;</span><br><span class="line">    Ray ray = cam.ScreenPointToRay(position);</span><br><span class="line">    RaycastHit hit;</span><br><span class="line">​</span><br><span class="line">    if (Physics.Raycast(ray, out hit, 100.0f))&#123;</span><br><span class="line">        Debug.DrawRay(ray.origin, hit.point - ray.origin, Color.red);</span><br><span class="line">        transform.position = hit.point;</span><br><span class="line">        Paintable p = hit.collider.GetComponent&lt;Paintable&gt;();</span><br><span class="line">        if(p != null)&#123;</span><br><span class="line">            PaintManager.instance.paint(p, hit.point, radius, hardness, strength, paintColor);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Shader-Graph"><a href="#Shader-Graph" class="headerlink" title="Shader Graph"></a>Shader Graph</h4><blockquote>
+<p><strong>该Shader用于渲染遮罩，实现方式如下：</strong><br><strong>使用Default-Particle作为遮罩，在其边缘增加噪声，如图Mask.png所示</strong><br><strong>通过插值混合网格和遮罩，如图Lerp.png所示</strong></p>
+</blockquote>
+<hr>
+<h3 id="Interaction-amp-Camera-Switcher"><a href="#Interaction-amp-Camera-Switcher" class="headerlink" title="Interaction &amp; Camera Switcher"></a>Interaction &amp; Camera Switcher</h3><h4 id="Scripts-Info-2"><a href="#Scripts-Info-2" class="headerlink" title="Scripts Info"></a>Scripts Info</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>Script  Name</strong></th>
+<th align="left"><strong>Type</strong></th>
+<th align="left"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">IInteractable</td>
+<td align="left">interface</td>
+<td align="left">互动接口</td>
+</tr>
+<tr>
+<td align="left">InteractionManager</td>
+<td align="left">MonoBehaviour</td>
+<td align="left">管理互动脚本，包括互动以及相机切换</td>
+</tr>
+<tr>
+<td align="left">CanvasInteraction</td>
+<td align="left">MonoBehaviour, IInteractable</td>
+<td align="left">实现IInteractable接口，定义了画布互动方法</td>
+</tr>
+<tr>
+<td align="left">BrushesInteraction</td>
+<td align="left">MonoBehaviour, IInteractable</td>
+<td align="left">实现IInteractable接口，定义了笔刷互动方法</td>
+</tr>
+<tr>
+<td align="left">UIRotationFixed</td>
+<td align="left">MonoBehaviour</td>
+<td align="left">修正UI显示位置</td>
+</tr>
+</tbody></table>
+<h4 id="InteractionManager"><a href="#InteractionManager" class="headerlink" title="InteractionManager"></a>InteractionManager</h4><blockquote>
+<p><strong>管理互动脚本</strong><br>部分参数/函数信息：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left"><strong>Parameters/Function 参数/函数</strong></th>
+<th align="left"><strong>Type 类型</strong></th>
+<th align="left">Return 返回值</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PlayerCamera</td>
+<td align="left">CinemachineVirtualCamera</td>
+<td align="left">CinemachineVirtualCamera</td>
+<td align="left">角色跟随虚拟相机</td>
+</tr>
+<tr>
+<td align="left">CanvasCamera</td>
+<td align="left">CinemachineVirtualCamera</td>
+<td align="left">CinemachineVirtualCamera</td>
+<td align="left">画布相机</td>
+</tr>
+<tr>
+<td align="left">MainCamera</td>
+<td align="left">Camera</td>
+<td align="left">Camera</td>
+<td align="left">主相机</td>
+</tr>
+<tr>
+<td align="left">interactionDistance</td>
+<td align="left">float</td>
+<td align="left">2f</td>
+<td align="left">交互距离</td>
+</tr>
+<tr>
+<td align="left">interactionUI</td>
+<td align="left">GameObject</td>
+<td align="left">UI Mono</td>
+<td align="left">交互UI</td>
+</tr>
+<tr>
+<td align="left">interactionText</td>
+<td align="left">TextMeshProUGUI</td>
+<td align="left">interactable.GetDescription()</td>
+<td align="left">交互文本</td>
+</tr>
+<tr>
+<td align="left">canvasUI</td>
+<td align="left">GameObject</td>
+<td align="left">UI Mono</td>
+<td align="left">画布UI</td>
+</tr>
+<tr>
+<td align="left">isEButtonHit</td>
+<td align="left">bool</td>
+<td align="left">false/true</td>
+<td align="left">判断是否按下按键</td>
+</tr>
+<tr>
+<td align="left">OnEnable()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">Register CinemachineVirtualCamera</td>
+</tr>
+<tr>
+<td align="left">OnDisable()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">Unregister CinemachineVirtualCamera</td>
+</tr>
+<tr>
+<td align="left">LockMouse()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">锁定鼠标</td>
+</tr>
+<tr>
+<td align="left">InteractionRay()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">判断是否被准星选中，选中则显示UI,选择如果按下对应按键则触发互动以及切换相机</td>
+</tr>
+</tbody></table>
+<p><strong>主要执行片段：</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">void InteractionRay()</span><br><span class="line">&#123;</span><br><span class="line">    Ray ray = MainCamera.ViewportPointToRay(Vector3.one / 2f);</span><br><span class="line">    RaycastHit hit;</span><br><span class="line">​</span><br><span class="line">    bool hitSomething = false;</span><br><span class="line">​</span><br><span class="line">    //是否被准星选中，选中则显示</span><br><span class="line">    if (Physics.Raycast(ray, out hit, interactionDistance))</span><br><span class="line">    &#123;</span><br><span class="line">        IInteractable interactable = hit.collider.GetComponent&lt;IInteractable&gt;();</span><br><span class="line">        if (interactable != null)</span><br><span class="line">        &#123;</span><br><span class="line">            hitSomething = true;</span><br><span class="line">            interactionText.text = interactable.GetDescription();</span><br><span class="line">​</span><br><span class="line">            //查看交互对象时按下E键进行交互：转换镜头以及调用Interact()方法</span><br><span class="line">            if (Input.GetKeyDown(KeyCode.E))</span><br><span class="line">            &#123;                   </span><br><span class="line">                if (CameraSwitcher.IsActiveCamera(PlayerCamera))</span><br><span class="line">                &#123;</span><br><span class="line">                    CameraSwitcher.SwitchCamera(CanvasCamera);</span><br><span class="line">                    // 解锁鼠标</span><br><span class="line">                    UnlockMouse();</span><br><span class="line">                    </span><br><span class="line">                    //解锁UI</span><br><span class="line">                    isEButtonHit = true;</span><br><span class="line">                &#125;</span><br><span class="line">​</span><br><span class="line">                if (CameraSwitcher.IsActiveCamera(CanvasCamera))</span><br><span class="line">                &#123;</span><br><span class="line">                    interactable.Interact();</span><br><span class="line">                &#125;</span><br><span class="line">​</span><br><span class="line">                </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">​</span><br><span class="line">    if (Input.GetKeyDown(KeyCode.Escape))</span><br><span class="line">    &#123;</span><br><span class="line">        if (CameraSwitcher.IsActiveCamera(CanvasCamera))</span><br><span class="line">        &#123;</span><br><span class="line">            CameraSwitcher.SwitchCamera(PlayerCamera);</span><br><span class="line">            // 锁定鼠标</span><br><span class="line">            LockMouse();</span><br><span class="line">            // 锁定UI</span><br><span class="line">            isEButtonHit = false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CanvasInteraction"><a href="#CanvasInteraction" class="headerlink" title="CanvasInteraction"></a>CanvasInteraction</h4><p>部分参数/函数信息：</p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameters/Function 参数/函数</th>
+<th align="left">Type 类型</th>
+<th align="left">Return 返回值</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">GetDescription()</td>
+<td align="left">string</td>
+<td align="left">“Press E to Paint”</td>
+<td align="left">准星触发UI显示的文本</td>
+</tr>
+<tr>
+<td align="left">Interact()</td>
+<td align="left">void</td>
+<td align="left">void</td>
+<td align="left">交互行为<br><br></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="Web-Request"><a href="#Web-Request" class="headerlink" title="Web Request"></a>Web Request</h3><h4 id="Scripts-Info-3"><a href="#Scripts-Info-3" class="headerlink" title="Scripts Info"></a>Scripts Info</h4><table>
+<thead>
+<tr>
+<th align="left">Script  Name</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ApiHandler</td>
+<td align="left">Api调用</td>
+</tr>
+<tr>
+<td align="left">NetEasyCloudMusic_HttpClient</td>
+<td align="left">封装从网络API中获取JSON的过程</td>
+</tr>
+<tr>
+<td align="left">PlayListData</td>
+<td align="left">将JSON反序列化为.Net的PlayListData对象</td>
+</tr>
+<tr>
+<td align="left">SongInfoData</td>
+<td align="left">将JSON反序列化为.Net的SongInfoData对象</td>
+</tr>
+</tbody></table>
+<h4 id="Dependency"><a href="#Dependency" class="headerlink" title="Dependency"></a>Dependency</h4><blockquote>
+<p><strong>网易云音乐 Node.js API service</strong><br><a target="_blank" rel="noopener" href="https://github.com/Binaryify/NeteaseCloudMusicApi">https://github.com/Binaryify/NeteaseCloudMusicApi</a></p>
+</blockquote>
+<p>NodeJS 8.12+</p>
+<p><strong>Install</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone git@github.com:Binaryify/NeteaseCloudMusicApi.git</span><br><span class="line">$ cd NeteaseCloudMusicApi</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+
+<p><strong>Run</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ node app.js</span><br></pre></td></tr></table></figure>
+
+<p>服务器启动默认端口为 3000,若不想使用 3000 端口,可使用以下命令: Mac/Linux</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ PORT=4000 node app.js</span><br></pre></td></tr></table></figure>
+
+<p>windows 下使用 git-bash 或者 cmder 等终端执行以下命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ set PORT=4000 &amp;&amp; node app.js</span><br></pre></td></tr></table></figure>
+
+<h4 id="ApiHandler"><a href="#ApiHandler" class="headerlink" title="ApiHandler"></a>ApiHandler</h4><blockquote>
+<p><strong>调用Api，并解析返回的Json</strong><br>部分参数/函数信息：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Parameters/Function 参数/函数</th>
+<th align="left">Type 类型</th>
+<th align="left">Return 返回值</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">text</td>
+<td align="left">TextMeshProUGUI</td>
+<td align="left">略</td>
+<td align="left">准星触发UI显示的文本</td>
+</tr>
+<tr>
+<td align="left">Keywords</td>
+<td align="left">string</td>
+<td align="left">void</td>
+<td align="left">歌曲关键词</td>
+</tr>
+<tr>
+<td align="left">id</td>
+<td align="left">string</td>
+<td align="left">inputField.text</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">url</td>
+<td align="left">string</td>
+<td align="left">“<a target="_blank" rel="noopener" href="http://localhost:3000/playlist/track/all?id=">http://localhost:3000/playlist/track/all?id=</a>“+ id + “&amp;limit=10&amp;offset=1”</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">inputField</td>
+<td align="left">TMP_InputField</td>
+<td align="left">TMP_InputField</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">GetPlayList()</td>
+<td align="left">public async void</td>
+<td align="left">void</td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left">GetSong()</td>
+<td align="left">public async void</td>
+<td align="left">void</td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>调用API并获取Json内容：</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">var httpClient = new NetEasyCloudMusic_HttpClient();</span><br><span class="line">var result = await httpClient.Get&lt;PlayListData&gt;(url);</span><br><span class="line">text.text = &quot;&quot;;</span><br><span class="line">​</span><br><span class="line">​</span><br><span class="line">foreach (Playlist VARIABLE in result.result.playlists)</span><br><span class="line">&#123;</span><br><span class="line">    text.text += </span><br><span class="line">        &quot;id: &quot; + VARIABLE.id + &quot;\n&quot; +</span><br><span class="line">        &quot;name: &quot; + VARIABLE.name + &quot;\n&quot; +</span><br><span class="line">        &quot;trackCount&quot; + VARIABLE.trackCount + &quot;\n&quot;</span><br><span class="line">        + &quot;\n&quot;;</span><br><span class="line">​</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>请求Url：<a target="_blank" rel="noopener" href="http://localhost:3000/search?keywords=">http://localhost:3000/search?keywords=</a>满意&amp;type=1000&amp;limit=10</li>
+<li>传输类型：HTTP</li>
+<li>请求类型：GET</li>
+<li>返回数据类型：JSON<br><strong>Query参数</strong></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">变量名</th>
+<th align="left">必填</th>
+<th align="left">类型</th>
+<th align="left">实例值</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">keywords</td>
+<td align="left">是</td>
+<td align="left">string</td>
+<td align="left">满意</td>
+<td align="left">关键词</td>
+</tr>
+<tr>
+<td align="left">type</td>
+<td align="left">否</td>
+<td align="left">int</td>
+<td align="left">1000</td>
+<td align="left">搜索类型：歌单</td>
+</tr>
+<tr>
+<td align="left">limit</td>
+<td align="left">否</td>
+<td align="left">int</td>
+<td align="left">10</td>
+<td align="left">偏移值</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;result&quot;: &#123;</span><br><span class="line">        &quot;searchQcReminder&quot;: null,</span><br><span class="line">        &quot;playlists&quot;: [</span><br><span class="line">            &#123;</span><br><span class="line">                &quot;id&quot;: 2468397152,</span><br><span class="line">                &quot;name&quot;: &quot;【纯音乐】闹钟满意选择&quot;,</span><br><span class="line">                &quot;coverImgUrl&quot;: &quot;https://p1.music.126.net/7BPYzlYTQp285WXdO-u2Ug==/18215609137826245.jpg&quot;,</span><br><span class="line">                &quot;creator&quot;: &#123;</span><br><span class="line">                    &quot;nickname&quot;: &quot;克里斯不是托&quot;,</span><br><span class="line">                    &quot;userId&quot;: 1546444700,</span><br><span class="line">                    &quot;userType&quot;: 0,</span><br><span class="line">                    &quot;avatarUrl&quot;: null,</span><br><span class="line">                    &quot;authStatus&quot;: 0,</span><br><span class="line">                    &quot;expertTags&quot;: null,</span><br><span class="line">                    &quot;experts&quot;: null</span><br><span class="line">                &#125;,</span><br><span class="line">                &quot;subscribed&quot;: false,</span><br><span class="line">                &quot;trackCount&quot;: 30,</span><br><span class="line">                &quot;userId&quot;: 1546444700,</span><br><span class="line">                &quot;playCount&quot;: 1565,</span><br><span class="line">                &quot;bookCount&quot;: 8,</span><br><span class="line">                &quot;specialType&quot;: 0,</span><br><span class="line">                &quot;officialTags&quot;: null,</span><br><span class="line">                &quot;action&quot;: null,</span><br><span class="line">                &quot;actionType&quot;: null,</span><br><span class="line">                &quot;recommendText&quot;: null,</span><br><span class="line">                &quot;score&quot;: null,</span><br><span class="line">                &quot;description&quot;: &quot;&quot;,</span><br><span class="line">                &quot;highQuality&quot;: false</span><br><span class="line">            &#125;</span><br><span class="line">        ],</span><br><span class="line">        &quot;playlistCount&quot;: 172</span><br><span class="line">    &#125;,</span><br><span class="line">    &quot;code&quot;: 200</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="NetEasyCloudMusic-HttpClient"><a href="#NetEasyCloudMusic-HttpClient" class="headerlink" title="NetEasyCloudMusic_HttpClient"></a>NetEasyCloudMusic_HttpClient</h4><blockquote>
+<p><strong>封装从网络API中获取JSON的过程</strong></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public async Task&lt;TResultType&gt; Get&lt;TResultType&gt;(string url)</span><br><span class="line">&#123;</span><br><span class="line">    </span><br><span class="line">    using var webRequest = UnityWebRequest.Get(url);</span><br><span class="line">    </span><br><span class="line">    webRequest.SetRequestHeader(&quot;Content-Type&quot;,&quot;application/json&quot;);</span><br><span class="line">​</span><br><span class="line">    var operation = webRequest.SendWebRequest();</span><br><span class="line">​</span><br><span class="line">    while (!operation.isDone)</span><br><span class="line">    &#123;</span><br><span class="line">        await Task.Yield();</span><br><span class="line">    &#125;</span><br><span class="line">​</span><br><span class="line">    var jsonResponse = webRequest.downloadHandler.text;</span><br><span class="line">    </span><br><span class="line">    if (webRequest.result != UnityWebRequest.Result.Success)</span><br><span class="line">        Debug.LogError($&quot;Failed: &#123;webRequest.error&#125;&quot;);</span><br><span class="line">​</span><br><span class="line">​</span><br><span class="line">    try</span><br><span class="line">    &#123;</span><br><span class="line">        var result = JsonConvert.DeserializeObject&lt;TResultType&gt;(jsonResponse);</span><br><span class="line">        Debug.Log($&quot;Success:&#123;webRequest.downloadHandler.text&#125;&quot;);</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    catch (Exception exception)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.LogError($&quot;Could not parse response &#123;this&#125;&#123;jsonResponse&#125;. &#123;exception.Message&#125;&quot;);</span><br><span class="line">        return default;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="JsonDataClass"><a href="#JsonDataClass" class="headerlink" title="JsonDataClass"></a>JsonDataClass</h4><blockquote>
+<p><strong>将JSON反序列化为.Net对象</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="left">Name 对象名</th>
+<th align="left">Content 内容</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">PlayListData</td>
+<td align="left">PlayListResult Playlist</td>
+<td align="left">搜索相关歌单信息</td>
+</tr>
+<tr>
+<td align="left">SongInfoData</td>
+<td align="left">Song</td>
+<td align="left">歌单内歌曲信息</td>
+</tr>
+</tbody></table>
+<p><strong>PlayListData</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameters/Function 参数/函数</th>
+<th align="left">Type 类型</th>
+<th align="left">Return 返回值</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Playlist</td>
+<td align="left">class</td>
+<td align="left">id name trackCount</td>
+<td align="left">歌单歌曲部分信息</td>
+</tr>
+<tr>
+<td align="left">PlayListResult</td>
+<td align="left">class</td>
+<td align="left">List<Playlist> playlists</td>
+<td align="left">搜索歌单结果</td>
+</tr>
+<tr>
+<td align="left">PlayListData</td>
+<td align="left">class</td>
+<td align="left">public List<Song> songs { get; set; }</td>
+<td align="left">root</td>
+</tr>
+</tbody></table>
+<p><strong>SongInfoData</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">Parameters/Function 参数/函数</th>
+<th align="left">Type 类型</th>
+<th align="left">Return 返回值</th>
+<th align="left">Description 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Song</td>
+<td align="left">class</td>
+<td align="left">public string name { get; set; } public int id { get; set; }</td>
+<td align="left">song content</td>
+</tr>
+<tr>
+<td align="left">SongInfoData</td>
+<td align="left">class</td>
+<td align="left">public List<Song> songs { get; set; }</td>
+<td align="left">root</td>
+</tr>
+</tbody></table>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2022/12/12/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity/">https://li-kira.github.io/2022/12/12/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Unity-Development/"># Unity Development</a>
+                    
+                        <a href="/tags/Unity-Shader/"># Unity Shader</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/04/12/%E5%BA%94%E7%94%A8%E6%8E%A8%E8%8D%90/">应用推荐</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/12/CSharp%E7%9F%A5%E8%AF%86%E7%82%B9/">C#知识点</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

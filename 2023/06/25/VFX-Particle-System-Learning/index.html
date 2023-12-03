@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>VFX - Particle System Learning | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">VFX - Particle System Learning</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 25, 2023&nbsp;&nbsp;21:33:04</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Unity/">Unity</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本次VFX的学习从爆炸效果入手，涉及粒子系统参数调试、<strong>Material Maker</strong>制作贴图、使用<strong>Blender</strong>制作<strong>Mesh</strong>、使用<strong>Shader Graph</strong>创建简单和复杂的着色器实现以下功能：</p>
+<ul>
+<li><strong>Scroll mask</strong> 滚动遮罩</li>
+<li><strong>Erode</strong> 侵蚀效果</li>
+<li><strong>Animate vertices</strong> 顶点动画</li>
+<li><strong>Distort</strong> 扭曲效果</li>
+<li><strong>Parallax Occlusion</strong> 视察遮挡效果</li>
+</ul>
+<p>最终成果视频：<br><video src="/image/VFX%20-%20Particle%20System%20Learning/2023-06-27_22-17-34.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video></p>
+<blockquote>
+<p>此外，还可以在以下地方找到美术效果参考</p>
+<ul>
+<li>Pinterest</li>
+<li>Art Station</li>
+<li>Real-Time VFX</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="1-Particle-System-Overview-and-Configuration"><a href="#1-Particle-System-Overview-and-Configuration" class="headerlink" title="1 -  Particle System Overview and Configuration"></a>1 -  Particle System Overview and Configuration</h2><h3 id="1-1-Overview"><a href="#1-1-Overview" class="headerlink" title="1.1 - Overview"></a>1.1 - Overview</h3><p><strong>Global Volume 后处理设置：</strong></p>
+<ul>
+<li>Bloom 光晕效果</li>
+<li>Vignette 暗角效果</li>
+<li>Motion Blur 运动模糊</li>
+<li>Chromatic Aberration 色差像差</li>
+</ul>
+<p><strong>VFX Stylized Explosion 爆炸特效组成:</strong></p>
+<blockquote>
+<p>爆炸特效大致可以分为<strong>蘑菇云</strong>、<strong>火花</strong>、<strong>冲击波</strong>、<strong>地面裂痕</strong>，再通过细分可以由以下几种粒子系统构成：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>构成</th>
+<th>类型</th>
+<th>名称</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Arched Projectile</strong></td>
+<td></td>
+<td>投掷物</td>
+<td>带有抛物线的粒子</td>
+</tr>
+<tr>
+<td><strong>Explosion</strong></td>
+<td><strong>顶、中、底</strong></td>
+<td>蘑菇云</td>
+<td>三层从地面升起的蘑菇云，底部大顶部小；底部最先消散，顶部最晚消散</td>
+</tr>
+<tr>
+<td><strong>Particle Impact</strong></td>
+<td><strong>外围、地面</strong></td>
+<td>火花</td>
+<td>一种是往半圆形四周飞射而出的火花，一种是底部往底部四周飞射的火花</td>
+</tr>
+<tr>
+<td><strong>Particle Floating</strong></td>
+<td><strong>外围、地面、轨迹</strong></td>
+<td>漂浮火花</td>
+<td>一种是飘浮在蘑菇云附近的火花，一种是从地面裂缝往上漂浮的火花，一种是从地面炸出的带有轨迹的快速火花</td>
+</tr>
+<tr>
+<td><strong>Smoke Ring</strong></td>
+<td><strong>三层波、快速波</strong></td>
+<td>白色冲击波</td>
+<td>由底向上扩散的白色冲击波</td>
+</tr>
+<tr>
+<td><strong>Color Ring</strong></td>
+<td><strong>底层波：内层波、外层波、外层波阴影；中层波、顶层波</strong></td>
+<td>带颜色的冲击波</td>
+<td>底部的带颜色的冲击波：外、内部冲击波、外冲击波阴影</td>
+</tr>
+<tr>
+<td><strong>Quick Color Shock Wave</strong></td>
+<td><strong>底层波、垂直中层波</strong></td>
+<td>快速颜色波</td>
+<td>底部快速波、垂直中层快速波</td>
+</tr>
+<tr>
+<td><strong>Ground Crack</strong></td>
+<td><strong>地面裂缝、地面裂缝阴影、地面裂缝反射光、地面裂缝阴影扩散、地面爆炸物反射光</strong></td>
+<td>地面裂缝</td>
+<td>包括地面裂缝以及周围的光</td>
+</tr>
+<tr>
+<td><strong>Smoke</strong></td>
+<td><strong>垂直烟雾</strong></td>
+<td>烟雾</td>
+<td>从地面裂缝中飘出的光</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-Resource"><a href="#1-2-Resource" class="headerlink" title="1.2 - Resource"></a>1.2 - Resource</h3><blockquote>
+<p>爆炸用到的美术资源如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>粒子系统</th>
+<th>Mesh</th>
+<th>Texture</th>
+<th>Shader</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Arched Projectile</strong></td>
+<td>Billboard</td>
+<td><strong>Particle：</strong><code>Default</code>                               <strong>Main Texture：</strong><code>Impact</code>                                     <strong>Mask：</strong><code>VFX_Mask_SmokeGradient_02</code></td>
+<td><code>SmokeTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Explosion</strong></td>
+<td><code>VFX_Mesh_SmokeSphere_00</code></td>
+<td>None</td>
+<td><code>ErosionVoronoiShader</code></td>
+</tr>
+<tr>
+<td><strong>Particle Impact</strong></td>
+<td>Stretched Billboard</td>
+<td><code>Default</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Particle Floating</strong></td>
+<td>Billboard</td>
+<td><code>Default</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Ground Particle Floating</strong></td>
+<td>Billboard</td>
+<td><code>Default</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Particle Trail</strong></td>
+<td>Billboard</td>
+<td><strong>Particle：</strong><code>Default</code>                               <strong>Main Texture：</strong><code>Impact</code>                                     <strong>Mask：</strong><code>VFX_Mask_SmokeGradient_02</code></td>
+<td><strong>Particle：</strong><code>SimpleParticleShader     </code>;  <strong>Trail：</strong><code>SmokeTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Smoke Ring</strong></td>
+<td><code>VFX_Mesh_Ring_00</code></td>
+<td><code>Impact</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Quick Smoke Shock Wave</strong></td>
+<td><code>VFX_Mesh_Ring_00</code></td>
+<td><code>Impact</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Orange Smoke Ring</strong></td>
+<td><code>VFX_Mesh_Ring_00</code></td>
+<td><code>Impact</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Orange Smoke  Ring（Dark 、Smaller）</strong></td>
+<td><code>VFX_Mesh_Ring_00</code></td>
+<td><code>Impact</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Orange Float Ring（Top、Bottom）</strong></td>
+<td><code>VFX_Mesh_Ring_01</code></td>
+<td><code>Impact</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Quick Orange Smoke Ring Vertical</strong></td>
+<td><code>VFX_Mesh_Ring_00</code></td>
+<td><code>Impact</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Quick Orange Shock Wave</strong></td>
+<td>None</td>
+<td><code>ImpactRing01_2x2</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Ground Crack</strong></td>
+<td>None</td>
+<td><code>VFX_Tex_GroundCrack_01_albedo</code></td>
+<td><code>ErosionTextureShader</code></td>
+</tr>
+<tr>
+<td><strong>Ground Mask</strong></td>
+<td>None</td>
+<td><code>VFX_Tex_GroundImpact_01_albedo</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Ground Mask_Additive</strong></td>
+<td>None</td>
+<td><code>VFX_Tex_GroundImpact_01_albedo</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Ground Mask_02</strong></td>
+<td>None</td>
+<td><code>VFX_Tex_GroundImpact_02_albedo</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Ground Mask_Glow</strong></td>
+<td>None</td>
+<td><code>Default</code></td>
+<td><code>SimpleParticleShader</code></td>
+</tr>
+<tr>
+<td><strong>Smoke</strong></td>
+<td><code>VFX_Mesh_SmokePlane_00</code></td>
+<td><strong>Main Texture：</strong><code>Impact</code>                                     <strong>Mask：</strong><code>VFX_Mask_SmokeGradient_02</code></td>
+<td><code>SmokeTextureShader</code></td>
+</tr>
+</tbody></table>
+<h3 id="1-3-Settings"><a href="#1-3-Settings" class="headerlink" title="1.3 - Settings"></a>1.3 - Settings</h3><blockquote>
+<p>爆炸的几种参数设置如下：</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>粒子系统</th>
+<th>Shape</th>
+<th>Settings</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Arched Projectile</strong></td>
+<td><strong>Cone</strong></td>
+<td><strong>Velocity、Size  over Lifetime；Collision；Light；Trails</strong></td>
+<td>该粒子到爆炸中心的事件为1.2，对所有的粒子<strong>Start Delay + 1.2</strong></td>
+</tr>
+<tr>
+<td><strong>Explosion</strong></td>
+<td><strong>Circle</strong></td>
+<td><strong>Velocity 、Color、Size、Rotation over Lifetime；Custom Data</strong></td>
+<td><strong>Color over Lifetime</strong>用来模拟由白到黑的过程， 使用<strong>Custom Data</strong>中的UV2和UV1.XYZW用来控制<strong>Shader</strong>中的Alpha Clip的程度。</td>
+</tr>
+<tr>
+<td><strong>Particle Impact</strong></td>
+<td><strong>Hemisphere、Circle</strong></td>
+<td><strong>Limit Velocity、Size over Lifetime</strong></td>
+<td><strong>Limit Velocity over Lifetime</strong>用来控制最大速度</td>
+</tr>
+<tr>
+<td><strong>Particle Floating</strong></td>
+<td><strong>Hemisphere、Circle</strong></td>
+<td><strong>Velocity、Color、Size over Lifetime</strong></td>
+<td><strong>Velocity over Lifetime</strong>添加旋转、上升的设置。<strong>Color over Lifetime</strong> 设置为一段纯白一段透明用来模拟闪烁的效果。</td>
+</tr>
+<tr>
+<td><strong>Ground Particle Floating</strong></td>
+<td><strong>Hemisphere</strong></td>
+<td><strong>Velocity、Color、Size over Lifetime</strong></td>
+<td>该粒子是从蘑菇云升起接着从地面裂缝中飘出，<strong>Start Delay + 1.5 + 1.2</strong></td>
+</tr>
+<tr>
+<td><strong>Particle Trail</strong></td>
+<td><strong>Hemisphere</strong></td>
+<td><strong>Velocity、Size  over Lifetime；Collision；Trails</strong></td>
+<td><strong>Trails</strong>的<strong>Color over Lifetime</strong>是一个从蓝到透明的过程。<strong>Width</strong>的曲线递减到0.3</td>
+</tr>
+<tr>
+<td><strong>Smoke Ring</strong></td>
+<td>None</td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+<td><strong>Color over Lifetime</strong>由黑变白，<strong>Size over Lifetime</strong>的曲线由0.5到1递增</td>
+</tr>
+<tr>
+<td><strong>Quick Smoke Shock Wave</strong></td>
+<td>None</td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+</tr>
+<tr>
+<td><strong>Orange Smoke Ring</strong></td>
+<td>None</td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Orange Smoke  Ring（Dark 、Smaller）</strong></td>
+<td>None</td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Orange Float Ring（Top、Bottom）</strong></td>
+<td>None</td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Quick Orange Smoke Ring Vertical</strong></td>
+<td>None</td>
+<td><strong>Color、Size over Lifetime；Custom Data</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Quick Orange Shock Wave</strong></td>
+<td>None</td>
+<td><strong>Size over Lifetime；Texture Sheet Animation</strong></td>
+<td>通过四张连续贴图<code>ImpactRing01_2x2</code>实现动画效果，在<strong>Texture Sheet Animation</strong>中设置为2*2</td>
+</tr>
+<tr>
+<td><strong>Ground Crack</strong></td>
+<td>None</td>
+<td><strong>Color over Lifetime；Custom Data</strong></td>
+<td>通过贴图的颜色变化实现动画效果</td>
+</tr>
+<tr>
+<td><strong>Ground Mask</strong></td>
+<td>None</td>
+<td><strong>Color over Lifetime；Custom Data</strong></td>
+<td>通过<strong>Color Life Time</strong>逐渐使贴图变透明</td>
+</tr>
+<tr>
+<td><strong>Ground Mask_Additive</strong></td>
+<td>None</td>
+<td><strong>Color over Lifetime；Custom Data</strong></td>
+<td><strong>Ground Mask</strong>在<strong>Additive</strong>混合模式下的版本，通过<strong>Color Life Time</strong>逐渐使贴图变透明</td>
+</tr>
+<tr>
+<td><strong>Ground Mask_02</strong></td>
+<td>None</td>
+<td><strong>Color over Lifetime；Custom Data</strong></td>
+<td><strong>Ground Mask</strong>的扩大、减小明度的版本，通过<strong>Color Life Time</strong>逐渐使贴图变透明</td>
+</tr>
+<tr>
+<td><strong>Ground Mask_Glow</strong></td>
+<td>None</td>
+<td><strong>Color over Lifetime；Custom Data</strong></td>
+<td>通过<strong>Color Life Time</strong>逐渐使贴图变透明</td>
+</tr>
+<tr>
+<td><strong>Smoke</strong></td>
+<td>None</td>
+<td><strong>Custom Data</strong></td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="1-4-Particle-System-Properties"><a href="#1-4-Particle-System-Properties" class="headerlink" title="1.4 - Particle System Properties"></a>1.4 - Particle System Properties</h3><blockquote>
+<p>在<strong>Scene</strong>窗口的<strong>Gizmo</strong>中，可以将框关闭，能够更直观地观察粒子系统的效果。</p>
+</blockquote>
+<p>在Particle System中，默认会打开以下选项：Shape、Emission、Render，以下是一些常用的功能描述：</p>
+<ul>
+<li><strong>Basic：</strong><ul>
+<li><strong>Loop：</strong>循环播放粒子系统，一般情况是不勾选此项的</li>
+<li><strong>Gravity Modifier：</strong>控制重力对粒子的影响，本项目设置为3就有一个不错的效果。</li>
+</ul>
+</li>
+<li><strong>Emission</strong>：发射模块，可以影响每秒内生成的粒子数量，可以将前面两项都设置为0，开启<strong>Bursts</strong>，可以实现将粒子一次炸出的效果</li>
+<li><strong>Shape</strong>：控制发射口的形状</li>
+<li><strong>Velocity over Lifetime：</strong>用来控制生命周期内的速度变化。可以在<strong>Orbital</strong>中设置<strong>z轴</strong>的值，以实现旋转的效果。</li>
+<li><strong>Limit Velocity over Lifetime：</strong>限制粒子的速度最大值</li>
+<li><strong>Color over Lifetime：</strong>生命周期内的颜色变化</li>
+<li><strong>Size over Lifetime：</strong>生命周期内的大小变化</li>
+<li><strong>Rotation over Lifetime：</strong>生命周期内的旋转变化</li>
+<li><strong>Collision</strong>：使VFX与游戏对象发生碰撞，一般会将Dampen和Bounce（抑制和弹射）设置为0.5，1是完全不反射</li>
+<li><strong>Texture Sheet Animation：</strong></li>
+<li><strong>Renderer</strong>：用来渲染粒子的形状，同时也可以为粒子加上Shader。</li>
+</ul>
+<h2 id="2-Mesh-amp-Texture"><a href="#2-Mesh-amp-Texture" class="headerlink" title="2 - Mesh &amp; Texture"></a>2 - Mesh &amp; Texture</h2><h3 id="2-1-Mesh"><a href="#2-1-Mesh" class="headerlink" title="2.1 - Mesh"></a>2.1 - Mesh</h3><ul>
+<li><strong>VFX_Mesh_SmokeSphere_00</strong></li>
+<li><strong>VFX_Mesh_Ring_00</strong></li>
+<li><strong>VFX_Mesh_Ring_01</strong></li>
+<li><strong>VFX_Mesh_SmokePlane_00</strong></li>
+</ul>
+<p><strong>VFX_Mesh_SmokeSphere_00</strong>是使用重构定点修改器通过组合多个多面体制作的；</p>
+<blockquote>
+<p>将修改器应用到物体中，这样我们才能展开正常的UV</p>
+<p><code>Ctrl+A</code>应用<strong>全部变换</strong>，我们才能保证导入Unity是正确的位置变换。</p>
+</blockquote>
+<p><strong>VFX_Mesh_Ring_00</strong>是类似碗型的网格，用来模拟一般的冲击波；</p>
+<p><strong>VFX_Mesh_Ring_01</strong>用来模拟中部环绕蘑菇云的冲击波；</p>
+<p><strong>VFX_Mesh_SmokePlane_00</strong>是楔形的网格，用来模拟烟雾，可以在材质中将相关<strong>Mask</strong>贴图由<strong>Repeat</strong>转为<strong>Clamp</strong>防止由于<strong>Shader</strong>中关于<strong>Tiling</strong>的设置出现贴图窜位。</p>
+<blockquote>
+<p>在Unity导入Mesh的时候，将缩放比例设置为100，这样才能看清楚。</p>
+</blockquote>
+<h3 id="2-2-Texture"><a href="#2-2-Texture" class="headerlink" title="2.2 - Texture"></a>2.2 - Texture</h3><ul>
+<li><strong>Impact_02</strong></li>
+<li><strong>ImpactRing01_2x2</strong></li>
+<li><strong>VFX_Mask_SmokeGradient</strong></li>
+<li><strong>VFX_Mask_SmokeGradient_02</strong></li>
+<li><strong>VFX_Tex_GroundCrack_01_albedo</strong></li>
+<li><strong>VFX_Tex_GroundImpact_01_albedo</strong></li>
+<li><strong>VFX_Tex_GroundImpact_02_albedo</strong></li>
+</ul>
+<p><strong>Impact_02</strong>是手绘的尖峰波；</p>
+<p><strong>ImpactRing01_2x2</strong>是四帧的一组冲击波动画</p>
+<p><strong>VFX_Mask_SmokeGradient</strong>是一张黑白渐变图</p>
+<p><strong>VFX_Tex_GroundCrack_01_albedo</strong>使用了<strong>Material Maker</strong>来制作。首先使用<strong>Voronoi细胞图</strong>生成噪声，通过<strong>Tone</strong>提取细胞的边缘<strong>Outline</strong>，再通过<strong>Invert</strong>反转颜色，得到黑底白线图，在经过<strong>Tone</strong>得到清晰的边缘线。通过<strong>Circle Map</strong>将改图映射变换成圆形，然后通过<strong>Shape</strong>遮盖掉不要的部分。为了去掉中间部分，我们使用了一个<strong>FBM Noise</strong>噪声和<strong>Shape</strong>进行<strong>Wrap</strong>，得到中心向外扩散的噪声。通过<strong>Tonality</strong>控制亮度，最后连接一个<strong>Math A-B</strong>使<strong>细胞图</strong>减去<strong>噪声图</strong>。同时，我们希望添加辉光效果，再次对<strong>细胞图</strong>进行采样，这次使用<strong>Tone</strong>分离出较粗的边，使用<strong>Circle Map</strong> 和 <strong>Shape</strong> 提取圆圈中的部分。我们仍然希望中间的部分是空的，这次使用<strong>Math</strong>让辉光减去<strong>Tonality</strong>。对于辉光的亮度控制，我们可以使用一个函数：<strong>Math中的A*B</strong>。最后将辉光和先前通过<strong>Math A-B</strong>得到的基本型相加，即可得到我们需要的贴图。</p>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627111624981.png" alt="image-20230627111624981"></p>
+<p><strong>VFX_Tex_GroundImpact_01_albedo</strong>也是在<strong>Voronoi细胞图</strong>噪声的基础上进行处理，只是这次我们不需要清晰的边界，我们需要模糊的阴影。通过调整<strong>X为28</strong>, <strong>Y为4</strong>，拉伸<strong>Voronoi细胞图</strong>，然后连接一个<strong>Circle Map</strong>将图映射到圆形上，连接一个<strong>高斯模糊</strong>，设置<strong>Sigma为36.8</strong>，最后使用<strong>Shape</strong>去除不需要的部分得到一个阴影图。我们希望这个应用中间是空的，并且有拉丝的纹理，可以使用<strong>Value Noise</strong>，通过将<strong>X设置为27</strong>，<strong>Y设置为1</strong>可以得到一个垂直的噪声，通过<strong>Circle Map</strong>将图映射为圆形。我们希望这个纹理中间和外围是空的，也就是一个甜甜圈的形状，可以使用<strong>Radial Gradient</strong>调整黑白梯度以及渐变曲线得到一张中间和外围是黑的，环是白的模糊的甜甜圈灰度图。将两张图通过<strong>Blend</strong>进行<strong>Multiply</strong>混合，可以只用<strong>Math</strong>中的<strong>Power</strong>对该纹理进行控制，最后将阴影图和纹理图通过<strong>Blend</strong>进行<strong>Multiply</strong>混合，得到我们想要的最终阴影图。</p>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627111854033.png" alt="image-20230627111854033"></p>
+<p><strong>VFX_Tex_GroundImpact_02_albedo</strong>是在<strong>VFX_Tex_GroundCrack_01_albedo</strong>的基础上通过调参得到的中间空洞更大、更外扩、亮度更小、形状不一致的版本。</p>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627112135263.png" alt="image-20230627112135263"></p>
+<h2 id="3-Shader"><a href="#3-Shader" class="headerlink" title="3 - Shader"></a>3 - Shader</h2><p>本次VFX学习使用的Shader如下：</p>
+<ul>
+<li><strong>Erosion Texture Shader</strong></li>
+<li><strong>Erosion Voronoi Shader</strong></li>
+<li><strong>Simple Particle Shader</strong></li>
+<li><strong>Smoke Texture Shader</strong></li>
+</ul>
+<h3 id="3-1-Tricks"><a href="#3-1-Tricks" class="headerlink" title="3.1 - Tricks"></a>3.1 - Tricks</h3><p>使用<strong>Custom Vertex Streams</strong>来控制<strong>Shader</strong>中的参数：</p>
+<blockquote>
+<p><strong>Particle System</strong>中的<strong>Renderer</strong>有方法能够控制<strong>Shader</strong>中的参数：<strong>Custom Vertex Streams</strong>，但是需要用到UV节点。</p>
+</blockquote>
+<ul>
+<li>在<strong>Shader</strong>中新建一个<strong>UV</strong>，并设置通道为<strong>UV1</strong>，在<strong>Custom Vertex Streams</strong>中添加一个<code>Custom1.xyzw</code>参数，将<strong>Shader</strong>中的UV分离出来，并将<strong>A通道</strong>连接<strong>Alpha Clip</strong>，<strong>Custom Data</strong>中设置模式为<strong>Vector</strong>，其中<strong>x</strong>的值就是<strong>A通道</strong>的值。</li>
+</ul>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627171302035.png" alt="image-20230627171302035"></p>
+<ul>
+<li>在<strong>Custom1</strong>中为x的值设置曲线或者值，即可控制溶解动画</li>
+</ul>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627171406365.png" alt="image-20230627171406365"></p>
+<blockquote>
+<p>勾选<strong>Allow Material Override</strong>，即可显示<strong>Surface Options</strong></p>
+</blockquote>
+<h3 id="3-2-Simple-Particle-Shader"><a href="#3-2-Simple-Particle-Shader" class="headerlink" title="3.2 - Simple Particle Shader"></a>3.2 - Simple Particle Shader</h3><p>这是一个基本粒子的<strong>Shader</strong>，主要用在<strong>火花粒子</strong>和<strong>地面裂痕阴影</strong>中。比起<strong>URP</strong>默认的<strong>Shader</strong>好处是提供了方便的参数调整。</p>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627171620341.png" alt="image-20230627171620341"></p>
+<h3 id="3-3-Erosion-Texture-Shader"><a href="#3-3-Erosion-Texture-Shader" class="headerlink" title="3.3 - Erosion Texture Shader"></a>3.3 - Erosion Texture Shader</h3><p>这是需要溶解动画粒子的<strong>Shader</strong>，主要用在<strong>冲击波</strong>和<strong>地面裂痕</strong>中。其中<strong>Alpha Clip</strong>连接了一个<strong>UV</strong>的<strong>x</strong>值，通过对<strong>Custom Data</strong>参数的设置，可以用来控制<strong>Alpha Clip</strong>进而控制溶解的程度。</p>
+<p>对于<strong>Main Texture</strong>的采样<strong>UV</strong>则是连接了一个<strong>Tilling and Offset</strong>，用来平铺扭曲原有的贴图，从而得到风格化的波形。</p>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627173039523.png" alt="image-20230627173039523"></p>
+<h3 id="3-4-Erosion-Voronoi-Shader"><a href="#3-4-Erosion-Voronoi-Shader" class="headerlink" title="3.4 - Erosion Voronoi Shader"></a>3.4 - Erosion Voronoi Shader</h3><p>这是用来模拟<strong>蘑菇云</strong>质感的<strong>Shader</strong>，首先声明一个变量<strong>Voronoi Scale</strong>用来控制细胞图<strong>Voronoi</strong>的数量。同时将<strong>Alpha</strong>和细胞图<strong>Voronoi</strong>连接，<strong>Alpha Clip</strong>和<strong>UV1</strong>连接用来控制消融动画。同时使用一个<strong>Power</strong>节点来控制细胞图中的黑色部分，将另一个节点连接到<strong>UV1</strong>的<strong>G</strong>节点中，这样就可以使用<strong>Custom Data</strong>中的<strong>y</strong>来控制黑色部分的大小。</p>
+<p>然后，我们将Power的输出和<strong>Color、Vertex Color</strong>混合，使得我们可以方便地控制颜色。</p>
+<p>随后，声明变量<strong>HDR Color</strong>类型的<strong>Emission</strong>和<strong>Float Slider</strong>类型的<strong>Smoothness</strong>，<strong>Emission</strong>用来控制蘑菇云烟雾的底色，<strong>Smoothness</strong>用来控制反射率，这里设置为<strong>0</strong>可以使材质变为粗糙不反射的材质。</p>
+<p>为了使烟雾扭曲，我们可以使用通过<strong>Shader</strong>实现顶点动画。在本次的例子中，我们将Position节点连接一个空间为<strong>Object</strong>特定对象位置的<strong>Position</strong>。我们希望位置在0~1内随机，因此可以引入一个简单噪声<strong>Simple Noise</strong>，并将<strong>Position</strong>和<strong>Simple Noise</strong>通过<strong>Add</strong>混合。</p>
+<p>为了控制这个噪声对位置的影响，我们可以引入线性插值<strong>Lerp</strong>，使用一个变量<strong>Vertex Amount</strong>用来控制影响的变化，范围是<strong>0~1</strong>。同时，为了进一步强化顶点的摆动，我们使用<strong>Tilling and Offset</strong>以及声明一个变量<strong>Vertex Scale</strong>去控制噪声的<strong>UV</strong>以及噪声的<strong>大小</strong>。</p>
+<blockquote>
+<p>注意，这种操作在移动平台的性能开销比较大。</p>
+</blockquote>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627195704015.png" alt="image-20230627195704015"></p>
+<h3 id="3-5-Smoke-Texture-Shader"><a href="#3-5-Smoke-Texture-Shader" class="headerlink" title="3.5 - Smoke Texture Shader"></a>3.5 - Smoke Texture Shader</h3><p><strong>SmokeTextureShader</strong>是用来模拟烟雾的<strong>Shader</strong>，这个<strong>Shader</strong>由5部分组成，分别是：<strong>Main Texture</strong>，<strong>Mask</strong>，<strong>Color Setup</strong>，<strong>Erusion - Custom Stream</strong>和<strong>Distortion</strong>。</p>
+<ul>
+<li><strong>Main Texture：</strong>这个节点是由<strong>Tilling and Offset</strong>控制贴图的平铺和偏移，输入是<strong>Distortion</strong>，用来控制<strong>Tilling and Offset</strong>的UV以制作扭曲动画，输出到<strong>Color Setup</strong>中。</li>
+<li><strong>Mask：</strong>这个节点是为了导入<strong>遮罩贴图</strong>，并与<strong>Main Texture</strong>进行<strong>Multiply</strong>以去除黑色的部分。遮罩贴图为[2.2](#2.2 - Texture)中的<strong>VFX_Mask_SmokeGradient</strong>。</li>
+<li><strong>Color Setup：</strong>将<strong>遮罩贴图</strong>和<strong>纹理贴图</strong>以及颜色进行混合输出到Base Color中，其中将<strong>遮罩贴图</strong>和<strong>纹理贴图</strong>混合后的结构分离出<strong>A通道</strong>与<strong>Alpha</strong>相连。</li>
+<li><strong>Erusion - Custom Stream：</strong>与[3.1](#3.1 - Tricks)同理，不再赘述。</li>
+<li><strong>Distortion：</strong>添加一个简单噪声<strong>Simple Noise</strong>与<strong>UV</strong>相加，通过<strong>Lerp</strong>将<strong>UV</strong>与<strong>Add</strong>进行线性插值。声明一个<strong>Float Slider</strong>变量<strong>Distortion Amount</strong>用来控制插值的程度，和一个变量<strong>Distortion Scale</strong>用来控制噪声的值。为了实现噪声的UV动画，将噪声的偏移与<strong>Time</strong>连接实现偏移动画，声明一个<strong>Vector</strong>变量<strong>Distortion Tilling</strong> 用来控制平铺的值，以实现不同类型的烟雾。</li>
+</ul>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627201906320.png" alt="image-20230627201906320"></p>
+<p><img src="/image/VFX%20-%20Particle%20System%20Learning/image-20230627201923549.png" alt="image-20230627201923549"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/06/25/VFX-Particle-System-Learning/">https://li-kira.github.io/2023/06/25/VFX-Particle-System-Learning/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/VFX/"># VFX</a>
+                    
+                        <a href="/tags/Unity/"># Unity</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/07/03/Unity-Shader-Learning/">Unity Shader Learning</a>
+            
+            
+            <a class="next" rel="next" href="/2023/06/20/3D-Action-Game-Demo/">3D Action Game Demo</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

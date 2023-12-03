@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>Quantum Shader - 崩三量子怪物Shader还原 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Quantum Shader - 崩三量子怪物Shader还原</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 17, 2023&nbsp;&nbsp;22:40:46</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/URP/">URP</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>这个材质主要由以下几部分组成，大部分是依赖于菲涅尔效果</p>
+<ul>
+<li>外层的菲涅尔</li>
+<li>底部的菲涅尔</li>
+<li>屏幕空间贴图</li>
+<li>边缘光</li>
+<li>轮廓线</li>
+</ul>
+<p>在此之前，需要对不透明物体进行设置，第一个Pass开启深度写入，是为了将模型的深度信息写入深度缓冲中，从而剔除模型中被自身遮挡的片元，而第二行才是我们主要的Shader Pass，代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    Zwrite On</span><br><span class="line">    ColorMask <span class="number">0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    Tags</span><br><span class="line">    &#123; </span><br><span class="line">        &quot;LightMode&quot; = &quot;UniversalForwardOnly&quot;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Name &quot;Quantum&quot;</span><br><span class="line"></span><br><span class="line">    Blend SrcAlpha OneMinusSrcAlpha</span><br><span class="line"> Cull Back</span><br><span class="line">    ZWrite Off</span><br><span class="line"> ZTest LEqual</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    HLSLPROGRAM</span><br><span class="line">    <span class="meta">#pragma vertex Quantum_Vert</span></span><br><span class="line">    <span class="meta">#pragma fragment Quantum_Frag</span></span><br><span class="line">    <span class="meta">#include &quot;Quantum.hlsl&quot;</span></span><br><span class="line">    ENDHLSL</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="菲涅尔"><a href="#菲涅尔" class="headerlink" title="菲涅尔"></a>菲涅尔</h2><p>菲涅尔实现代码如下，首先使用法线点积视角方向，然后使用<strong>One Minus</strong>和<strong>Saturate</strong>函数得到正确的结果。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> GetFresnel(Varyings i)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> NdotV = <span class="built_in">dot</span>(i.worldNormal, i.worldViewDir);</span><br><span class="line">    <span class="type">float</span> fresnel = <span class="number">1</span> - saturate(NdotV);</span><br><span class="line">    <span class="keyword">return</span> fresnel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除此之外，还可以用幂函数以及乘法系数来修改外观</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> fresnel = GetFresnel(i);</span><br><span class="line"></span><br><span class="line">fresnel = <span class="built_in">pow</span>(fresnel, _FresnelPow);</span><br><span class="line">fresnel *= _FresnelIntensity;</span><br></pre></td></tr></table></figure>
+
+<p>调整之后的外观如下：</p>
+<p><img src="/image/QuantumShader/image-20231129202934866.png" alt="image-20231129202934866"></p>
+<h2 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h2><p>Outline的实现非常简单，只要将顶点位置往法线位置偏移一段距离即可，具体的顶点着色器和片元着色器的代码如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Varyings Outline_Vert(Attribute v)</span><br><span class="line">&#123;</span><br><span class="line">    Varyings o;</span><br><span class="line">    v.position.xyz += v.normal * _OutlineOffset;</span><br><span class="line">    o.position = TransformObjectToHClip(v.position);</span><br><span class="line">    return o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">half4 Outline_Frag(Varyings i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">    float4 baseColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);</span><br><span class="line">    half4 color = _OutlineColor;</span><br><span class="line">    return color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为了防止<strong>Outline Pass</strong>的不正常剔除导致前面的透明Pass呈现Outline的颜色，我们使用多个材质渲染一个物体，新建一个Outline Shader和材质，将Outline 材质加入到需要渲染的物体的<strong>Skinned Mesh Renderer</strong>中去。</p>
+<p><img src="/image/QuantumShader/image-20231129204337527.png" alt="image-20231129204337527"></p>
+<p>渲染结果如下：</p>
+<p><img src="/image/QuantumShader/image-20231129204004154.png" alt="image-20231129204004154"></p>
+<h2 id="屏幕空间贴图"><a href="#屏幕空间贴图" class="headerlink" title="屏幕空间贴图"></a>屏幕空间贴图</h2><p>为了呈现贴图在怪物内部流动的效果，我们使用屏幕空间的顶点坐标作为采样贴图的UV，然后使用Time函数实现流动的效果，具体实现代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> time = _Time.y;</span><br><span class="line">float2 uv = i.positionSS;</span><br><span class="line">uv *= _ScreenTexScale;</span><br><span class="line"></span><br><span class="line">uv = GetComputedUV(uv, <span class="number">0.1</span>, float2(<span class="number">0</span>, time), _ScreenTex_ST);</span><br><span class="line">half3 screeColor = SAMPLE_TEXTURE2D(_ScreenTex, sampler_ScreenTex, uv);</span><br></pre></td></tr></table></figure>
+
+<p>其中，<strong>GetComputedUV</strong>是模仿了Tilling and Offset方法重写的，加入了调整流动速度的功能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">float2 GetComputedUV(float2 uv, float speed, float2 time, float4 name_ST)</span><br><span class="line">&#123;</span><br><span class="line">    float2 output = float2(uv.x + time.x * speed, uv.y + time.y * speed);</span><br><span class="line">    output = output.xy * name_ST.xy + name_ST.zw;</span><br><span class="line">    return output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在顶点着色器中得到我们需要的屏幕空间的顶点坐标<strong>positionSS</strong></p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">o.positionSS = ComputeGrabScreenPos(PositionInputs.positionCS);</span><br></pre></td></tr></table></figure>
+
+<p><strong>ComputeGrabScreenPos</strong>函数的具体实现如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">inline float4 ComputeGrabScreenPos(float4 pos)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">#if UNITY_UV_STARTS_AT_TOP</span></span><br><span class="line">    <span class="type">float</span> scale = <span class="number">-1.0</span>;</span><br><span class="line">    <span class="meta">#else</span></span><br><span class="line">    <span class="type">float</span> scale = <span class="number">1.0</span>;</span><br><span class="line">    <span class="meta">#endif</span></span><br><span class="line">    float4 o = pos;</span><br><span class="line">    o.y = pos.w * <span class="number">0.5</span>f;</span><br><span class="line">    o.y = ( pos.y - o.y ) * _ProjectionParams.x * scale + o.y;</span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后我们在使用一个Lerp函数，将<strong>屏幕空间贴图效果</strong>和我们定义的<strong>颜色</strong>进行插值，使用之前的菲涅尔作为系数，这样有<strong>颜色</strong>的地方是<strong>菲涅尔效果</strong>，<strong>透明的地方</strong>为<strong>屏幕空间贴图效果</strong></p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">screeColor = lerp(screeColor, _ScreenColor, fresnel);</span><br></pre></td></tr></table></figure>
+
+<p>渲染效果如下，由于我们在<strong>GetComputedUV</strong>中只将<strong>float2(0, time)<strong>这个值传入</strong>time</strong>系数，因此屏幕空间效果只会在屏幕空间的Y轴，也就是UV的V轴流动。</p>
+<p><img src="/image/QuantumShader/image-20231129205302601.png" alt="image-20231129205302601"></p>
+<p>此外，我们还声明了一个<strong>fresnelMask</strong>，用来使用物体的y轴采样<strong>fresnelMaskColor</strong>，以此实现底部的菲涅尔，代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> fresnelMask = GetFresnel(i);</span><br><span class="line">fresnelMask = <span class="built_in">pow</span>(fresnelMask, _FresnelMaskPow);</span><br><span class="line">fresnelMask *= _FresnelMaskIntensity;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> fresnelMaskPos = -i.worldPos.y;</span><br><span class="line">fresnelMaskPos += _FresnelMaskOffset;</span><br><span class="line">fresnelMaskPos = <span class="built_in">smoothstep</span>(_FresnelMaskSmoothMin, _FresnelMaskSmoothMax, fresnelMaskPos);</span><br><span class="line">half3 fresnelMaskColor = _FresnelMaskColor * fresnelMask * fresnelMaskPos;</span><br></pre></td></tr></table></figure>
+
+<p>渲染效果如下：</p>
+<p><img src="/image/QuantumShader/image-20231129205740827.png" alt="image-20231129205740827"></p>
+<h2 id="边缘光"><a href="#边缘光" class="headerlink" title="边缘光"></a>边缘光</h2><p>边缘光还是基于菲涅尔实现的，我们加了一个<strong>smoothstep</strong>函数，将边缘光限制在边缘，然后是一些大小和强度的调整，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">float rimlight = GetFresnel(i);</span><br><span class="line">rimlight = smoothstep(_RimLightSmoothMin, _RimLightSmoothMax, rimlight);</span><br><span class="line">rimlight *= _RimLightScale * _RimLightColor;</span><br></pre></td></tr></table></figure>
+
+<p>实现效果如下:</p>
+<p><img src="/image/QuantumShader/image-20231129210015960.png" alt="image-20231129210015960"></p>
+<h2 id="外观调整"><a href="#外观调整" class="headerlink" title="外观调整"></a>外观调整</h2><p>最后，我们只使用<strong>NdotV</strong>作为<strong>Alpha</strong>的值，来控制怪物的透明程度</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">half3 color = screeColor + fresnelMaskColor + rimlight;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> NdotV = <span class="built_in">dot</span>(i.worldNormal, i.worldViewDir);</span><br><span class="line"><span class="type">float</span> alpha = <span class="built_in">pow</span>(NdotV, _AlphaPow);</span><br><span class="line">alpha *= _AlphaScale;</span><br><span class="line">alpha += fresnelMask;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> half4(color, alpha);</span><br></pre></td></tr></table></figure>
+
+<p>最终的外观如下：</p>
+<p><img src="/image/QuantumShader/image-20231129210346789.png" alt="image-20231129210346789"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/11/17/Quantum-Shader/">https://li-kira.github.io/2023/11/17/Quantum-Shader/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Shader/"># Shader</a>
+                    
+                        <a href="/tags/CG/"># CG</a>
+                    
+                        <a href="/tags/Unity/"># Unity</a>
+                    
+                        <a href="/tags/URP/"># URP</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/11/24/Arcade-Slash-VFX/">Arcade Slash VFX</a>
+            
+            
+            <a class="next" rel="next" href="/2023/11/13/ToonShader/">卡通渲染全流程，以崩坏星穹铁道角色为例</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

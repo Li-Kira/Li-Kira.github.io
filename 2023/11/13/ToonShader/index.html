@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>卡通渲染全流程，以崩坏星穹铁道角色为例 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">卡通渲染全流程，以崩坏星穹铁道角色为例</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 13, 2023&nbsp;&nbsp;21:44:38</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/URP/">URP</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>本文使用的渲染管线是Universal RP 14.0.9，编辑器版本是2022.3.11</p>
+</blockquote>
+<p><video src="/image/ToonShader/2023-11-13_16-33-47_2.mp4" position= "absolute" width="100%" height="100%" controls="controls"></video></p>
+<h2 id="素材分析"><a href="#素材分析" class="headerlink" title="素材分析"></a>素材分析</h2><p>首先，我们需要准备以下素材，需要的工具以及下载地址在文章的最后。</p>
+<p><img src="/image/ToonShader/image-20231114152655544.png" alt="image-20231114152655544"></p>
+<p>这里举出几个较为重要的纹理的用法：</p>
+<ul>
+<li><strong>LightMap：</strong>包含RGBA三个通道，每个通道存储不同的信息</li>
+<li><strong>SDF：</strong>用来控制脸部的阴影分布，具体的细节会在之后提到</li>
+<li><strong>Ramp：</strong>渐变纹理，用来控制漫反射光照的结果，常用于渲染NPR的角色或者物体。</li>
+</ul>
+<p>以下是对<strong>LightMap</strong>的通道进行拆分的结果：</p>
+<p><img src="/image/ToonShader/LightMapUsage-1699608376498-1.png" alt="LightMapUsage"></p>
+<p>其中，每个<strong>LightMap</strong>的通道作用如下：</p>
+<ul>
+<li><strong>LightMap.R：</strong>用来得到需要添加AO的区域，AO是常暗的，不会随着光线的变化而变化</li>
+<li><strong>LightMap.G：</strong>根据值域存储高光区域</li>
+<li><strong>LightMap.B：</strong>高光遮罩纹理，用来指定需要添加高光的区域</li>
+<li><strong>LightMap.A：</strong>存储的是<strong>Ramp图的偏移值</strong>，根据亮度值来在不同光照情况（白天或者黑夜）下，选择对应的漫反射颜色。</li>
+</ul>
+<p>除此之外，上面的<strong>SDF</strong>还可以当成脸部的<strong>LightMap</strong>，它的<strong>G通道</strong>可以用作眼睛的<strong>Shadow Mask</strong>，去掉我们不想要的眼睛阴影。</p>
+<h2 id="二分光影"><a href="#二分光影" class="headerlink" title="二分光影"></a>二分光影</h2><p>从<strong>Blinn-Phong</strong>模型我们可以知道，对法线和光线的点积<strong>NdotL</strong>能够得到符合兰伯特定律的漫反射光照，此时我们可以使用<strong>Step</strong>函数将光影分为纯黑和纯白的两部分。本文使用了<strong>smoothstep</strong>函数对<strong>NdotL</strong>进行插值，这样能够得到明暗交界线过渡效果较好的二分光影。</p>
+<p><strong>smoothstep</strong>能够在0和1之间进行平滑的插值，下面是它的函数曲线，可以看到它不是粗暴地将0和1区分开来，而是通过样条达到缓进缓出的效果。</p>
+<p><img src="/image/ToonShader/smoothstep.png" alt="smoothstep"></p>
+<p>在Shader中，我们首先需要定义这两个参数，其中<strong>ShadowRange</strong>用于控制阴影范围，<strong>ShadowSmooth</strong>用于控制明暗交界线的过渡。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">_ShadowRange(&quot;Shadow Range&quot;, Float) = <span class="number">0</span></span><br><span class="line">_ShadowSmooth (&quot;Shadow Smooth&quot;, Float) = <span class="number">0.1</span></span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，这里使用了一个宏<code>SHADOW_FACE_ON</code>来判断渲染的物体是否是脸部，由于直接对脸部进行二分，脸部光影不是很好看，因此需要对脸部的阴影进行特殊处理。</p>
+<p>关于宏相关的定义如下，使用这样的语句可以在Inspecti面板通过勾选来决定是否开启该宏。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Properties</span><br><span class="line">&#123;</span><br><span class="line">	[Toggle(SHADOW_FACE_ON)] _isFace (&quot;isFace&quot;, Float) = <span class="number">0.0</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">	<span class="meta">#pragma shader_feature_local_fragment SHADOW_FACE_ON</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后编写函数用来得到阴影：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> GetShadow(Varyings i, float3 lightDirWS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> NdotL = <span class="built_in">dot</span>(i.worldNormal, lightDirWS);</span><br><span class="line">    <span class="type">float</span> shadow = <span class="built_in">smoothstep</span>(_ShadowRange, _ShadowRange + _ShadowSmooth, NdotL);</span><br><span class="line"></span><br><span class="line">    <span class="meta">#ifdef SHADOW_FACE_ON</span></span><br><span class="line">        shadow = GetFaceShadow(i, lightDirWS);</span><br><span class="line">    <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> shadow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于我们引入了<strong>ShadowSmooth</strong>变量来控制插值，明暗交界线不是那么生硬了，得到的阴影如下：</p>
+<p><img src="/image/ToonShader/image-20231113194729237.png" alt="image-20231113194729237"></p>
+<h2 id="SDF-脸部阴影"><a href="#SDF-脸部阴影" class="headerlink" title="SDF 脸部阴影"></a>SDF 脸部阴影</h2><p><strong>SDF，Signed Distance Field</strong>，中文为有向距离场。有向距离场通常用单色位图数据来存储源图像中最近的黑色像素的距离，每个像素存储的不是颜色值。</p>
+<p>下面的GIF展示的是脸部阴影图的<strong>关键帧</strong>，一般是以八位来存储的，有了关键帧之后需要通过<strong>插值算法</strong>得到一个<strong>SDF阴影图</strong>。</p>
+<blockquote>
+<p>关于插值算法，有兴趣的可以前往以下论文进行深入地了解</p>
+<p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/28276">https://ieeexplore.ieee.org/document/28276</a></p>
+</blockquote>
+<p><img src="/image/ToonShader/sdf.gif" alt="sdf"></p>
+<p>卡通渲染中，使用SDF将几个关键帧插值成阴影贴图，这个阴影贴图能够根据人物的朝向以及灯光的旋转呈现对应关键帧的值，阴影贴图大概长这样：</p>
+<p><img src="/image/ToonShader/image-20231113220545134.png" alt="image-20231113220545134"></p>
+<p>得到了阴影贴图，我们需要设计算法，得到不同光线角度下的关键帧的值。</p>
+<ul>
+<li><p>我们首先需要找到世界空间下的以头部为基准点的<strong>向前的方向</strong>以及<strong>右侧方向</strong>。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">float3 forwardDirWS = <span class="built_in">normalize</span>(TransformObjectToWorldDir(float3(<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">1.0</span>)));</span><br><span class="line">float3 rightDirWS = <span class="built_in">normalize</span>(TransformObjectToWorldDir(float3(<span class="number">1.0</span>,<span class="number">0.0</span>,<span class="number">0.0</span>)));</span><br></pre></td></tr></table></figure></li>
+<li><p>然后我们需要用SDF阴影贴图采样两张阴影图，一个是正方向的阴影图，一个是水平翻转之后的阴影图。</p>
+<ul>
+<li><p><strong>正方向的阴影图</strong>适用于光线在脸部左侧的情况，<strong>水平翻转之后的图</strong>可以用作光线在右侧的情况。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">float2 faceShadowUV = float2(<span class="number">1</span> - i.uv.x, i.uv.y);</span><br><span class="line"><span class="type">float</span> faceShadow_left = SAMPLE_TEXTURE2D(_SDFTex, sampler_SDFTex, i.uv).r;</span><br><span class="line"><span class="type">float</span> faceShadow_right = SAMPLE_TEXTURE2D(_SDFTex, sampler_SDFTex, faceShadowUV).r;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>右侧方向需要和光线方向进行点积，<strong>右侧方向点积</strong>的结果可以用来判断使用决定用哪张阴影图，当光线角度小于180度代表此时光线在脸部右侧，此时选择右侧阴影图。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> FdotL = <span class="built_in">dot</span>(forwardDirWS, lightDirWS);</span><br><span class="line"><span class="type">float</span> RdotL = <span class="built_in">dot</span>(rightDirWS, lightDirWS);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过RdotL决定用哪张阴影图,当主光角度大于180选择右侧阴影图。</span></span><br><span class="line"><span class="type">float</span> shadowTex = RdotL &gt; <span class="number">0</span> ? faceShadow_right : faceShadow_left;</span><br></pre></td></tr></table></figure></li>
+<li><p>然后使用<strong>右侧方向点积</strong>来判断光线在左还是在右，采样对应的关键帧，底下的图片展示了采样数学式的原理。</p>
+<ul>
+<li>光线在右侧的情况： <strong>(1 - acos(RdotL) / PI * 2)</strong></li>
+<li>光线在左侧的情况： <strong>(acos(RdotL) / PI * 2 - 1)</strong></li>
+</ul>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> faceShadowThreshold = RdotL &gt; <span class="number">0</span> ? (<span class="number">1</span> - <span class="built_in">acos</span>(RdotL) / PI * <span class="number">2</span>) : (<span class="built_in">acos</span>(RdotL) / PI * <span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line"><span class="type">float</span> shadowFront = <span class="built_in">step</span>(faceShadowThreshold, shadowTex);  </span><br></pre></td></tr></table></figure></li>
+<li><p>此外还要对<strong>光源在脸部背后</strong>的情况进行矫正，光源在脸部背后此时不应该出现任何的亮部，此时使用向前的方向和光线方向进行点积来判断</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> shadowBehind = <span class="built_in">step</span>(<span class="number">0</span>, FdotL);</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> shadow = mul(shadowBehind, shadowFront);</span><br></pre></td></tr></table></figure></li>
+<li><p>最后还要对眼部的阴影进行矫正，我这里使用了<strong>SDF</strong>作为<strong>LightMap</strong>，并选择它的G通道作为眼部的遮罩。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 矫正眼部阴影</span></span><br><span class="line"><span class="type">float</span> eyeShadowMask = SAMPLE_TEXTURE2D(_LightMap, sampler_LightMap, faceShadowUV).g;</span><br><span class="line"><span class="type">float</span> eyeMask = <span class="built_in">step</span>(<span class="number">0.5</span>, eyeShadowMask);</span><br><span class="line">shadow = lerp(shadow, <span class="number">1.0</span>, eyeMask);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><img src="/image/ToonShader/image-20231113215955539.png" alt="image-20231113215955539"></p>
+<p>整合之后的代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> GetFaceShadow(Varyings i, float3 lightDirWS)</span><br><span class="line">&#123;</span><br><span class="line">    float3 forwardDirWS = <span class="built_in">normalize</span>(TransformObjectToWorldDir(float3(<span class="number">0.0</span>,<span class="number">0.0</span>,<span class="number">1.0</span>)));</span><br><span class="line">    float3 rightDirWS = <span class="built_in">normalize</span>(TransformObjectToWorldDir(float3(<span class="number">1.0</span>,<span class="number">0.0</span>,<span class="number">0.0</span>)));</span><br><span class="line"></span><br><span class="line">    float2 faceShadowUV = float2(<span class="number">1</span> - i.uv.x, i.uv.y);</span><br><span class="line">    <span class="type">float</span> faceShadow_left = SAMPLE_TEXTURE2D(_SDFTex, sampler_SDFTex, i.uv).r;</span><br><span class="line">    <span class="type">float</span> faceShadow_right = SAMPLE_TEXTURE2D(_SDFTex, sampler_SDFTex, faceShadowUV).r;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> FdotL = <span class="built_in">dot</span>(forwardDirWS, lightDirWS);</span><br><span class="line">    <span class="type">float</span> RdotL = <span class="built_in">dot</span>(rightDirWS, lightDirWS);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 通过RdotL决定用哪张阴影图,当主光角度大于180选择右侧阴影图。</span></span><br><span class="line">    <span class="type">float</span> shadowTex = RdotL &gt; <span class="number">0</span> ? faceShadow_right : faceShadow_left;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 阈值</span></span><br><span class="line">    <span class="type">float</span> faceShadowThreshold = RdotL &gt; <span class="number">0</span> ? (<span class="number">1</span> - <span class="built_in">acos</span>(RdotL) / PI * <span class="number">2</span>) : (<span class="built_in">acos</span>(RdotL) / PI * <span class="number">2</span> - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> shadowBehind = <span class="built_in">step</span>(<span class="number">0</span>, FdotL);</span><br><span class="line">    <span class="type">float</span> shadowFront = <span class="built_in">step</span>(faceShadowThreshold, shadowTex);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果光线在背后，则全是阴影，如果光线在前面，则按光线位置来决定阴影</span></span><br><span class="line">    <span class="type">float</span> shadow = mul(shadowBehind, shadowFront);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 矫正眼部阴影</span></span><br><span class="line">    <span class="type">float</span> eyeShadowMask = SAMPLE_TEXTURE2D(_LightMap, sampler_LightMap, faceShadowUV).g;</span><br><span class="line">    <span class="type">float</span> eyeMask = <span class="built_in">step</span>(<span class="number">0.5</span>, eyeShadowMask);</span><br><span class="line">    shadow = lerp(shadow, <span class="number">1.0</span>, eyeMask);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> shadow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>渲染结果如下，注意观察脸部的阴影：</p>
+<p><img src="/image/ToonShader/image-20231113223505322.png" alt="image-20231113223505322"></p>
+<h2 id="AO"><a href="#AO" class="headerlink" title="AO"></a>AO</h2><p>AO的区域使用<strong>LightMap</strong>的<strong>R通道</strong>采样得到，为了美观，定义一个Mask来修正脸部的暗部。此外，AO不需要特别黑，使用<strong>smoothstep</strong>函数平滑一下即可。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> GetAO(Varyings i, float3 lightDirWS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> NdotL = <span class="built_in">dot</span>(i.worldNormal, lightDirWS);</span><br><span class="line">    <span class="type">float</span> halfLambert = <span class="number">0.5</span> + <span class="number">0.5</span> * NdotL;</span><br><span class="line"></span><br><span class="line">    half3 lightMap = SAMPLE_TEXTURE2D(_LightMap, sampler_LightMap, i.uv);</span><br><span class="line">    <span class="type">float</span> ao = lightMap.r;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// -0.1 能让ao不是那么暗</span></span><br><span class="line">    <span class="type">float</span> shadow = halfLambert * <span class="built_in">smoothstep</span>(<span class="number">-0.1</span>, <span class="number">0.2</span>, ao);</span><br><span class="line">    <span class="type">float</span> noAOMask = <span class="built_in">step</span>(<span class="number">0.9</span>, ao);</span><br><span class="line">    shadow = lerp(shadow, <span class="number">1.0</span>, noAOMask);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 修正眼球错误AO</span></span><br><span class="line">    <span class="meta">#ifdef SHADOW_FACE_ON</span></span><br><span class="line">        shadow = <span class="number">1</span>;</span><br><span class="line">    <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> adjustAO(shadow);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>渲染结果如下：</p>
+<p><img src="/image/ToonShader/image-20231113223355414.png" alt="image-20231113223355414"></p>
+<h2 id="Ramp"><a href="#Ramp" class="headerlink" title="Ramp"></a>Ramp</h2><blockquote>
+<p>需要注意的是，使用<strong>Ramp纹理</strong>之前要将它的<strong>Wrap Mode</strong>改为<strong>Clamp</strong>，否则会出现噪点或者滤波</p>
+</blockquote>
+<p>渐变纹理最早是军团要塞2中流行起来的技术，它能够渲染具有插画风格的角色，其优势在于能够自由地控制物体的漫反射颜色，比如说我们希望人物皮肤的明暗交界线处能够带有微微的泛红的颜色，模拟次表面散射的效果，此时就可以使用渐变纹理控制此处的颜色值。下面是一张<strong>256x16</strong>的渐变贴图，它的V坐标表示不同部位的颜色值，还记得我们之前的<strong>LightMap</strong>的<strong>A通道</strong>吗，它可以用来映射不同部位的颜色。</p>
+<p><img src="/image/ToonShader/image-20231114154114911.png" alt="image-20231114154114911"></p>
+<p>渐变纹理通常是使用半兰伯特的值来采样UV，以下是Unity入门精要的做法，我们这里可以之间使用之前得到的Shadow的值。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fixed halfLambert = <span class="built_in">dot</span>(worldNormal,worldLightDir) * <span class="number">0.5</span> + <span class="number">0.5</span>;</span><br><span class="line">fixed3 diffuseColor = tex2D(_RampTex, fixed2(halfLambert, halfLambert)).rgb * _Color.rgb;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>我们这里的采样UV代码如下，使用了<strong>shadow</strong>对<strong>rampU</strong>进行采样，<strong>LightMap</strong>的<strong>A通道</strong>对<strong>rampV</strong>进行采样 。需要注意的是，(0, 0.5)的范围是白天的色彩映射，(0.5, 1)是夜晚是色彩映射，使用<strong>RampMap</strong>更改<strong>rampV</strong>需要注意区别。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">float2 GetRampUV(<span class="type">float</span> shadow, <span class="type">float</span> RampMap)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 白天的情况，夜晚需要在rampV上面再加一个0.5</span></span><br><span class="line">    <span class="type">float</span> rampU = shadow;</span><br><span class="line">    <span class="type">float</span> rampV = RampMap * <span class="number">0.45</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">#ifdef SHADOW_FACE_ON</span></span><br><span class="line">        rampV = <span class="number">0.1</span>;</span><br><span class="line">    <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> float2(rampU, rampV);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>最后输出颜色值即可，代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">half3 GetRampColor(Varyings i, float3 lightDirWS)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> shadow = GetShadow(i, lightDirWS);</span><br><span class="line">    <span class="type">float</span> RampMap = SAMPLE_TEXTURE2D(_LightMap, sampler_LightMap, i.uv).a;</span><br><span class="line"></span><br><span class="line">    float2 rampUV = GetRampUV(shadow, RampMap);</span><br><span class="line">    half3 rampColor = SAMPLE_TEXTURE2D(_RampTex, sampler_RampTex, rampUV);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> rampColor;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>渲染效果如下，暗部有了更丰富的颜色变化。</p>
+<p><img src="/image/ToonShader/image-20231114163444995.png" alt="image-20231114163444995"></p>
+<h2 id="各向异性高光"><a href="#各向异性高光" class="headerlink" title="各向异性高光"></a>各向异性高光</h2><p>提取<strong>LightMap</strong>的<strong>B通道</strong>中的高光区域作为我们的高光遮罩，通过观察可以发现，高光在亮部的地方比较亮，在暗部的地方比较暗，因此这里使用了<strong>NdotV</strong>和<strong>NdotL</strong>来控制高光的强度。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">half3 GetSpecular(Varyings i, float3 lightDirWS)</span><br><span class="line">&#123;</span><br><span class="line">    float3 lightMap = SAMPLE_TEXTURE2D(_LightMap, sampler_LightMap, i.uv);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 各向异性高光</span></span><br><span class="line">    <span class="type">float</span> NdotV = <span class="built_in">dot</span>(i.worldNormal, i.worldViewDir);</span><br><span class="line">    <span class="type">float</span> anisoFresnel = <span class="built_in">pow</span>((<span class="number">1.0</span> - saturate(NdotV)), _AnisoFresnelPow) * _AnisoFresnelIntensity;</span><br><span class="line">    <span class="type">float</span> NdotL = <span class="built_in">dot</span>(i.worldNormal, lightDirWS);</span><br><span class="line">    <span class="type">float</span> halfLambert = <span class="number">0.5</span> + <span class="number">0.5</span> * NdotL;</span><br><span class="line">    <span class="type">float</span> aniso = saturate(<span class="number">1</span> - anisoFresnel) * lightMap.b * halfLambert * <span class="number">0.3</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">#ifdef SHADOW_FACE_ON</span></span><br><span class="line">        aniso = <span class="number">0</span>;</span><br><span class="line">    <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> aniso;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>渲染结果如下，此时光线是在人物的右侧，因此人物的右边会更亮一些。</p>
+<p><img src="/image/ToonShader/image-20231114123320560.png" alt="image-20231114123320560"></p>
+<h2 id="Emission"><a href="#Emission" class="headerlink" title="Emission"></a>Emission</h2><p>在我们准备的素材中，还有<strong>Highlight</strong>的贴图，可以提取它的<strong>A通道</strong>作为自发光的遮罩区域，然后声明一个值<strong>EmissionIntensity</strong>用来控制自发光的强度，代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">float3 GetEmission(Varyings i, half3 baseColor)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> emissionMask = SAMPLE_TEXTURE2D(_EmissionTex, sampler_EmissionTex, i.uv).a;</span><br><span class="line">    float3 emission = baseColor * emissionMask * _EmissionIntensity;</span><br><span class="line">    <span class="keyword">return</span> emission;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>渲染效果如下：</p>
+<p><img src="/image/ToonShader/image-20231114153159756.png" alt="image-20231114153159756"></p>
+<h2 id="Blink"><a href="#Blink" class="headerlink" title="Blink"></a>Blink</h2><blockquote>
+<p>Unity Shader中的时间函数</p>
+<p><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Time-Node.html">https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Time-Node.html</a></p>
+</blockquote>
+<p>有了自发光之后，我们可以声明一个宏<code>BLINK_ON</code>来控制自发光是否开启闪烁效果，闪烁效果使用了Unity的时间函数进行插值，这里的时间函数使用了余弦函数，并且做了类似于半兰伯特的缩放，将函数的振荡从(-1，1)缩放到(0，1)</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#ifdef BLINK_ON</span></span><br><span class="line">    <span class="type">float</span> time = _CosTime.w * <span class="number">0.5</span> + <span class="number">0.5</span>;</span><br><span class="line">    emission = baseColor * emissionMask * lerp(<span class="number">0</span>, _EmissionIntensity, time);</span><br><span class="line"><span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="RimLight"><a href="#RimLight" class="headerlink" title="RimLight"></a>RimLight</h2><blockquote>
+<p>参考资料</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/365339160">https://zhuanlan.zhihu.com/p/365339160</a></li>
+<li><a target="_blank" rel="noopener" href="https://roystan.net/articles/toon-shader/">https://roystan.net/articles/toon-shader/</a></li>
+</ul>
+</blockquote>
+<p><strong>RimLight</strong>实现的算法是<strong>Back Facing Outline</strong>，算法的具体实现为：将顶点向法线移动一段距离，然后根据为以后的坐标采样相机深度图，将这个深度图的值和原来的深度进行判断，如果大于一个阈值，那么我们认为这是一个边缘。</p>
+<ul>
+<li><p>首先声明以下的参数，<strong>OffsetMul</strong>用于控制边缘的宽度，<strong>Threshold</strong>用来决定被判断为边缘的阈值，<strong>FresnelMask</strong>则是给边缘光一个遮罩，降低边缘光在阴影处的强度值。</p>
+<p>此外，还需要再URP的设置中打开<strong>Depth Texture</strong>以获取深度图，并且在Shader中添加一个<strong>DepthOnly</strong>的Pass，可以从Unity内置的Pass中复制一个过去。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_OffsetMul (&quot;RimLight Offset&quot;, Float) = <span class="number">0.0012</span></span><br><span class="line">_Threshold (&quot;RimLight Threshold&quot;, Float) = <span class="number">0.07</span></span><br><span class="line">_FresnelMask (&quot;RimLight Threshold&quot;, Float) = <span class="number">0.7</span></span><br></pre></td></tr></table></figure></li>
+<li><p>在顶点着色器中我们需要观察空间、世界空间以及归一化坐标空间的顶点位置</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">VertexPositionInputs  PositionInputs = GetVertexPositionInputs(v.position.xyz);</span><br><span class="line"></span><br><span class="line">o.positionVS = PositionInputs.positionVS;</span><br><span class="line">o.positionWS = PositionInputs.positionWS;</span><br><span class="line">o.positionNDC = PositionInputs.positionNDC;</span><br></pre></td></tr></table></figure></li>
+<li><p>将顶点向法线移动一段距离，直接将<strong>观察空间的position</strong>加上<strong>观察空间的normal</strong>即可，并且使用<strong>OffsetMul</strong>控制偏移的程度。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">float3 worldNormal = i.worldNormal;</span><br><span class="line">float3 normalVS = TransformWorldToViewDir(worldNormal, <span class="literal">true</span>);</span><br><span class="line">float3 positionVS = i.positionVS;</span><br><span class="line"></span><br><span class="line">float3 samplePositionVS = float3(positionVS.xy + normalVS.xy * _OffsetMul, positionVS.z);</span><br></pre></td></tr></table></figure></li>
+<li><p>接着获取视口空间下的位置，视口空间是将屏幕空间除以屏幕分辨率得到的</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">float4 samplePositionCS = TransformWViewToHClip(samplePositionVS); </span><br><span class="line">float4 samplePositionVP = TransformHClipToViewPortPos(samplePositionCS);</span><br></pre></td></tr></table></figure></li>
+<li><p>然后获取当前的深度图，这里为了判断边缘的准确，使用线性深度</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> depth = i.positionNDC.z / i.positionNDC.w;</span><br><span class="line"><span class="type">float</span> linearEyeDepth = LinearEyeDepth(depth, _ZBufferParams); </span><br><span class="line"><span class="type">float</span> offsetDepth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, samplePositionVP).r; </span><br><span class="line"><span class="type">float</span> linearEyeOffsetDepth = LinearEyeDepth(offsetDepth, _ZBufferParams);</span><br><span class="line"><span class="type">float</span> depthDiff = linearEyeOffsetDepth - linearEyeDepth;</span><br><span class="line"><span class="type">float</span> rimIntensity = <span class="built_in">step</span>(_Threshold, depthDiff);</span><br></pre></td></tr></table></figure></li>
+<li><p>其实这里的<strong>rimIntensity</strong>就得到了深度值，不过我们还需要使用NdotV，使用菲涅尔边缘光来做一个遮罩</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">float3 viewDirectionWS = SafeNormalize(GetCameraPositionWS() - i.positionWS);</span><br><span class="line"><span class="type">float</span> rimRatio = <span class="number">1</span> - saturate(<span class="built_in">dot</span>(viewDirectionWS, worldNormal));</span><br><span class="line">rimRatio = <span class="built_in">pow</span>(rimRatio, <span class="built_in">exp2</span>(lerp(<span class="number">4.0</span>, <span class="number">0.0</span>, _FresnelMask)));</span><br><span class="line">rimIntensity = lerp(<span class="number">0</span>, rimIntensity, rimRatio);</span><br></pre></td></tr></table></figure></li>
+<li><p>最后可以将边缘光的颜色乘以BaseColor，可以得到比较自然的边缘光</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">half3 rimlight = lerp(float3(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), float3(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>), rimIntensity);</span><br><span class="line"></span><br><span class="line">float4 baseColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);</span><br><span class="line">rimlight *= baseColor.rgb;</span><br></pre></td></tr></table></figure></li>
+<li><p>代码整合如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">half3 GetRimLight(Varyings i)</span><br><span class="line">&#123;   </span><br><span class="line">    float3 worldNormal = i.worldNormal;</span><br><span class="line">    float3 normalVS = TransformWorldToViewDir(worldNormal, <span class="literal">true</span>);</span><br><span class="line">    float3 positionVS = i.positionVS;</span><br><span class="line">        </span><br><span class="line">    float3 samplePositionVS = float3(positionVS.xy + normalVS.xy * _OffsetMul, positionVS.z); <span class="comment">// 保持z不变（CS.w = -VS.z）</span></span><br><span class="line">    float4 samplePositionCS = TransformWViewToHClip(samplePositionVS); <span class="comment">// input.positionCS不是真正的CS 而是SV_Position屏幕坐标</span></span><br><span class="line">    float4 samplePositionVP = TransformHClipToViewPortPos(samplePositionCS);</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> depth = i.positionNDC.z / i.positionNDC.w;</span><br><span class="line">    <span class="type">float</span> linearEyeDepth = LinearEyeDepth(depth, _ZBufferParams); <span class="comment">// 离相机越近越小</span></span><br><span class="line">    <span class="type">float</span> offsetDepth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, samplePositionVP).r; <span class="comment">// _CameraDepthTexture.r = input.positionNDC.z / input.positionNDC.w</span></span><br><span class="line">    <span class="type">float</span> linearEyeOffsetDepth = LinearEyeDepth(offsetDepth, _ZBufferParams);</span><br><span class="line">    <span class="type">float</span> depthDiff = linearEyeOffsetDepth - linearEyeDepth;</span><br><span class="line">    <span class="type">float</span> rimIntensity = <span class="built_in">step</span>(_Threshold, depthDiff);</span><br><span class="line">    </span><br><span class="line">    float3 viewDirectionWS = SafeNormalize(GetCameraPositionWS() - i.positionWS);</span><br><span class="line">    <span class="type">float</span> rimRatio = <span class="number">1</span> - saturate(<span class="built_in">dot</span>(viewDirectionWS, worldNormal));</span><br><span class="line">    rimRatio = <span class="built_in">pow</span>(rimRatio, <span class="built_in">exp2</span>(lerp(<span class="number">4.0</span>, <span class="number">0.0</span>, _FresnelMask)));</span><br><span class="line">    rimIntensity = lerp(<span class="number">0</span>, rimIntensity, rimRatio);</span><br><span class="line">    </span><br><span class="line">    half3 rimlight = lerp(float3(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>), float3(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>), rimIntensity);</span><br><span class="line">    </span><br><span class="line">    float4 baseColor = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.uv);</span><br><span class="line">    rimlight *= baseColor.rgb;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> rimlight;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>渲染结果如下，左边是原本的边缘光，右边是添加了BaseColor的边缘光</p>
+<p><img src="/image/ToonShader/RimLight-1699965433231-6.png" alt="RimLight"></p>
+<h2 id="Reflection"><a href="#Reflection" class="headerlink" title="Reflection"></a>Reflection</h2><p>为墨镜添加一个菲涅尔反射项，它能够随着视角改变反射光，具体代码如下。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">float3 GetFresnelSchlickReflection(Varyings i,  float3 lightDirWS)</span><br><span class="line">&#123;</span><br><span class="line">    float3 F0 = float3(<span class="number">0.04</span>, <span class="number">0.04</span>, <span class="number">0.04</span>);</span><br><span class="line">    float3 halfDir = <span class="built_in">normalize</span>(lightDirWS + i.worldViewDir);</span><br><span class="line">    float3 fresnel = F0 + (<span class="number">1</span> - F0) * <span class="built_in">pow</span>(<span class="number">1.0</span> - <span class="built_in">dot</span>(i.worldNormal, halfDir), <span class="number">5.0</span>);</span><br><span class="line">    fresnel *= _ReflectionIntensity;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> fresnel;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意观察墨镜的边缘，随着视角的变换会发生反射。</p>
+<p><img src="/image/ToonShader/image-20231114213002918.png" alt="image-20231114213002918"></p>
+<h2 id="Outline"><a href="#Outline" class="headerlink" title="Outline"></a>Outline</h2><blockquote>
+<p>Outline主要是使用了这个大佬的代码</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ColinLeung-NiloCat/UnityURPToonLitShaderExample">https://github.com/ColinLeung-NiloCat/UnityURPToonLitShaderExample</a></p>
+</blockquote>
+<p><strong>Outline</strong>的效果在另一个Pass中实现，其中这个Pass需要删去Tag里面的<strong>LightMode = UniversalForwardOnly</strong>，可选地添加一个<strong>LightMode = SRPDefaultUnlit</strong>，修改后的的Pass长这样，需要Cull Front。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Pass</span><br><span class="line">&#123;</span><br><span class="line">    Name &quot;Outline&quot;</span><br><span class="line">    Tags&#123;  &#125;</span><br><span class="line"></span><br><span class="line">    Blend One Zero</span><br><span class="line">    ZWrite On</span><br><span class="line">    Cull Front</span><br><span class="line">    ZTest LEqual</span><br><span class="line"></span><br><span class="line">    HLSLPROGRAM</span><br><span class="line">    <span class="meta">#pragma vertex Outline_Vert</span></span><br><span class="line">    <span class="meta">#pragma fragment Outline_Frag</span></span><br><span class="line">    <span class="meta">#include &quot;Outline.hlsl&quot;</span></span><br><span class="line">    ENDHLSL</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Outline</strong>的实现和上面的RimLight非常相似，也是将Position向Normal偏移一段距离，只是添加了相关的遮罩，这里直接放代码。重要的部分在顶点着色器，片元着色器只要输出Outline的颜色即可。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Varyings Outline_Vert(Attributes v)</span><br><span class="line">&#123;</span><br><span class="line">    Varyings o;</span><br><span class="line"></span><br><span class="line">    UNITY_SETUP_INSTANCE_ID(v);                 </span><br><span class="line">    UNITY_TRANSFER_INSTANCE_ID(v, o);     </span><br><span class="line">    UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o); </span><br><span class="line"></span><br><span class="line">    VertexPositionInputs  PositionInputs = GetVertexPositionInputs(v.positionOS.xyz);</span><br><span class="line">    VertexNormalInputs vertexNormalInput = GetVertexNormalInputs(v.normalOS, v.tangentOS);</span><br><span class="line"></span><br><span class="line">    float3 positionWS = TransformPositionWSToOutlinePositionWS(PositionInputs.positionWS, PositionInputs.positionVS.z, vertexNormalInput.normalWS);</span><br><span class="line">    o.uv = v.uv;</span><br><span class="line"></span><br><span class="line">    o.normalWS = vertexNormalInput.normalWS;</span><br><span class="line">    o.positionCS = TransformWorldToHClip(positionWS);</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> outlineZOffsetMaskTexExplictMipLevel = <span class="number">0</span>;</span><br><span class="line">    <span class="type">float</span> outlineZOffsetMask = tex2Dlod(_OutlineZOffsetMaskTex, float4(v.uv,<span class="number">0</span>,outlineZOffsetMaskTexExplictMipLevel)).r; </span><br><span class="line">    outlineZOffsetMask = <span class="number">1</span>-outlineZOffsetMask;</span><br><span class="line">    outlineZOffsetMask = invLerpClamp(_OutlineZOffsetMaskRemapStart,_OutlineZOffsetMaskRemapEnd,outlineZOffsetMask);<span class="comment">// allow user to flip value or remap</span></span><br><span class="line"></span><br><span class="line">    o.positionCS = NiloGetNewClipPosWithZOffset(o.positionCS, _OutlineZOffset * outlineZOffsetMask + <span class="number">0.03</span> * _isFace);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>渲染效果如图：</p>
+<p><img src="/image/ToonShader/image-20231114203906649.png" alt="image-20231114203906649"></p>
+<h2 id="Transparent"><a href="#Transparent" class="headerlink" title="Transparent"></a>Transparent</h2><p>为了渲染不透明物体，需要在原有的<strong>ToonShader</strong>的基础上新建一个<strong>Transparent Shader</strong>，然后在新文件的<strong>SubShader</strong>上添加以下几个<strong>Tag</strong>，他们是用来指定渲染队列和渲染类型的。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Tags </span><br><span class="line">&#123;</span><br><span class="line">    &quot;RenderPipeline&quot; = &quot;UniversalPipeline&quot;  </span><br><span class="line">    &quot;RenderType&quot;=&quot;Transparent&quot; </span><br><span class="line">    &quot;Queue&quot;=&quot;Transparent&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除此之外，还要在你的主要的Pass里面添加以下语句，这样才能成功渲染透明物体。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Zwrite Off</span><br><span class="line">Blend SrcAlpha OneMinusSrcAlpha</span><br></pre></td></tr></table></figure>
+
+<p>最后只要指定一个透明度值<strong>Alpha</strong>，在输出最终的颜色时使用这个值即可控制透明度，效果如下，注意看墨镜的部分。</p>
+<p><img src="/image/ToonShader/image-20231114212853250.png" alt="image-20231114212853250"></p>
+<h2 id="颜色矫正以及后处理"><a href="#颜色矫正以及后处理" class="headerlink" title="颜色矫正以及后处理"></a>颜色矫正以及后处理</h2><p>使用后处理也可以调整颜色，但是会影响到场景中的其他部分，因此这里使用色相、饱和度、明度矫正输出的颜色。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">half3 AdjustColor(half3 color)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> Brightness = <span class="number">1</span>;</span><br><span class="line">    <span class="type">float</span> Saturation = <span class="number">1.2</span>;</span><br><span class="line">    <span class="type">float</span> Contrast = <span class="number">1.03</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Apply brightness</span></span><br><span class="line">    half3 finalColor = color.rgb * Brightness;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Apply saturation</span></span><br><span class="line">    <span class="type">float</span> luminance = <span class="number">0.2125</span> * color.r + <span class="number">0.7154</span> * color.g + <span class="number">0.0721</span> * color.b;</span><br><span class="line">    half3 luminanceColor = half3(luminance, luminance, luminance);</span><br><span class="line">    finalColor = lerp(luminanceColor, finalColor, Saturation);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Apply contrast</span></span><br><span class="line">    half3 avgColor = half3(<span class="number">0.5</span>, <span class="number">0.5</span>, <span class="number">0.5</span>);</span><br><span class="line">    finalColor = lerp(avgColor, finalColor, Contrast);</span><br><span class="line">            </span><br><span class="line">    <span class="keyword">return</span> finalColor;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后再使用<strong>Render Feature</strong>加一个<strong>Bloom</strong>后处理即可，最终的效果如图：</p>
+<p><img src="/image/ToonShader/image-20231114213201055.png" alt="image-20231114213201055"></p>
+<p>写到最后，其实AO、Ramp以及Outline都有不少可以优化的地方，可以尝试让皮肤的AO更融入周围，增加白天和黑夜的Ramp设置，以及优化Outline的遮罩，等有时间了再去改改。</p>
+<h2 id="问题解析"><a href="#问题解析" class="headerlink" title="问题解析"></a>问题解析</h2><ul>
+<li><p>Unity的URP项目中使用自定义shader导致材质消失的解决办法</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/fish_toucher/article/details/129861360">https://blog.csdn.net/fish_toucher/article/details/129861360</a></p>
+</li>
+</ul>
+<h2 id="工具链接"><a href="#工具链接" class="headerlink" title="工具链接"></a>工具链接</h2><ul>
+<li><p>Ninja Ripper：获取素材的工具，具体用法请自行搜索，建议下载2.05的版本，最新的版本需要付费才能拿到解锁Token</p>
+<p><a target="_blank" rel="noopener" href="https://kemono.su/patreon/user/45591569">https://kemono.su/patreon/user/45591569</a></p>
+</li>
+<li><p>Noesis：用来读取和转换DDS文件</p>
+<p><a target="_blank" rel="noopener" href="https://richwhitehouse.com/index.php?content=inc_projects.php">https://richwhitehouse.com/index.php?content=inc_projects.php</a></p>
+</li>
+</ul>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><ul>
+<li><p><strong>卡通渲染</strong></p>
+<ul>
+<li><p>罪恶装备 Strive 人物渲染还原</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/631214546">https://zhuanlan.zhihu.com/p/631214546</a></p>
+</li>
+<li><p>Unity URP 卡通渲染 原神角色渲染记录</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/551104542">https://zhuanlan.zhihu.com/p/551104542</a></p>
+</li>
+<li><p>[Unity URP] 原神人物渲染还原简单流程</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av474356841/">https://www.bilibili.com/video/av474356841/</a></p>
+</li>
+<li><p>Genshin Impact Character Shader Breakdown [Unity URP]</p>
+<p><a target="_blank" rel="noopener" href="https://www.artstation.com/artwork/wJZ4Gg">https://www.artstation.com/artwork/wJZ4Gg</a></p>
+</li>
+<li><p>A Unity URP shader for Genshin Impact style character facial shading.</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/NoiRC256/URPSimpleGenshinShaders">https://github.com/NoiRC256/URPSimpleGenshinShaders</a></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Ramp</strong></p>
+<ul>
+<li><p>GenshinCelShaderURP</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Gaolingx/GenshinCelShaderURP">https://github.com/Gaolingx/GenshinCelShaderURP</a></p>
+</li>
+<li><p>原神Shader渲染还原解析 - RampColor</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/435005339">https://zhuanlan.zhihu.com/p/435005339</a></p>
+</li>
+</ul>
+</li>
+<li><p><strong>SDF</strong></p>
+<ul>
+<li><p>如何快速生成混合卡通光照图</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/356185096">https://zhuanlan.zhihu.com/p/356185096</a></p>
+</li>
+<li><p>how to make SDF, Shader facial anime Genshin Impact in blender</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=D3nEolOME50&amp;t=505s">https://www.youtube.com/watch?v=D3nEolOME50&amp;t=505s</a></p>
+</li>
+<li><p>How to Smooth Anime Face Shadow in Unity URP Without Editing Face Normal</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=LKR1ITdOeKM">https://www.youtube.com/watch?v=LKR1ITdOeKM</a></p>
+</li>
+</ul>
+</li>
+<li><p><strong>RimLight</strong></p>
+<ul>
+<li><p>等宽屏幕空间边缘光</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/365339160">https://zhuanlan.zhihu.com/p/365339160</a></p>
+</li>
+<li><p>菲涅尔边缘光</p>
+<p><a target="_blank" rel="noopener" href="https://roystan.net/articles/toon-shader/">https://roystan.net/articles/toon-shader/</a></p>
+</li>
+</ul>
+</li>
+<li><p>Parallax</p>
+<ul>
+<li><p>How to make a Parallax Shader (for stylized effects) in Blender</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=g3PR4uzbXjs">https://www.youtube.com/watch?v=g3PR4uzbXjs</a></p>
+</li>
+</ul>
+</li>
+<li><p><strong>Outline</strong></p>
+<ul>
+<li><p>SimpleURPToonLitOutlineExample</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ColinLeung-NiloCat/UnityURPToonLitShaderExample">https://github.com/ColinLeung-NiloCat/UnityURPToonLitShaderExample</a></p>
+</li>
+<li><p>【05】Unity URP 卡通渲染 原神角色渲染记录-Double Pass Effect: Render Feature + 平滑法线Outline</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/552098653">https://zhuanlan.zhihu.com/p/552098653</a></p>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/11/13/ToonShader/">https://li-kira.github.io/2023/11/13/ToonShader/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Shader/"># Shader</a>
+                    
+                        <a href="/tags/CG/"># CG</a>
+                    
+                        <a href="/tags/Unity/"># Unity</a>
+                    
+                        <a href="/tags/URP/"># URP</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/11/17/Quantum-Shader/">Quantum Shader - 崩三量子怪物Shader还原</a>
+            
+            
+            <a class="next" rel="next" href="/2023/10/26/SSAO-%E5%B1%8F%E5%B9%95%E7%A9%BA%E9%97%B4%E7%9A%84%E7%8E%AF%E5%A2%83%E5%85%89%E9%81%AE%E8%94%BD%E5%AE%9E%E7%8E%B0/">SSAO-屏幕空间的环境光遮蔽实现</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

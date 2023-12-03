@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>作品集 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">作品集</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">November 29, 2023&nbsp;&nbsp;22:42:25</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Portfolio/">Portfolio</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Shader"><a href="#Shader" class="headerlink" title="Shader"></a>Shader</h1><img src="/image/Portfolio/ToonShader.png" alt="ToonShader" width="1024"/>
+
+<p><font size=4 ><strong>卡通渲染全流程，以崩坏星穹铁道角色为例</strong></font></p>
+<p>本文详细介绍了卡通渲染的流程，深入探讨了<strong>LightMap</strong>的RGBA通道用法、<strong>SDF</strong>以及<strong>Ramp</strong>纹理的使用</p>
+<ul>
+<li>漫反射部分介绍了<strong>二分阴影</strong>、<strong>脸部SDF阴影</strong>以及<strong>AO阴影</strong>的生成，并结合<strong>Ramp</strong>纹理实现了丰富的漫反射颜色变化</li>
+<li>高光部分介绍了<strong>各向异性高光</strong>、<strong>自发光</strong>、<strong>Blink效果</strong></li>
+<li>实现了基于<strong>深度图</strong>和<strong>Back Facing Outline</strong>的<strong>RimLight</strong>以及<strong>Outline</strong></li>
+<li>最后还介绍了菲涅尔反射、透明物体渲染、后处理效果以及基于色相、饱和度、明度的色彩校正</li>
+</ul>
+<p><a href="https://li-kira.github.io/2023/11/13/ToonShader/">Read More</a></p>
+<br>
+
+
+<img src="/image/Portfolio/QuantumShader.png" alt="QuantumShader" width="1024"/>
+
+<p><font size=4 ><strong>Quantum Shader - 崩三量子怪物Shader还原</strong></font></p>
+<p>还原了量子怪物外观，主体是由不同的菲涅尔效果组成的：包括外层和底部的菲涅尔效果，以及基于菲涅尔效果的轮廓线。此外还结合了屏幕空间的贴图以及法线外扩的轮廓线，最后使用法线与视角方向的点积作为 Alpha 值，用来控制怪物的透明程度，呈现出最终的外观。</p>
+<p><a href="https://li-kira.github.io/2023/11/17/Quantum-Shader/">Read More</a></p>
+<br>
+
+
+<h1 id="Game-Play"><a href="#Game-Play" class="headerlink" title="Game Play"></a>Game Play</h1><br>
+
+<h1 id="Universal-RP"><a href="#Universal-RP" class="headerlink" title="Universal RP"></a>Universal RP</h1><img src="/image/Portfolio/SSAO.png" alt="SSAO" width="1024"/>
+
+<p><font size=4 ><strong>SSAO-屏幕空间的环境光遮蔽实现</strong></font></p>
+<p>本文使用了<strong>URP（Universal Render Pipeline）</strong>工作流，在其中的<strong>Renderer Feature</strong>上实现了一种基于屏幕后处理的屏幕空间环境光遮蔽。</p>
+<ul>
+<li>在<strong>Renderer Feature</strong>中得到<strong>深度、法线缓冲</strong>，使用<strong>深度缓冲、法线缓冲</strong>获取物体的位置信息</li>
+<li>使用一个法线半球对周围的随机点进行采样。</li>
+<li>通过多Pass将采样得到的结果进行模糊算法处理得到AO值</li>
+<li>最终将原场景和AO进行颜色混合实现了一种高性能的屏幕空间环境光遮蔽效果。</li>
+</ul>
+<p><a href="https://li-kira.github.io/2023/10/26/SSAO-%E5%B1%8F%E5%B9%95%E7%A9%BA%E9%97%B4%E7%9A%84%E7%8E%AF%E5%A2%83%E5%85%89%E9%81%AE%E8%94%BD%E5%AE%9E%E7%8E%B0/">Read More</a></p>
+<br>
+
+
+<img src="/image/Portfolio/CustomURPRendererFeature.png" alt="CustomURPRendererFeature" width="1024"/>
+
+<p><font size=4 ><strong>Custom URP Renderer Feature， 以Outline效果为例</strong></font></p>
+<p>本文探索了Unity通用渲染管线（URP）的<strong>Renderer Feature</strong>，并且在此基础上实现了一个屏幕后处理的Outline效果。</p>
+<ul>
+<li><strong>Renderer Feature</strong>的工作是通过<strong>VolumeComponent</strong>、<strong>RendererFeature</strong>、<strong>RenderPass</strong>几个脚本的协同<ul>
+<li><strong>Volume Component</strong> 用于在Global Volume中通过控制面板参数调整后处理效果</li>
+<li><strong>Renderer Feature</strong> 实现了创建和初始化渲染Pass的方法，以及将Pass加入渲染队列的方法</li>
+<li><strong>Render Pass</strong> 执行渲染相关操作的脚本，从Volume Stack获取参数，将画面与Shader渲染的画面混合</li>
+</ul>
+</li>
+<li><strong>Outline效果</strong>使用的算法是深度和法线贴图的边缘检测<ul>
+<li><strong>边缘检测</strong> 通过采样深度图和法线贴图，计算深度和法线梯度，结合一些阈值来判断是否存在边缘。</li>
+<li> 通过视角方向<strong>矫正</strong>深度阈值，避免在相近表面上检测到边缘。</li>
+</ul>
+</li>
+</ul>
+<p><a href="https://li-kira.github.io/2023/10/19/Unity-URP-Renderer-Feature/">Read More</a></p>
+<br>
+
+<h1 id="计算机图形学"><a href="#计算机图形学" class="headerlink" title="计算机图形学"></a>计算机图形学</h1><img src="/image/Portfolio/MicrofacetModel.png" alt="MicrofacetModel" width="1024"/>
+
+<p><font size=4 ><strong>微表面模型</strong></font></p>
+<p>PBR（Physically Based Rendering）材质的实现基于微表面模型，应用了微表面材质的物体，在远距离观察下表面是平的，凑近了看则是有细节的，表现为带有颗粒状以及镜面反射。本文实现部分使用到的<strong>BRDF</strong>是<strong>Cook-Torrance BRDF</strong>，它包括<strong>漫反射</strong>和<strong>高光反射</strong>两部分，漫反射部分使用的是<strong>Lambertian漫反射</strong>，高光反射使用了<strong>菲涅尔项</strong>，<strong>几何项</strong>以及<strong>法线分布项</strong>分别计算光照贡献。代码实现使用的是<strong>路径追踪</strong>中的框架。</p>
+<p><a href="https://li-kira.github.io/2023/10/15/GAMES101-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%A8%A1%E5%9E%8B/">Read More</a></p>
+<br>
+
+
+<img src="/image/Portfolio/PathTracing.png" alt="PathTracing" width="1024"/>
+
+<p><font size=4 ><strong>路径追踪</strong></font></p>
+<p>路径追踪是一种工业界常用的光线追踪方法，它在<strong>Whitted风格光线追踪</strong>基础上改进了加速结构算法，使用了<strong>AABBs（轴对齐包围盒）</strong>求交光线，构造<strong>BVH数据结构</strong>查找三角形，使用蒙特卡洛积分采样辐射度。本文在实现路径追踪的算法基础上还探讨了随机数引发的性能问题以及C++多线程优化。</p>
+<p><a href="https://li-kira.github.io/2023/09/20/GAMES101%E4%BD%9C%E4%B8%9A7-%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/">Read More</a></p>
+<br>
+
+
+
+<img src="/image/Portfolio/SpringMassSystem.png" alt="SpringMassSystem" width="1024"/>
+
+<p><font size=4 ><strong>质点弹簧系统</strong></font></p>
+<p>质点弹簧系统是用于模拟动画的一个基础物理模型，本文使用了半隐式欧拉法和显式 Verlet方法模拟了理想状态下多质点的绳结的物理效果。</p>
+<p><a href="https://li-kira.github.io/2023/09/25/GAMES101%E4%BD%9C%E4%B8%9A8-%E8%B4%A8%E7%82%B9%E5%BC%B9%E7%B0%A7%E7%B3%BB%E7%BB%9F/">Read More</a></p>
+<br>
+
+<h1 id="VFX"><a href="#VFX" class="headerlink" title="VFX"></a>VFX</h1><img src="/image/Portfolio/StylizedExplosion.png" alt="StylizedExplosion" width="1024"/>
+
+<p><font size=4 ><strong>风格化爆炸</strong></font></p>
+<p>本文从一个风格化的爆炸效果入手，逐步学习了Unity的粒子系统。采用的工作流为：<strong>Material Maker</strong>制作噪声贴图、<strong>Blender</strong>制作<strong>Mesh</strong>、<strong>Unity Shader Graph</strong>创建着色器，最终实现以下效果：</p>
+<ul>
+<li><strong>Scroll mask</strong> 滚动遮罩</li>
+<li><strong>Erode</strong> 侵蚀效果</li>
+<li><strong>Animate vertices</strong> 顶点动画</li>
+<li><strong>Distort</strong> 扭曲效果</li>
+<li><strong>Parallax Occlusion</strong> 视察遮挡效果</li>
+</ul>
+<p><a href="https://li-kira.github.io/2023/06/25/VFX-Particle-System-Learning/">Read More</a></p>
+<br>
+
+<img src="/image/Portfolio/ArcadeSlashVFX.png" alt="ArcadeSlashVFX" width="1024"/>
+
+<p><font size=4 ><strong>Arcade Slash VFX</strong></font></p>
+<p>分享一个简单的<strong>Arcade</strong>风格<strong>Slash</strong>的<strong>VFX</strong>的做法，内容包括<strong>Slash Ring</strong>、<strong>Arcade Cube</strong>以及<strong>Star</strong>的粒子效果实现。</p>
+<p><a href="https://li-kira.github.io/2023/11/24/Arcade-Slash-VFX/">Read More</a></p>
+<br>
+
+<h1 id="Diagram"><a href="#Diagram" class="headerlink" title="Diagram"></a>Diagram</h1><img src="/image/Portfolio/Diagram.png" alt="Diagram" width="1024"/>
+
+<p><strong>Template Diagram</strong></p>
+<p>使用<strong>draw.io</strong>开源软件设计的一个模板图表，收集了用来表示各种类的<strong>Icon</strong>，设计了多种<strong>Block</strong>，可以使用不同的方法来表示对象的关系，并且提供了一个示例。</p>
+<p><a href="https://li-kira.github.io/2023/06/09/Diagram/">Read More</a></p>
+<br>
+
+
+<h1 id="Full-Game-Demo"><a href="#Full-Game-Demo" class="headerlink" title="Full Game Demo"></a>Full Game Demo</h1><img src="/image/Portfolio/3DActionGameDemo.png" alt="ToonShader" width="1024"/>
+
+<p><font size=4 ><strong>3D Action Game Demo</strong></font></p>
+<p>这个项目是一个俯视角的3D动作游戏Demo，包含角色控制、敌人行为、关卡互动系统，以及一些UI控制。</p>
+<p><a href="https://li-kira.github.io/2023/11/17/Quantum-Shader/">Read More</a></p>
+<br>
+
+
+<img src="/image/Portfolio/ComputerVision-basedSentimentAnalysis.png" alt="ComputerVision-basedSentimentAnalysis" width="1024"/>
+
+<p><font size=4 ><strong>Computer Vision-based Sentiment Analysis and Generation Experience in Unity</strong></font></p>
+<p>本项目是基于URP和机器视觉的情感分析和生成体验，机器视觉使用了<strong>Unity Barracuda</strong>和<strong>OpenCV For Unity</strong>，实现了集绘画、交互和音乐推荐以及生成的体验，该项目参加过<strong>OpenCV Al Competition 2022</strong>比赛并获得<strong>三等奖</strong>。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Li-Kira/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity">项目地址</a><br><a target="_blank" rel="noopener" href="https://www.credential.net/177f5d0f-5c83-4a29-bdb8-d856eec2725d">证书地址</a><br><a href="https://li-kira.github.io/2022/12/12/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity/">Read More</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/11/29/Portfolio/">https://li-kira.github.io/2023/11/29/Portfolio/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Portfolio/"># Portfolio</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/11/24/Arcade-Slash-VFX/">Arcade Slash VFX</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

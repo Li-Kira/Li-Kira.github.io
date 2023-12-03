@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>GAMES101作业2 - 光栅化 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">GAMES101作业2 - 光栅化</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 15, 2023&nbsp;&nbsp;17:29:29</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CG/">CG</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>代码地址：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Li-Kira/CodeLib/tree/main/CG/GAMES101/Homework02-%E5%85%89%E6%A0%85%E5%8C%96">https://github.com/Li-Kira/CodeLib/tree/main/CG/GAMES101/Homework02-%E5%85%89%E6%A0%85%E5%8C%96</a></p>
+</blockquote>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ul>
+<li>正确实现三角形栅格化算法。</li>
+<li>正确测试点是否在三角形内。</li>
+<li>正确实现 z-buffer 算法, 将三角形按顺序画在屏幕上。</li>
+<li>用 super-sampling 处理 Anti-aliasing （MSAA）</li>
+</ul>
+<h2 id="判断是否在三角形内"><a href="#判断是否在三角形内" class="headerlink" title="判断是否在三角形内"></a>判断是否在三角形内</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">insideTriangle</span><span class="params">(<span class="type">float</span> x, <span class="type">float</span> y, <span class="type">const</span> Vector3f* _v)</span></span></span><br><span class="line"><span class="function"></span>&#123;   </span><br><span class="line">    <span class="comment">// TODO : Implement this function to check if the point (x, y) is inside the triangle represented by _v[0], _v[1], _v[2]</span></span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> checkPoint_x = x;</span><br><span class="line">    <span class="type">float</span> checkPoint_y = y;</span><br><span class="line"></span><br><span class="line">    Eigen::Vector2f AB = Eigen::<span class="built_in">Vector2f</span>(_v[<span class="number">1</span>].<span class="built_in">x</span>() - _v[<span class="number">0</span>].<span class="built_in">x</span>(), _v[<span class="number">1</span>].<span class="built_in">y</span>() - _v[<span class="number">0</span>].<span class="built_in">y</span>());</span><br><span class="line">    Eigen::Vector2f BC = Eigen::<span class="built_in">Vector2f</span>(_v[<span class="number">2</span>].<span class="built_in">x</span>() - _v[<span class="number">1</span>].<span class="built_in">x</span>(), _v[<span class="number">2</span>].<span class="built_in">y</span>() - _v[<span class="number">1</span>].<span class="built_in">y</span>());</span><br><span class="line">    Eigen::Vector2f CA = Eigen::<span class="built_in">Vector2f</span>(_v[<span class="number">0</span>].<span class="built_in">x</span>() - _v[<span class="number">2</span>].<span class="built_in">x</span>(), _v[<span class="number">0</span>].<span class="built_in">y</span>() - _v[<span class="number">2</span>].<span class="built_in">y</span>());</span><br><span class="line">    Eigen::Vector2f AP = Eigen::<span class="built_in">Vector2f</span>(checkPoint_x - _v[<span class="number">0</span>].<span class="built_in">x</span>(), checkPoint_y - _v[<span class="number">0</span>].<span class="built_in">y</span>());</span><br><span class="line">    Eigen::Vector2f BP = Eigen::<span class="built_in">Vector2f</span>(checkPoint_x - _v[<span class="number">1</span>].<span class="built_in">x</span>(), checkPoint_y - _v[<span class="number">1</span>].<span class="built_in">y</span>());</span><br><span class="line">    Eigen::Vector2f CP = Eigen::<span class="built_in">Vector2f</span>(checkPoint_x - _v[<span class="number">2</span>].<span class="built_in">x</span>(), checkPoint_y - _v[<span class="number">2</span>].<span class="built_in">y</span>());</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> cross_AB_AP = AB.<span class="built_in">x</span>() * AP.<span class="built_in">y</span>() - AB.<span class="built_in">y</span>() * AP.<span class="built_in">x</span>();</span><br><span class="line">    <span class="type">float</span> cross_BC_BP = BC.<span class="built_in">x</span>() * BP.<span class="built_in">y</span>() - BC.<span class="built_in">y</span>() * BP.<span class="built_in">x</span>();</span><br><span class="line">    <span class="type">float</span> cross_CA_CP = CA.<span class="built_in">x</span>() * CP.<span class="built_in">y</span>() - CA.<span class="built_in">y</span>() * CP.<span class="built_in">x</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cross_AB_AP &gt; <span class="number">0</span> &amp;&amp; cross_BC_BP &gt; <span class="number">0</span> &amp;&amp; cross_CA_CP &gt; <span class="number">0</span> ||</span><br><span class="line">        cross_AB_AP &lt; <span class="number">0</span> &amp;&amp; cross_BC_BP &lt; <span class="number">0</span> &amp;&amp; cross_CA_CP &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="光栅化三角形"><a href="#光栅化三角形" class="headerlink" title="光栅化三角形"></a>光栅化三角形</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> rst::rasterizer::<span class="built_in">rasterize_triangle</span>(<span class="type">const</span> Triangle&amp; t) &#123;</span><br><span class="line"><span class="keyword">auto</span> v = t.<span class="built_in">toVector4</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// TODO : Find out the bounding box of current triangle.</span></span><br><span class="line"><span class="comment">// iterate through the pixel and find if the current pixel is inside the triangle</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// If so, use the following code to get the interpolated z value.</span></span><br><span class="line"><span class="comment">//auto[alpha, beta, gamma] = computeBarycentric2D(x, y, t.v);</span></span><br><span class="line"><span class="comment">//float w_reciprocal = 1.0/(alpha / v[0].w() + beta / v[1].w() + gamma / v[2].w());</span></span><br><span class="line"><span class="comment">//float z_interpolated = alpha * v[0].z() / v[0].w() + beta * v[1].z() / v[1].w() + gamma * v[2].z() / v[2].w();</span></span><br><span class="line"><span class="comment">//z_interpolated *= w_reciprocal;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// TODO : set the current pixel (use the set_pixel function) to the color of the triangle (use getColor function) if it should be painted.</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//bounding box的实现</span></span><br><span class="line"><span class="type">float</span> x_max = v[<span class="number">0</span>].<span class="built_in">x</span>(), x_min = v[<span class="number">0</span>].<span class="built_in">x</span>(), y_max = v[<span class="number">0</span>].<span class="built_in">y</span>(), y_min = v[<span class="number">0</span>].<span class="built_in">y</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> i : v)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (i[<span class="number">0</span>] &lt; x_min) </span><br><span class="line">        x_min = i[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (i[<span class="number">0</span>] &gt; x_max) </span><br><span class="line">        x_max = i[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">if</span> (i[<span class="number">1</span>] &lt; y_min) </span><br><span class="line">        y_min = i[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">if</span> (i[<span class="number">1</span>] &gt; y_max) </span><br><span class="line">        y_max = i[<span class="number">1</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//以下是未进行抗锯齿处理的版本</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> x = x_min; x &lt; x_max; x++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> y = y_min; y &lt; y_max; y++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">bool</span> isInsideTriangle = <span class="built_in">insideTriangle</span>(x, y, t.v);</span><br><span class="line">        <span class="keyword">if</span> (isInsideTriangle)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">auto</span> result = <span class="built_in">computeBarycentric2D</span>(x + <span class="number">0.5</span>, y + <span class="number">0.5</span>, t.v);</span><br><span class="line">            <span class="type">float</span> alpha, beta, gamma;</span><br><span class="line">            std::<span class="built_in">tie</span>(alpha, beta, gamma) = result;</span><br><span class="line">            <span class="type">float</span> w_reciprocal = <span class="number">1.0</span> / (alpha / v[<span class="number">0</span>].<span class="built_in">w</span>() + beta / v[<span class="number">1</span>].<span class="built_in">w</span>() + gamma / v[<span class="number">2</span>].<span class="built_in">w</span>());</span><br><span class="line">            <span class="type">float</span> z_interpolated = alpha * v[<span class="number">0</span>].<span class="built_in">z</span>() / v[<span class="number">0</span>].<span class="built_in">w</span>() + beta * v[<span class="number">1</span>].<span class="built_in">z</span>() / v[<span class="number">1</span>].<span class="built_in">w</span>() + gamma * v[<span class="number">2</span>].<span class="built_in">z</span>() / v[<span class="number">2</span>].<span class="built_in">w</span>();</span><br><span class="line">            z_interpolated *= w_reciprocal;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (z_interpolated &lt; depth_buf[<span class="built_in">get_index</span>(x, y)])</span><br><span class="line">            &#123;</span><br><span class="line">                Eigen::Vector3f point = Eigen::<span class="built_in">Vector3f</span>(x, y, z_interpolated);</span><br><span class="line">                <span class="built_in">set_pixel</span>(point, t.<span class="built_in">getColor</span>());</span><br><span class="line">                depth_buf[<span class="built_in">get_index</span>(x, y)] = z_interpolated;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="附加题-实现MSAA"><a href="#附加题-实现MSAA" class="headerlink" title="附加题 - 实现MSAA"></a>附加题 - 实现MSAA</h2><p>首先，需要在<code>rasterizer.cpp</code>中，添加深度缓存和颜色缓存：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;Eigen::Vector3f&gt; sampleList_frame_buf;</span><br><span class="line">std::vector&lt;<span class="type">float</span>&gt; sampleList_depth_buf;</span><br></pre></td></tr></table></figure>
+
+<p>同时需要对他们进行初始化：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> rst::rasterizer::<span class="built_in">clear</span>(rst::Buffers buff)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ((buff &amp; rst::Buffers::Color) == rst::Buffers::Color)</span><br><span class="line">    &#123;</span><br><span class="line">        std::<span class="built_in">fill</span>(frame_buf.<span class="built_in">begin</span>(), frame_buf.<span class="built_in">end</span>(), Eigen::Vector3f&#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>&#125;);</span><br><span class="line">        std::<span class="built_in">fill</span>(sampleList_frame_buf.<span class="built_in">begin</span>(), sampleList_frame_buf.<span class="built_in">end</span>(), Eigen::Vector3f&#123; <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span> &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ((buff &amp; rst::Buffers::Depth) == rst::Buffers::Depth)</span><br><span class="line">    &#123;</span><br><span class="line">        std::<span class="built_in">fill</span>(depth_buf.<span class="built_in">begin</span>(), depth_buf.<span class="built_in">end</span>(), std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">infinity</span>());</span><br><span class="line">        std::<span class="built_in">fill</span>(sampleList_depth_buf.<span class="built_in">begin</span>(), sampleList_depth_buf.<span class="built_in">end</span>(), std::numeric_limits&lt;<span class="type">float</span>&gt;::<span class="built_in">infinity</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">rst::rasterizer::<span class="built_in">rasterizer</span>(<span class="type">int</span> w, <span class="type">int</span> h) : <span class="built_in">width</span>(w), <span class="built_in">height</span>(h)</span><br><span class="line">&#123;</span><br><span class="line">    frame_buf.<span class="built_in">resize</span>(w * h);</span><br><span class="line">    depth_buf.<span class="built_in">resize</span>(w * h);</span><br><span class="line"></span><br><span class="line">    sampleList_frame_buf.<span class="built_in">resize</span>(w * h * <span class="number">4</span>);</span><br><span class="line">    sampleList_depth_buf.<span class="built_in">resize</span>(w * h * <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后修改光栅化类：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以下是实现MSAA的版本</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">SamplePoint</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">float</span> p_x;</span><br><span class="line">    <span class="type">float</span> p_y;</span><br><span class="line">    <span class="type">int</span> isInsideTriangle;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">SamplePoint</span>(<span class="type">float</span> _x, <span class="type">float</span> _y, <span class="type">int</span> _isInsideTriangle)</span><br><span class="line">    &#123;</span><br><span class="line">        p_x = _x;</span><br><span class="line">        p_y = _y;</span><br><span class="line">        isInsideTriangle = _isInsideTriangle;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//遍历boundbox，渲染三角面</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> x = x_min; x &lt; x_max; x++)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> y = y_min; y &lt; y_max; y++)</span><br><span class="line">    &#123;</span><br><span class="line">        std::vector&lt;SamplePoint&gt; samplePoint;</span><br><span class="line"></span><br><span class="line">        samplePoint.<span class="built_in">push_back</span>(<span class="built_in">SamplePoint</span>(x + <span class="number">0.25</span>, y + <span class="number">0.25</span>, <span class="built_in">insideTriangle</span>(x + <span class="number">0.25</span>, y + <span class="number">0.25</span>, t.v) == <span class="literal">true</span> ? <span class="number">1</span> : <span class="number">0</span>));</span><br><span class="line">        samplePoint.<span class="built_in">push_back</span>(<span class="built_in">SamplePoint</span>(x + <span class="number">0.25</span>, y + <span class="number">0.75</span>, <span class="built_in">insideTriangle</span>(x + <span class="number">0.25</span>, y + <span class="number">0.75</span>, t.v) == <span class="literal">true</span> ? <span class="number">1</span> : <span class="number">0</span>));</span><br><span class="line">        samplePoint.<span class="built_in">push_back</span>(<span class="built_in">SamplePoint</span>(x + <span class="number">0.75</span>, y + <span class="number">0.25</span>, <span class="built_in">insideTriangle</span>(x + <span class="number">0.75</span>, y + <span class="number">0.25</span>, t.v) == <span class="literal">true</span> ? <span class="number">1</span> : <span class="number">0</span>));</span><br><span class="line">        samplePoint.<span class="built_in">push_back</span>(<span class="built_in">SamplePoint</span>(x + <span class="number">0.75</span>, y + <span class="number">0.75</span>, <span class="built_in">insideTriangle</span>(x + <span class="number">0.75</span>, y + <span class="number">0.75</span>, t.v) == <span class="literal">true</span> ? <span class="number">1</span> : <span class="number">0</span>));</span><br><span class="line"></span><br><span class="line">        <span class="type">float</span> minDep = INT_MAX;</span><br><span class="line">        <span class="type">float</span> avg_color = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历定义的四个样本点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; samplePoint.<span class="built_in">size</span>(); i++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//如果当前点在三角形内，则更新深度缓冲区</span></span><br><span class="line">            <span class="keyword">if</span> (samplePoint[i].isInsideTriangle &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">auto</span> result = <span class="built_in">computeBarycentric2D</span>(samplePoint[i].p_x, samplePoint[i].p_y, t.v);</span><br><span class="line">                <span class="type">float</span> alpha, beta, gamma;</span><br><span class="line">                std::<span class="built_in">tie</span>(alpha, beta, gamma) = result;</span><br><span class="line">                <span class="type">float</span> w_reciprocal = <span class="number">1.0</span> / (alpha / v[<span class="number">0</span>].<span class="built_in">w</span>() + beta / v[<span class="number">1</span>].<span class="built_in">w</span>() + gamma / v[<span class="number">2</span>].<span class="built_in">w</span>());</span><br><span class="line">                <span class="type">float</span> z_interpolated = alpha * v[<span class="number">0</span>].<span class="built_in">z</span>() / v[<span class="number">0</span>].<span class="built_in">w</span>() + beta * v[<span class="number">1</span>].<span class="built_in">z</span>() / v[<span class="number">1</span>].<span class="built_in">w</span>() + gamma * v[<span class="number">2</span>].<span class="built_in">z</span>() / v[<span class="number">2</span>].<span class="built_in">w</span>();</span><br><span class="line">                z_interpolated *= w_reciprocal;</span><br><span class="line"></span><br><span class="line">                minDep = std::<span class="built_in">min</span>(z_interpolated, minDep);</span><br><span class="line">                avg_color += <span class="number">0.25</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (minDep &lt; depth_buf[<span class="built_in">get_index</span>(x, y)])</span><br><span class="line">        &#123;</span><br><span class="line">            Eigen::Vector3f point = Eigen::<span class="built_in">Vector3f</span>(x, y, <span class="number">1</span>);</span><br><span class="line">            <span class="built_in">set_pixel</span>(point, t.<span class="built_in">getColor</span>() * avg_color);</span><br><span class="line">            depth_buf[<span class="built_in">get_index</span>(x, y)] = minDep;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><img src="/image/GAMES101/02-Rasterization/%E4%BD%9C%E4%B8%9A2.png" alt="作业2"></p>
+<p>放大看局部细节：</p>
+<p><img src="/image/GAMES101/02-Rasterization/image-20230830170200301.png" alt="image-20230830170200301"></p>
+<p><img src="/image/GAMES101/02-Rasterization/image-20230830170131715.png" alt="image-20230830170131715"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/08/15/GAMES101%E4%BD%9C%E4%B8%9A2-%E5%85%89%E6%A0%85%E5%8C%96/">https://li-kira.github.io/2023/08/15/GAMES101%E4%BD%9C%E4%B8%9A2-%E5%85%89%E6%A0%85%E5%8C%96/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/C/"># C++</a>
+                    
+                        <a href="/tags/CG/"># CG</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/08/24/GAMES101%E4%BD%9C%E4%B8%9A3-%E7%9D%80%E8%89%B2/">GAMES101作业3 - 着色</a>
+            
+            
+            <a class="next" rel="next" href="/2023/08/05/GAMES101%E4%BD%9C%E4%B8%9A1-%E5%8F%98%E6%8D%A2/">GAMES101作业1 - 变换</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

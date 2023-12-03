@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>GAMES101作业6 - 加速结构 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+            <!-- MathJax配置，可通过单美元符号书写行内公式等 -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+    "HTML-CSS": {
+        preferredFont: "TeX",
+        availableFonts: ["STIX","TeX"],
+        linebreaks: { automatic:true },
+        EqnChunk: (MathJax.Hub.Browser.isMobile ? 10 : 50)
+    },
+    tex2jax: {
+        inlineMath: [ ["$", "$"], ["\\(","\\)"] ],
+        processEscapes: true,
+        ignoreClass: "tex2jax_ignore|dno",
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+        equationNumbers: { autoNumber: "AMS" },
+        noUndefined: { attributes: { mathcolor: "red", mathbackground: "#FFEEEE", mathsize: "90%" } },
+        Macros: { href: "{}" }
+    },
+    messageStyle: "none"
+    });
+</script>
+<!-- 给MathJax元素添加has-jax class -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<!-- 通过连接CDN加载MathJax的js代码 -->
+<script type="text/javascript" async
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
+
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">GAMES101作业6 - 加速结构</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 10, 2023&nbsp;&nbsp;18:54:34</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/CG/">CG</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>代码地址：</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Li-Kira/CodeLib/tree/main/CG/GAMES101/Homework06-%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84">https://github.com/Li-Kira/CodeLib/tree/main/CG/GAMES101/Homework06-%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84</a></p>
+</blockquote>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ul>
+<li>Ray-Bounding Volume包围盒求交：正确实现光线与包围盒求交函数。</li>
+<li>BVH 查找：正确实现 BVH 加速的光线与场景求交</li>
+</ul>
+<h2 id="补充框架"><a href="#补充框架" class="headerlink" title="补充框架"></a>补充框架</h2><p><strong>Render() in Renderer.cpp:</strong></p>
+<p>框架里面已经计算了x和y，因此我们只需要补充剩下的生成光线的步骤即可，代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Vector3f dir = <span class="built_in">normalize</span>(<span class="built_in">Vector3f</span>(x, y, <span class="number">-1</span>)); </span><br><span class="line">framebuffer[m++] = scene.<span class="built_in">castRay</span>(<span class="built_in">Ray</span>(eye_pos, dir), <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Triangle::getIntersection in Triangle.hpp:</strong></p>
+<blockquote>
+<p>这段代码初看没什么头绪，参考了以下文档：<a target="_blank" rel="noopener" href="https://blueflame.org.cn/archives/437">https://blueflame.org.cn/archives/437</a></p>
+</blockquote>
+<p>这段代码需要补充的地方是给inter赋值，代码如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> Intersection <span class="title">Triangle::getIntersection</span><span class="params">(Ray ray)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    Intersection inter;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">dotProduct</span>(ray.direction, normal) &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> inter;</span><br><span class="line">    <span class="type">double</span> u, v, t_tmp = <span class="number">0</span>;</span><br><span class="line">    Vector3f pvec = <span class="built_in">crossProduct</span>(ray.direction, e2);</span><br><span class="line">    <span class="type">double</span> det = <span class="built_in">dotProduct</span>(e1, pvec);</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">fabs</span>(det) &lt; EPSILON)</span><br><span class="line">        <span class="keyword">return</span> inter;</span><br><span class="line"></span><br><span class="line">    <span class="type">double</span> det_inv = <span class="number">1.</span> / det;</span><br><span class="line">    Vector3f tvec = ray.origin - v0;</span><br><span class="line">    u = <span class="built_in">dotProduct</span>(tvec, pvec) * det_inv;</span><br><span class="line">    <span class="keyword">if</span> (u &lt; <span class="number">0</span> || u &gt; <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> inter;</span><br><span class="line">    Vector3f qvec = <span class="built_in">crossProduct</span>(tvec, e1);</span><br><span class="line">    v = <span class="built_in">dotProduct</span>(ray.direction, qvec) * det_inv;</span><br><span class="line">    <span class="keyword">if</span> (v &lt; <span class="number">0</span> || u + v &gt; <span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> inter;</span><br><span class="line">    t_tmp = <span class="built_in">dotProduct</span>(e2, qvec) * det_inv;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// TODO find ray triangle intersection</span></span><br><span class="line">    <span class="keyword">if</span> (t_tmp &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> inter;</span><br><span class="line">    inter.distance = t_tmp;<span class="comment">//光线经过的时间</span></span><br><span class="line">    inter.happened = <span class="literal">true</span>;<span class="comment">//是否与三角形相交</span></span><br><span class="line">    inter.m = m;<span class="comment">//三角形的材质</span></span><br><span class="line">    inter.obj = <span class="keyword">this</span>;<span class="comment">//Triangle继承了Object，重写了virtual Intersection getIntersection(Ray _ray)，三角形调用getIntersection(Ray _ray)，intersection自然记录下当前在相交的三角形，所以用this</span></span><br><span class="line">    inter.normal = normal;<span class="comment">//三角形面的法线</span></span><br><span class="line">    inter.coords = <span class="built_in">ray</span>(t_tmp);<span class="comment">//Vector3f operator()(double t) const&#123;return origin+direction*t;&#125; in Ray.hpp, coords表示相交点的坐标</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> inter;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Ray-Bounding-Volume包围盒求交"><a href="#Ray-Bounding-Volume包围盒求交" class="headerlink" title="Ray-Bounding Volume包围盒求交"></a>Ray-Bounding Volume包围盒求交</h2><blockquote>
+<p>如果包围盒没有算好，可能会出现全蓝的错误结果。</p>
+</blockquote>
+<p>在<code>Bounds3.hpp</code>中的<strong>IntersectP</strong>方法中，我们需要根据<strong>t_enter</strong>和<strong>t_exit</strong>直接的大小关系返回是否与该包围盒相交。</p>
+<p>对于3D盒子，<strong>t_enter = max{t_min}，t_exit = min{t_max}<strong>，因此我们只需要求出xyz三对面的</strong>t_min</strong>和<strong>t_max</strong>即可，而三对面的<strong>t_min</strong>和<strong>t_max</strong>可以用轴对齐包围盒求t公式求解。</p>
+<p>对于平行与x轴的面，公式如下：<br>$$<br>t = \frac{p’_x - o_x}{d_x}<br>$$<br>其他公式由此类推即可，以下是运行耗时14s的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">Bounds3::IntersectP</span><span class="params">(<span class="type">const</span> Ray&amp; ray, <span class="type">const</span> Vector3f&amp; invDir,</span></span></span><br><span class="line"><span class="params"><span class="function">                                <span class="type">const</span> std::array&lt;<span class="type">int</span>, <span class="number">3</span>&gt;&amp; dirIsNeg)</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// invDir: ray direction(x,y,z), invDir=(1.0/x,1.0/y,1.0/z), use this because Multiply is faster that Division</span></span><br><span class="line">    <span class="comment">// dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x&gt;0),int(y&gt;0),int(z&gt;0)], use this to simplify your logic</span></span><br><span class="line">    <span class="comment">// TODO test if ray bound intersects</span></span><br><span class="line">    </span><br><span class="line">    <span class="type">double</span> t_enter = std::numeric_limits&lt;<span class="type">double</span>&gt;::<span class="built_in">lowest</span>();</span><br><span class="line">    <span class="type">double</span> t_exit = std::numeric_limits&lt;<span class="type">double</span>&gt;::<span class="built_in">max</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//对三对面进行判断</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">auto</span> t_min = (pMin[i] - ray.origin[i]) * invDir[i];</span><br><span class="line">        <span class="keyword">auto</span> t_max = (pMax[i] - ray.origin[i]) * invDir[i];</span><br><span class="line">        <span class="keyword">if</span> (!dirIsNeg[i])</span><br><span class="line">            std::<span class="built_in">swap</span>(t_min, t_max);</span><br><span class="line"></span><br><span class="line">        t_enter = std::<span class="built_in">max</span>(t_min, t_enter);</span><br><span class="line">        t_exit = std::<span class="built_in">min</span>(t_max, t_exit);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span> eps = <span class="number">0.00001</span>;</span><br><span class="line">    <span class="keyword">if</span> (t_enter &lt; t_exit &amp;&amp; t_exit + eps &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以下是运行耗时2min的代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">bool</span> <span class="title">Bounds3::IntersectP</span><span class="params">(<span class="type">const</span> Ray&amp; ray, <span class="type">const</span> Vector3f&amp; invDir,</span></span></span><br><span class="line"><span class="params"><span class="function">                                <span class="type">const</span> std::array&lt;<span class="type">int</span>, <span class="number">3</span>&gt;&amp; dirIsNeg)</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// invDir: ray direction(x,y,z), invDir=(1.0/x,1.0/y,1.0/z), use this because Multiply is faster that Division</span></span><br><span class="line">    <span class="comment">// dirIsNeg: ray direction(x,y,z), dirIsNeg=[int(x&gt;0),int(y&gt;0),int(z&gt;0)], use this to simplify your logic</span></span><br><span class="line">    <span class="comment">// TODO test if ray bound intersects</span></span><br><span class="line">    </span><br><span class="line">    <span class="type">double</span> t_enter = std::numeric_limits&lt;<span class="type">double</span>&gt;::<span class="built_in">lowest</span>();</span><br><span class="line">    <span class="type">double</span> t_exit = std::numeric_limits&lt;<span class="type">double</span>&gt;::<span class="built_in">max</span>();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">auto</span> x_min = (pMin.x - ray.origin.x) * invDir[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">auto</span> x_max = (pMax.x - ray.origin.x) * invDir[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">if</span> (!dirIsNeg[<span class="number">0</span>])</span><br><span class="line">    	std::<span class="built_in">swap</span>(x_min, x_max);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">auto</span> y_min = (pMin.y - ray.origin.y) * invDir[<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">auto</span> y_max = (pMax.y - ray.origin.y) * invDir[<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">if</span> (!dirIsNeg[<span class="number">1</span>])</span><br><span class="line">    	std::<span class="built_in">swap</span>(y_min, y_max);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">auto</span> z_min = (pMin.z - ray.origin.z) * invDir[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">auto</span> z_max = (pMax.z - ray.origin.z) * invDir[<span class="number">2</span>];</span><br><span class="line">	<span class="keyword">if</span> (!dirIsNeg[<span class="number">2</span>])</span><br><span class="line">    	std::<span class="built_in">swap</span>(z_min, z_max);</span><br><span class="line"></span><br><span class="line">	t_enter = std::<span class="built_in">max</span>(x_min, std::<span class="built_in">max</span>(y_min, z_min));</span><br><span class="line">	t_exit = std::<span class="built_in">min</span>(x_max, std::<span class="built_in">max</span>(y_max, z_max));</span><br><span class="line">    </span><br><span class="line">    <span class="type">float</span> eps = <span class="number">0.00001</span>;</span><br><span class="line">    <span class="keyword">if</span> (t_enter &lt; t_exit &amp;&amp; t_exit + eps &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="BVH-查找"><a href="#BVH-查找" class="headerlink" title="BVH 查找"></a>BVH 查找</h2><p>根据之前的伪代码写以下的代码即可</p>
+<p>需要注意，<strong>IntersectP</strong>里面的参数有一项<code> const std::array&lt;int, 3&gt;&amp; dirIsNeg</code>，需要用以下格式输入：</p>
+<p><code>&#123;ray.direction.x &gt; 0, ray.direction.y &gt; 0, ray.direction.z &gt; 0&#125;</code></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Intersection <span class="title">BVHAccel::getIntersection</span><span class="params">(BVHBuildNode* node, <span class="type">const</span> Ray&amp; ray)</span> <span class="type">const</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// TODO Traverse the BVH to find intersection</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (node-&gt;bounds.<span class="built_in">IntersectP</span>(ray, ray.direction_inv, &#123;ray.direction.x &gt; <span class="number">0</span>, ray.direction.y &gt; <span class="number">0</span>, ray.direction.z &gt; <span class="number">0</span>&#125;))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (node-&gt;left == <span class="literal">nullptr</span> &amp;&amp; node-&gt;right == <span class="literal">nullptr</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">return</span> node-&gt;object-&gt;<span class="built_in">getIntersection</span>(ray);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">auto</span> hit1 = <span class="built_in">getIntersection</span>(node-&gt;left, ray);</span><br><span class="line">            <span class="keyword">auto</span> hit2 = <span class="built_in">getIntersection</span>(node-&gt;right, ray);</span><br><span class="line">            <span class="keyword">return</span> hit1.distance &lt; hit2.distance ? hit1 : hit2;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Intersection</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>结果如图：</p>
+<p><img src="/image/GAMES101/06-AccelerationStructures/image-20230903112625573.png" alt="image-20230903112625573"></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/09/10/GAMES101%E4%BD%9C%E4%B8%9A6-%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/">https://li-kira.github.io/2023/09/10/GAMES101%E4%BD%9C%E4%B8%9A6-%E5%8A%A0%E9%80%9F%E7%BB%93%E6%9E%84/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/C/"># C++</a>
+                    
+                        <a href="/tags/CG/"># CG</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/09/20/GAMES101%E4%BD%9C%E4%B8%9A7-%E8%B7%AF%E5%BE%84%E8%BF%BD%E8%B8%AA/">GAMES101作业7 - 路径追踪</a>
+            
+            
+            <a class="next" rel="next" href="/2023/09/02/GAMES101%E4%BD%9C%E4%B8%9A5-Whitted%E9%A3%8E%E6%A0%BC%E5%85%89%E7%BA%BF%E8%BF%BD%E8%B8%AA/">GAMES101作业5 - Whitted风格光线追踪</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

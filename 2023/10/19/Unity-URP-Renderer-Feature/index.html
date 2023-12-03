@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>Custom URP Renderer Feature， 以Outline效果为例 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Custom URP Renderer Feature， 以Outline效果为例</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 19, 2023&nbsp;&nbsp;23:35:39</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Unity/">Unity</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>使用Renderer Feature能够真正发挥Unity通用渲染管线的功能，本文将使用一个Outline效果为例，通过自定义的Renderer Feature实现屏幕后处理。</p>
+<blockquote>
+<p>代码地址：<a target="_blank" rel="noopener" href="https://github.com/Li-Kira/CodeLib/tree/main/Unity/URP/PostProcess/Outline">https://github.com/Li-Kira/CodeLib/tree/main/Unity/URP/PostProcess/Outline</a></p>
+</blockquote>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>在开始之前，我们需要设置好我们的项目。本文使用的Unity版本为2022.3.11，由于Unity Renderer Feature相关的代码一直在变动，比如Unity Renderer Feature中正逐渐使用<strong>RTHandle</strong>取代<strong>RenderTexture</strong>，<strong>Bliter</strong>取代<strong>Blit</strong>。本文使用到的技术随时可能会失效，但仍希望本文的内容能够给你带来启发。</p>
+<p>本文包含以下内容，到第二部分结束你就可以实现一个基于屏幕的后处理效果，而第三部分的内容主要是探讨在不同图层下后处理效果的可见性。</p>
+<ul>
+<li><strong>Renderer Feature</strong></li>
+<li><strong>Shader</strong></li>
+<li><strong>LayerMask（未完成）</strong></li>
+</ul>
+<h2 id="Renderer-Feature"><a href="#Renderer-Feature" class="headerlink" title="Renderer Feature"></a>Renderer Feature</h2><p>我们需要实现以下脚本，并让他们能够在URP内一起工作：</p>
+<ul>
+<li><strong>VolumeComponent：</strong>用来在Global Volume中通过控制面板参数来实现后处理效果的调整。</li>
+<li><strong>RendererFeature：</strong> 向URP渲染器添加额外的渲染Pass， 让这些Pass能够在渲染器中执行。</li>
+<li><strong>RenderPass：</strong>用来执行渲染相关的操作。</li>
+</ul>
+<h3 id="Scriptable-Render-Pipeline-Settings"><a href="#Scriptable-Render-Pipeline-Settings" class="headerlink" title="Scriptable Render Pipeline Settings"></a>Scriptable Render Pipeline Settings</h3><p>在开始代码之前，我们需要知道我们实现的效果会在渲染管线中的哪里被绘制，可以前往<strong>Window</strong> -&gt; <strong>Analysis</strong> -&gt; <strong>Frame Debugger</strong>，通过启动<strong>Frame Debugger</strong>我们可以看到一个渲染队列，我们之后实现的效果就会被加入这个队列中。</p>
+<p>下图展示了在默认的<strong>URP-HighFidelity-Renderer</strong>渲染器下画面的绘制过程，它包含了多个用来渲染画面的Pass，这些Pass从上往下逐次绘制，而我们的Outline效果在<strong>Outline Effects</strong>这个Pass里面，由于我们将<strong>renderPassEvent</strong>`设置为<strong>BeforeRenderingPostProcessing</strong>，这个效果的绘制顺序被放在了URP内置的后处理效果之前。</p>
+<p><img src="/image/Unity/image-20231025170309239.png" alt="image-20231025170309239"></p>
+<p>为了将我们的Renderer Feature加入到这个渲染器中，我们可以到<strong>Projece Settings</strong> -&gt; <strong>Graphics</strong> -&gt; <strong>Scriptable Render Pipeline Settings</strong>中选择我们自定义的渲染器配置文件，或者使用URP内置的渲染器配置文件，在渲染器列表中我们可以看到这个配置文件使用的渲染器，如果是URP内置的渲染器配置文件，它使用的渲染器是URP-HighFidelity-Renderer，可以在项目文件中的Settings中找到。</p>
+<p>在这个渲染器的面板下面点击Add Renderer Feature就能够将我们写好的Renderer Feature加入到渲染器中了。</p>
+<h3 id="Volume-Component"><a href="#Volume-Component" class="headerlink" title="Volume Component"></a>Volume Component</h3><p>为了能向Global Volume一样便利地调整后处理效果，我们需要编写这个脚本，它主要是用来声明各种参数，供<strong>Render Pass</strong>传递给<strong>Shader</strong></p>
+<p>下面这段代码包含了需要的参数，以及供Global Volume定位的路径。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">Serializable</span>]</span><br><span class="line">[<span class="meta">VolumeComponentMenuForRenderPipeline(<span class="string">&quot;Custom/Outline&quot;</span>, typeof(UniversalRenderPipeline))</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OutlineEffectComponent</span> : <span class="title">VolumeComponent</span>, <span class="title">IPostProcessComponent</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">Header(<span class="string">&quot;Edge Detection Settings&quot;</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> ClampedFloatParameter scale = <span class="keyword">new</span> ClampedFloatParameter(<span class="keyword">value</span>: <span class="number">0</span>, min: <span class="number">0</span>, max: <span class="number">5</span>);</span><br><span class="line">    <span class="keyword">public</span> ClampedFloatParameter depthThreshold = <span class="keyword">new</span> ClampedFloatParameter(<span class="keyword">value</span>: <span class="number">20f</span>, min: <span class="number">0</span>, max: <span class="number">30</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">public</span> ClampedFloatParameter normalThreshold = <span class="keyword">new</span> ClampedFloatParameter(<span class="keyword">value</span>: <span class="number">0.7f</span>, min: <span class="number">0</span>, max: <span class="number">2</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">public</span> ClampedFloatParameter depthNormalThreshold = <span class="keyword">new</span> ClampedFloatParameter(<span class="keyword">value</span>: <span class="number">0.5f</span>, min: <span class="number">0</span>, max: <span class="number">1</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="keyword">public</span> ClampedFloatParameter depthNormalThresholdScale = <span class="keyword">new</span> ClampedFloatParameter (<span class="keyword">value</span>: <span class="number">7</span>, min: <span class="number">0</span>, max: <span class="number">10</span>, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    [<span class="meta">Header(<span class="string">&quot;Line Settings&quot;</span>)</span>]</span><br><span class="line">    <span class="keyword">public</span> NoInterpColorParameter edgeColor = <span class="keyword">new</span> NoInterpColorParameter(Color.white, <span class="literal">true</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">bool</span> <span class="title">IsActive</span>()</span> =&gt; <span class="literal">true</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="built_in">bool</span> <span class="title">IsTileCompatible</span>()</span> =&gt; <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Renderer-Feature-1"><a href="#Renderer-Feature-1" class="headerlink" title="Renderer Feature"></a>Renderer Feature</h3><p>下面这段代码是从ScriptableRendererFeature中继承而来的，它需要重写<strong>Create</strong>和<strong>AddRenderPasses</strong>方法。</p>
+<ul>
+<li><strong>Create：</strong>用来创建以及初始化相关的Pass，它在OnEnable阶段执行</li>
+<li><strong>AddRenderPasses：</strong>用来将Pass加入到渲染队列中</li>
+</ul>
+<p>了解了这些，剩下的代码就很简单了，无非是对参数的一些初始化，需要注意的是这里的材质使用<strong>CoreUtils.CreateEngineMaterial</strong>自动创建，在生命周期结束后需要被删除。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">System.Serializable</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OutlinePostProcessRenderFeature</span> : <span class="title">ScriptableRendererFeature</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">SerializeField</span>]</span><br><span class="line">    <span class="keyword">private</span> Shader m_Shader;</span><br><span class="line">    <span class="keyword">private</span> Material m_Material;</span><br><span class="line">    <span class="keyword">private</span> OutlinePass m_outlinePass;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Create</span>()</span></span><br><span class="line">    &#123;</span><br><span class="line">        m_Material = CoreUtils.CreateEngineMaterial(m_Shader);</span><br><span class="line">        m_outlinePass = <span class="keyword">new</span> OutlinePass(m_Material);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">AddRenderPasses</span>(<span class="params">ScriptableRenderer renderer, <span class="keyword">ref</span> RenderingData renderingData</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        renderer.EnqueuePass(m_outlinePass);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Dispose</span>(<span class="params"><span class="built_in">bool</span> disposing</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        CoreUtils.Destroy(m_Material);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="Render-Pass"><a href="#Render-Pass" class="headerlink" title="Render Pass"></a>Render Pass</h3><p>在Render Pass中，最重要的渲染事件发生在我们重写的<strong>Execute</strong>方法中，首先我们需要从<strong>Volume Stack</strong>中获取<strong>Volume Component</strong>相关的参数，然后将其传入到材质中，然后需要根据从相机获取的<strong>Render Texture</strong>将画面与Shader渲染的画面混合。</p>
+<p>具体的实现代码如下：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">OutlinePass</span> : <span class="title">ScriptableRenderPass</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> RenderTargetIdentifier m_Source;</span><br><span class="line">    <span class="keyword">private</span> RenderTargetIdentifier m_Destination;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> Material m_Material;</span><br><span class="line">    <span class="keyword">private</span> OutlineEffectComponent m_OutlineEffect;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">readonly</span> <span class="built_in">int</span> temporaryRTId = Shader.PropertyToID(<span class="string">&quot;_TempRT&quot;</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">OutlinePass</span>(<span class="params">Material OutlineMaterial, RenderQueueType renderQueueType, <span class="built_in">int</span> layerMask</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        renderPassEvent = RenderPassEvent.BeforeRenderingPostProcessing;</span><br><span class="line">        m_Material = OutlineMaterial;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnCameraSetup</span>(<span class="params">CommandBuffer cmd, <span class="keyword">ref</span> RenderingData renderingData</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        RenderTextureDescriptor descriptor = renderingData.cameraData.cameraTargetDescriptor;</span><br><span class="line">        descriptor.depthBufferBits = <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        m_Source = renderingData.cameraData.renderer.cameraColorTarget;</span><br><span class="line">        </span><br><span class="line">        cmd.GetTemporaryRT(temporaryRTId, descriptor, FilterMode.Bilinear);</span><br><span class="line">        m_Destination = <span class="keyword">new</span> RenderTargetIdentifier(temporaryRTId);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">Execute</span>(<span class="params">ScriptableRenderContext context, <span class="keyword">ref</span> RenderingData renderingData</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (renderingData.cameraData.isSceneViewCamera)</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        </span><br><span class="line">        CommandBuffer cmd = CommandBufferPool.Get();</span><br><span class="line">        VolumeStack stack = VolumeManager.instance.stack;</span><br><span class="line">        m_OutlineEffect = stack.GetComponent&lt;OutlineEffectComponent&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">using</span> (<span class="keyword">new</span> ProfilingScope(cmd, <span class="keyword">new</span> ProfilingSampler(<span class="string">&quot;Outline Effects&quot;</span>)))</span><br><span class="line">        &#123;</span><br><span class="line">            Render(cmd, renderingData);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        context.ExecuteCommandBuffer(cmd);</span><br><span class="line">        cmd.Clear();</span><br><span class="line">        CommandBufferPool.Release(cmd);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">Render</span>(<span class="params">CommandBuffer cmd, RenderingData renderingData, <span class="built_in">int</span> pass = <span class="number">0</span></span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        m_Material.SetFloat(<span class="string">&quot;_Scale&quot;</span>, m_OutlineEffect.scale.<span class="keyword">value</span>);</span><br><span class="line">        m_Material.SetFloat(<span class="string">&quot;_DepthThreshold&quot;</span>, m_OutlineEffect.depthThreshold.<span class="keyword">value</span>);</span><br><span class="line">        m_Material.SetFloat(<span class="string">&quot;_NormalThreshold&quot;</span>, m_OutlineEffect.normalThreshold.<span class="keyword">value</span>);</span><br><span class="line"></span><br><span class="line">        Matrix4x4 clipToView = GL.GetGPUProjectionMatrix(renderingData.cameraData.GetProjectionMatrix(), <span class="literal">true</span>).inverse;</span><br><span class="line">        m_Material.SetMatrix(<span class="string">&quot;_ClipToView&quot;</span>, clipToView);</span><br><span class="line">        </span><br><span class="line">        m_Material.SetFloat(<span class="string">&quot;_DepthNormalThreshold&quot;</span>, m_OutlineEffect.depthNormalThreshold.<span class="keyword">value</span>);</span><br><span class="line">        m_Material.SetFloat(<span class="string">&quot;_DepthNormalThresholdScale&quot;</span>, m_OutlineEffect.depthNormalThresholdScale.<span class="keyword">value</span>);</span><br><span class="line">        </span><br><span class="line">        m_Material.SetColor(<span class="string">&quot;_EdgeColor&quot;</span>, m_OutlineEffect.edgeColor.<span class="keyword">value</span>);</span><br><span class="line"></span><br><span class="line">        Blit(cmd, m_Source, m_Destination, m_Material, pass);</span><br><span class="line">        Blit(cmd, m_Destination, m_Source);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">OnCameraCleanup</span>(<span class="params">CommandBuffer cmd</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        cmd.ReleaseTemporaryRT(temporaryRTId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="Shader"><a href="#Shader" class="headerlink" title="Shader"></a>Shader</h2><blockquote>
+<p>Shader的部分参考这篇文章：<a target="_blank" rel="noopener" href="https://roystan.net/articles/outline-shader/">https://roystan.net/articles/outline-shader/</a></p>
+</blockquote>
+<h4 id="边缘检测"><a href="#边缘检测" class="headerlink" title="边缘检测"></a>边缘检测</h4><p>实现Outline的方法有很多，比如说法线外扩、使用Sobel算子对图像的边缘识别，这里使用的是基于深度和法线贴图的边缘识别。后两种方法的原理是通过判断颜色周围的差值，如果达到一点的阈值，那么就认为他们之间存在着一条边界线。在Shader中我们可以使用<strong>SAMPLE_DEPTH_TEXTURE</strong>这个宏函数获得深度图。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> halfScaleFloor = <span class="built_in">floor</span>(_Scale * <span class="number">0.5</span>);</span><br><span class="line"><span class="type">float</span> halfScaleCeil = <span class="built_in">ceil</span>(_Scale * <span class="number">0.5</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//获取深度</span></span><br><span class="line">float2 bottomLeftUV  = i.texcoord - float2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * halfScaleFloor;</span><br><span class="line">float2 topRightUV    = i.texcoord + float2(_MainTex_TexelSize.x, _MainTex_TexelSize.y) * halfScaleCeil;</span><br><span class="line">float2 bottomRightUV = i.texcoord + float2(_MainTex_TexelSize.x * halfScaleCeil, -_MainTex_TexelSize.y * halfScaleFloor);</span><br><span class="line">float2 topLeftUV     = i.texcoord + float2(-_MainTex_TexelSize.x * halfScaleFloor, _MainTex_TexelSize.y * halfScaleCeil);</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> depth0 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, bottomLeftUV).r;</span><br><span class="line"><span class="type">float</span> depth1 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, topRightUV).r;</span><br><span class="line"><span class="type">float</span> depth2 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, bottomRightUV).r;</span><br><span class="line"><span class="type">float</span> depth3 = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, sampler_CameraDepthTexture, topLeftUV).r;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> depth0;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Unity/image-20231025201055939.png" alt="image-20231025201055939"></p>
+<p>depthFiniteDifference0是检测到的边缘的一半，而 depthFiniteReference1是另一半，将他们结合起来能够得到我们需要的outline。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> depthFiniteDifference0 = depth1 - depth0;</span><br><span class="line"><span class="type">float</span> depthFiniteDifference1 = depth3 - depth2;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> edgeDepth = <span class="built_in">sqrt</span>(<span class="built_in">pow</span>(depthFiniteDifference0, <span class="number">2</span>) + <span class="built_in">pow</span>(depthFiniteDifference1, <span class="number">2</span>)) * <span class="number">100</span>;</span><br><span class="line">edgeDepth = edgeDepth &gt; depthThreshold ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> edgeDepth;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Unity/image-20231025201700977.png" alt="image-20231025201700977"></p>
+<p>为了得到更清晰的边缘，我们设置一个阈值需要去掉不需要的部分：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">edgeDepth = edgeDepth &gt; depthThreshold ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"><span class="keyword">return</span> edgeDepth;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Unity/image-20231025202039414.png" alt="image-20231025202039414"></p>
+<p>同理我们可以得到法线贴图，需要注意的是，我们得到的<strong>normalFiniteDifference</strong>是一个向量，要得到它的值需要让他自己对自己做一个点乘</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取法线</span></span><br><span class="line">float3 normal0 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, bottomLeftUV).rgb;</span><br><span class="line">float3 normal1 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, topRightUV).rgb;</span><br><span class="line">float3 normal2 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, bottomRightUV).rgb;</span><br><span class="line">float3 normal3 = SAMPLE_TEXTURE2D(_CameraNormalsTexture, sampler_CameraNormalsTexture, topLeftUV).rgb;</span><br><span class="line"></span><br><span class="line">float3 normalFiniteDifference0 = normal1 - normal0;</span><br><span class="line">float3 normalFiniteDifference1 = normal3 - normal2;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> edgeNormal = <span class="built_in">sqrt</span>(<span class="built_in">dot</span>(normalFiniteDifference0, normalFiniteDifference0) + <span class="built_in">dot</span>(normalFiniteDifference1, normalFiniteDifference1));</span><br><span class="line">edgeNormal = edgeNormal &gt; _NormalThreshold ? <span class="number">1</span> : <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>然后取他们之间的最大值，也就是都有边界的地方就能得到我们需要的outline，但是这个时候算法将一整片相近的地方都识别成了边缘，因为表面的倾斜程度越大，相邻像素的深度差就越大，这些表面上的大深度差导致我们的算法在它们上面检测到了边缘。因此我们需要通过计算视角方向进行矫正。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> edge = <span class="built_in">max</span>(edgeDepth, edgeNormal);</span><br><span class="line"><span class="keyword">return</span> edge;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Unity/image-20231025203111140.png" alt="image-20231025203111140"></p>
+<h4 id="矫正"><a href="#矫正" class="headerlink" title="矫正"></a>矫正</h4><p>我们从_CameraNormalsTexture采样的法线是在视图空间中的；由于这是我们想要比较的内容，我们还需要摄像机的视图方向也在视图空间中。由于我们正在使用屏幕空间着色器，可以轻松地从顶点位置计算裁剪空间中的视图方向。要将其转换为视图空间，我们将需要访问相机的裁剪到视图或逆投影矩阵。</p>
+<p>通过C#脚本获取这个变换矩阵，然后通过Render Pass传递给Shader。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Matrix4x4 clipToView = GL.GetGPUProjectionMatrix(context.camera.projectionMatrix, <span class="literal">true</span>).inverse;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>我们将根据相机的视图法线与表面法线之间的差异来调制depthThreshold，这样随着法线和相机之间的角度增加，点积的结果会变得更大。</p>
+<p>由于depthThreshold随着角度的增加而变大，这时候只有真正的边界才能被当成边缘。</p>
+<p>代码如下：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//去除边缘被识别成一整面的情况</span></span><br><span class="line">float3 viewNormal = normal0 * <span class="number">2</span> - <span class="number">1</span>;</span><br><span class="line"><span class="type">float</span> NdotV = <span class="number">1</span> - <span class="built_in">dot</span>(viewNormal, -i.viewSpaceDir);</span><br><span class="line"><span class="type">float</span> normalThreshold01 = saturate((NdotV - _DepthNormalThreshold) / (<span class="number">1</span> - _DepthNormalThreshold));</span><br><span class="line"><span class="type">float</span> normalThreshold = normalThreshold01 * _DepthNormalThresholdScale + <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> depthThreshold = _DepthThreshold * depth0 * normalThreshold;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> edgeDepth = <span class="built_in">sqrt</span>(<span class="built_in">pow</span>(depthFiniteDifference0, <span class="number">2</span>) + <span class="built_in">pow</span>(depthFiniteDifference1, <span class="number">2</span>)) * <span class="number">100</span>;</span><br><span class="line">edgeDepth = edgeDepth &gt; depthThreshold ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">float</span> edgeNormal = <span class="built_in">sqrt</span>(<span class="built_in">dot</span>(normalFiniteDifference0, normalFiniteDifference0) + <span class="built_in">dot</span>(normalFiniteDifference1, normalFiniteDifference1));</span><br><span class="line">edgeNormal = edgeNormal &gt; _NormalThreshold ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据法线和深度的结果以及视角放向来得到最终的边缘</span></span><br><span class="line"><span class="type">float</span> edge = <span class="built_in">max</span>(edgeDepth, edgeNormal);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>最后我们将边缘与原画面进行混合，得到最终的结果：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">float4 alphaBlend(float4 top, float4 bottom)</span><br><span class="line">&#123;</span><br><span class="line">    float3 color = (top.rgb * top.a) + (bottom.rgb * (<span class="number">1</span> - top.a));</span><br><span class="line">    <span class="type">float</span> alpha = top.a + bottom.a * (<span class="number">1</span> - top.a);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> float4(color, alpha);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">///</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">///Frag</span></span><br><span class="line">    </span><br><span class="line">float4 color = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);</span><br><span class="line"><span class="keyword">return</span> alphaBlend(edgeColor, color);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Unity/image-20231025204827768.png" alt="image-20231025204827768"></p>
+<h2 id="常见问题解决"><a href="#常见问题解决" class="headerlink" title="常见问题解决"></a>常见问题解决</h2><ul>
+<li><p><strong>出现Shader引用确实的解决方法：</strong></p>
+<p>前往<strong>Edit</strong> -&gt; <strong>Project settings</strong> -&gt; <strong>Graphics</strong>，找到Always included shaders，将size设为相应的大小，并添加render feature里用到的shader，最后Build项目即可。</p>
+</li>
+</ul>
+<h2 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a>拓展阅读</h2><p><strong>Blit Usage</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@14.0/manual/renderer-features/how-to-fullscreen-blit.html">https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@14.0/manual/renderer-features/how-to-fullscreen-blit.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@14.0/manual/renderer-features/how-to-fullscreen-blit.html#shader">https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@14.0/manual/renderer-features/how-to-fullscreen-blit.html#shader</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.1/manual/containers/create-custom-renderer-feature-1.html">https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@12.1/manual/containers/create-custom-renderer-feature-1.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/621840900?utm_id=0">https://zhuanlan.zhihu.com/p/621840900?utm_id=0</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Cyanilux/URP_BlitRenderFeature">https://github.com/Cyanilux/URP_BlitRenderFeature</a></li>
+</ul>
+<p><strong>Outline Shader</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://roystan.net/articles/outline-shader/">https://roystan.net/articles/outline-shader/</a></li>
+</ul>
+<p><strong>Layer Mask</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=VpIIFdwTKyQ">https://www.youtube.com/watch?v=VpIIFdwTKyQ</a></li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/10/19/Unity-URP-Renderer-Feature/">https://li-kira.github.io/2023/10/19/Unity-URP-Renderer-Feature/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Unity/"># Unity</a>
+                    
+                        <a href="/tags/URP/"># URP</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/10/26/SSAO-%E5%B1%8F%E5%B9%95%E7%A9%BA%E9%97%B4%E7%9A%84%E7%8E%AF%E5%A2%83%E5%85%89%E9%81%AE%E8%94%BD%E5%AE%9E%E7%8E%B0/">SSAO-屏幕空间的环境光遮蔽实现</a>
+            
+            
+            <a class="next" rel="next" href="/2023/10/18/Unity-URP/">Unity URP</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

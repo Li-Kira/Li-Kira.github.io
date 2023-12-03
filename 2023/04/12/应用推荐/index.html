@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>应用推荐 | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">应用推荐</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 12, 2023&nbsp;&nbsp;16:22:20</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9A%8F%E7%AC%94/">随笔</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <blockquote>
+<p>为了提升装机效率，于是写下这篇文章。</p>
+<p>文章收录了个人常用的软件、插件或者其他资源，排名不分先后。</p>
+</blockquote>
+<hr>
+<h2 id="装机"><a href="#装机" class="headerlink" title="装机"></a>装机</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CrystalDiskMark 8</td>
+<td>固态硬盘速度评测软件</td>
+<td><a target="_blank" rel="noopener" href="https://crystalmark.info/en/download/#CrystalDiskMark">https://crystalmark.info/en/download/#CrystalDiskMark</a></td>
+</tr>
+<tr>
+<td>图吧工具箱</td>
+<td>图吧老哥牛逼！</td>
+<td><a target="_blank" rel="noopener" href="http://www.tbtool.cn/">http://www.tbtool.cn/</a></td>
+</tr>
+<tr>
+<td>Dism++</td>
+<td>系统优化软件，多用于清理硬盘</td>
+<td><a target="_blank" rel="noopener" href="https://dism.cf/">https://dism.cf/</a></td>
+</tr>
+<tr>
+<td>Display Pilot for Windows</td>
+<td>明基的屏幕色彩管理软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.benq.com/en-us/monitor/software/display-pilot.html">https://www.benq.com/en-us/monitor/software/display-pilot.html</a></td>
+</tr>
+<tr>
+<td>MSI Center</td>
+<td>微星主板的灯控软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.msi.com/Landing/MSI-Center">https://www.msi.com/Landing/MSI-Center</a></td>
+</tr>
+<tr>
+<td>3D Mark</td>
+<td>性能评测软件</td>
+<td><a target="_blank" rel="noopener" href="https://store.steampowered.com/app/223850/3DMark/">https://store.steampowered.com/app/223850/3DMark/</a></td>
+</tr>
+<tr>
+<td>TranslucentTB</td>
+<td>轻量级的Windows任务栏美化工具</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/TranslucentTB/TranslucentTB">https://github.com/TranslucentTB/TranslucentTB</a></td>
+</tr>
+<tr>
+<td>傲梅分区助手</td>
+<td>无损分区工具</td>
+<td><a target="_blank" rel="noopener" href="https://www.disktool.cn/">https://www.disktool.cn/</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="日常"><a href="#日常" class="headerlink" title="日常"></a>日常</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Honeyview</td>
+<td>轻量的图片查看器，支持简单的图片编辑功能</td>
+<td><a target="_blank" rel="noopener" href="https://www.bandisoft.com/honeyview/">https://www.bandisoft.com/honeyview/</a></td>
+</tr>
+<tr>
+<td>PotPlayer</td>
+<td>强大的媒体播放器</td>
+<td><a target="_blank" rel="noopener" href="https://potplayer.daum.net/">https://potplayer.daum.net/</a></td>
+</tr>
+<tr>
+<td>OBS Studio</td>
+<td>牛逼的开源跨平台流媒体和录影程序</td>
+<td><a target="_blank" rel="noopener" href="https://obsproject.com/">https://obsproject.com/</a></td>
+</tr>
+<tr>
+<td>Drawboard PDF</td>
+<td>PDF编辑工具，支持绘制功能</td>
+<td><a target="_blank" rel="noopener" href="https://www.drawboard.com/">https://www.drawboard.com/</a></td>
+</tr>
+<tr>
+<td>Motrix</td>
+<td>磁力下载器</td>
+<td><a target="_blank" rel="noopener" href="https://motrix.app/">https://motrix.app/</a></td>
+</tr>
+<tr>
+<td>欧路词典</td>
+<td>权威的英语词典软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.eudic.net/v4/en/app/eudic">https://www.eudic.net/v4/en/app/eudic</a></td>
+</tr>
+<tr>
+<td>Microsoft To Do</td>
+<td>微软开发的代办实现管理软件，可多平台同步</td>
+<td><a target="_blank" rel="noopener" href="https://apps.microsoft.com/store/detail/microsoft-to-do-lists-tasks-reminders/9NBLGGH5R558?hl=zh-cn&amp;gl=cn&amp;rtc=1">https://apps.microsoft.com/store/detail/microsoft-to-do-lists-tasks-reminders/9NBLGGH5R558?hl=zh-cn&amp;gl=cn&amp;rtc=1</a></td>
+</tr>
+<tr>
+<td>Snipaste</td>
+<td>非常好用的截屏工具</td>
+<td><a target="_blank" rel="noopener" href="https://www.snipaste.com/">https://www.snipaste.com/</a></td>
+</tr>
+<tr>
+<td>Parsec</td>
+<td>极低延迟的远程桌面控制软件，能够实现游戏远程同乐</td>
+<td><a target="_blank" rel="noopener" href="https://parsec.app/">https://parsec.app/</a></td>
+</tr>
+<tr>
+<td>PowerToys</td>
+<td>系统工具软件，个人认为最实用的是PowerToys Run，解决了Win10系统文件搜索难题。</td>
+<td><a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows/powertoys/">https://learn.microsoft.com/en-us/windows/powertoys/</a></td>
+</tr>
+<tr>
+<td>次元城动漫</td>
+<td>次元城动漫的桌面版</td>
+<td><a target="_blank" rel="noopener" href="https://www.cycdm01.top/">https://www.cycdm01.top/</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="写作"><a href="#写作" class="headerlink" title="写作"></a>写作</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Typora</td>
+<td>极简的Markdown编辑器</td>
+<td><a target="_blank" rel="noopener" href="https://typora.io/">https://typora.io/</a></td>
+</tr>
+<tr>
+<td>Fade In</td>
+<td>剧本编写软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.fadeinpro.com/">https://www.fadeinpro.com/</a></td>
+</tr>
+<tr>
+<td>Adobe InDesign</td>
+<td>排版软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.adobe.com/hk_zh/products/indesign.html">https://www.adobe.com/hk_zh/products/indesign.html</a></td>
+</tr>
+<tr>
+<td>图片转Latex公式脚本</td>
+<td>教程：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av406828179/">https://www.bilibili.com/video/av406828179/</a></td>
+<td><a target="_blank" rel="noopener" href="https://pypi.org/project/pyperclip/">https://pypi.org/project/pyperclip/</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="绘画"><a href="#绘画" class="headerlink" title="绘画"></a>绘画</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Clip Studio Paint</td>
+<td>绘画软件，用来画漫画很方便</td>
+<td><a target="_blank" rel="noopener" href="https://www.clipstudio.net/tc/">https://www.clipstudio.net/tc/</a></td>
+</tr>
+<tr>
+<td>PureRef</td>
+<td>参考图整理软件，非常好用</td>
+<td><a target="_blank" rel="noopener" href="https://www.pureref.com/">https://www.pureref.com/</a></td>
+</tr>
+<tr>
+<td>Eagle</td>
+<td>强大的素材管理软件</td>
+<td><a target="_blank" rel="noopener" href="https://cn.eagle.cool/">https://cn.eagle.cool/</a></td>
+</tr>
+<tr>
+<td>DAZ Studio</td>
+<td>免费的3D设计软件，导入模型摆Pose特别方便</td>
+<td><a target="_blank" rel="noopener" href="https://www.daz3d.com/">https://www.daz3d.com/</a></td>
+</tr>
+<tr>
+<td>Krita</td>
+<td>开源免费的绘画软件</td>
+<td><a target="_blank" rel="noopener" href="https://krita.org/zh/">https://krita.org/zh/</a></td>
+</tr>
+<tr>
+<td>PerspectiveTools</td>
+<td>PS透视插件</td>
+<td><a target="_blank" rel="noopener" href="https://perspectivetools.com/">https://perspectivetools.com/</a></td>
+</tr>
+<tr>
+<td>Aseprite</td>
+<td>像素绘制软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.aseprite.org/">https://www.aseprite.org/</a></td>
+</tr>
+<tr>
+<td>Real-ESRGAN</td>
+<td>超分辨率工具</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan">https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="开发"><a href="#开发" class="headerlink" title="开发"></a>开发</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Icons8 Pichon</td>
+<td>icon库</td>
+<td><a target="_blank" rel="noopener" href="https://icons8.com/app/windows">https://icons8.com/app/windows</a></td>
+</tr>
+<tr>
+<td>PyCharm</td>
+<td>Python IDE</td>
+<td><a target="_blank" rel="noopener" href="https://www.jetbrains.com/pycharm/">https://www.jetbrains.com/pycharm/</a></td>
+</tr>
+<tr>
+<td>Rider</td>
+<td>C# IDE</td>
+<td><a target="_blank" rel="noopener" href="https://www.jetbrains.com/rider/download/#section=windows">https://www.jetbrains.com/rider/download/#section=windows</a></td>
+</tr>
+<tr>
+<td>IntelliJ</td>
+<td>Java IDE</td>
+<td><a target="_blank" rel="noopener" href="https://www.jetbrains.com/idea/download/#section=windows">https://www.jetbrains.com/idea/download/#section=windows</a></td>
+</tr>
+<tr>
+<td>Visual Studio</td>
+<td>巨硬的IDE，主要是MSVC好用</td>
+<td><a target="_blank" rel="noopener" href="https://visualstudio.microsoft.com/zh-hans/">https://visualstudio.microsoft.com/zh-hans/</a></td>
+</tr>
+<tr>
+<td>Visual Studio Code</td>
+<td>支持众多语言的IDE</td>
+<td><a target="_blank" rel="noopener" href="https://code.visualstudio.com/">https://code.visualstudio.com/</a></td>
+</tr>
+<tr>
+<td>Visual assist</td>
+<td>Visual Studio的插件，有快速实现类的功能</td>
+<td></td>
+</tr>
+<tr>
+<td>Oracle VM VirtualBox</td>
+<td>免费的虚拟机，能够读取vdi镜像</td>
+<td><a target="_blank" rel="noopener" href="https://www.virtualbox.org/">https://www.virtualbox.org/</a></td>
+</tr>
+<tr>
+<td>draw.io</td>
+<td>开源的绘制程序图表软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.drawio.com/">https://www.drawio.com/</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="游戏"><a href="#游戏" class="headerlink" title="游戏"></a>游戏</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cheat Engine</td>
+<td>大名鼎鼎的CE修改器</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/cheat-engine/cheat-engine">https://github.com/cheat-engine/cheat-engine</a></td>
+</tr>
+<tr>
+<td>Gamepad-tester</td>
+<td>手柄测试网站</td>
+<td><a target="_blank" rel="noopener" href="https://gamepad-tester.com/">https://gamepad-tester.com/</a></td>
+</tr>
+<tr>
+<td>Yas</td>
+<td>原神圣遗物导出器</td>
+<td><a target="_blank" rel="noopener" href="https://github.com/wormtql/yas">https://github.com/wormtql/yas</a></td>
+</tr>
+<tr>
+<td>莫娜占卜铺</td>
+<td>原神圣遗物计算器</td>
+<td><a target="_blank" rel="noopener" href="https://mona-uranai.com/artifacts">https://mona-uranai.com/artifacts</a></td>
+</tr>
+<tr>
+<td>Voicemeeter</td>
+<td>能够将音频输出给两个设备的工具，适合双人线下开黑。</td>
+<td><a target="_blank" rel="noopener" href="https://vb-audio.com/Voicemeeter/">https://vb-audio.com/Voicemeeter/</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3D"><a href="#3D" class="headerlink" title="3D"></a>3D</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Blender</td>
+<td>免费开源的3D软件</td>
+<td><a target="_blank" rel="noopener" href="https://store.steampowered.com/app/365670/Blender/">https://store.steampowered.com/app/365670/Blender/</a></td>
+</tr>
+<tr>
+<td>TreeIt</td>
+<td>3D软件，用来生成树</td>
+<td><a target="_blank" rel="noopener" href="http://www.evolved-software.com/treeit/treeit">http://www.evolved-software.com/treeit/treeit</a></td>
+</tr>
+<tr>
+<td>Substance 3D</td>
+<td>3D贴图制作软件</td>
+<td><a target="_blank" rel="noopener" href="https://www.adobe.com/creativecloud/3d-ar.html">https://www.adobe.com/creativecloud/3d-ar.html</a></td>
+</tr>
+<tr>
+<td>Magica Cloth</td>
+<td>Unity插件：模拟布料</td>
+<td><a target="_blank" rel="noopener" href="https://magicasoft.jp/en/magica-cloth-2/">https://magicasoft.jp/en/magica-cloth-2/</a></td>
+</tr>
+<tr>
+<td>Material Maker</td>
+<td>开源的材质生成器</td>
+<td><a target="_blank" rel="noopener" href="https://www.materialmaker.org/">https://www.materialmaker.org/</a></td>
+</tr>
+<tr>
+<td>Cargo by KitBash3D</td>
+<td>KitBash整合软件</td>
+<td><a target="_blank" rel="noopener" href="https://kitbash3d.com/pages/cargo">https://kitbash3d.com/pages/cargo</a></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="音频"><a href="#音频" class="headerlink" title="音频"></a>音频</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>描述</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ultimate Vocal Remover</td>
+<td>基于机器学习的人声去除器</td>
+<td><a target="_blank" rel="noopener" href="https://ultimatevocalremover.com/">https://ultimatevocalremover.com/</a></td>
+</tr>
+<tr>
+<td>Voicemeeter</td>
+<td>能够模拟虚拟声卡处理音频，能够将声音分到两个耳机上，面对面开黑必备</td>
+<td><a target="_blank" rel="noopener" href="https://vb-audio.com/Voicemeeter/">https://vb-audio.com/Voicemeeter/</a></td>
+</tr>
+</tbody></table>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/04/12/%E5%BA%94%E7%94%A8%E6%8E%A8%E8%8D%90/">https://li-kira.github.io/2023/04/12/%E5%BA%94%E7%94%A8%E6%8E%A8%E8%8D%90/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E9%9A%8F%E7%AC%94/"># 随笔</a>
+                    
+                        <a href="/tags/%E5%B7%A5%E5%85%B7%E6%8E%A8%E8%8D%90/"># 工具推荐</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/04/12/VITS-WebUI/">VITS_WebUI</a>
+            
+            
+            <a class="next" rel="next" href="/2022/12/12/Computer-Vision-based-Sentiment-Analysis-and-Generation-Experience-in-Unity/">Computer Vision-based Sentiment Analysis and Generation Experience in Unity</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

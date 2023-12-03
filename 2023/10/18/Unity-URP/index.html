@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="LiKira">
+
+
+
+
+
+<title>Unity URP | Portfolio &amp; Blog - LiKira</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">LiKira&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">LiKira&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6; // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function() {
+            tocbot.refresh(obj_merge(tocbot_default_config, {
+                hasInnerContainers: true
+            }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function() {
+        tocbot.init(obj_merge(tocbot_default_config, {
+            collapseDepth: 1
+        }));
+    });
+
+    function expand_toc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, {
+            collapseDepth: expanded ? 1 : DEPTH_MAX
+        }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Unity URP</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">LiKira</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">October 18, 2023&nbsp;&nbsp;18:34:35</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Unity/">Unity</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="优化Unity-URP项目的方法："><a href="#优化Unity-URP项目的方法：" class="headerlink" title="优化Unity URP项目的方法："></a>优化Unity URP项目的方法：</h2><ul>
+<li><p><strong>管理光照</strong></p>
+<ul>
+<li><p><strong>尽可能地烘焙你场景中的光照</strong></p>
+<p>烘焙是将光照渲染为纹理，然后重新投影到物体上。这种做法能够提高性能，节省Draw call的开销，提高视觉质量，并且能够渲染间接光照，添加<strong>全局光照</strong>细节。</p>
+<p>使用这个方法需要将光源设置为<strong>Backed</strong>，然后将场景中的物体设置为<strong>Static</strong>，这样做能将他们包含在光照贴图的计算中。</p>
+<p>顺带一提，还可以通过选择物体中的<strong>Mesh Renderer</strong>来调整<strong>Lightmapping</strong>，可以通过减少远处或者较小物体的设置来减少烘焙时间。</p>
+<p>在<strong>Window</strong> -&gt; <strong>Rendering</strong> -&gt; <strong>Lighting</strong>中进行烘焙</p>
+</li>
+<li><p><strong>Ligth Probes -  光照探针</strong></p>
+<p>光照探针能够在烘焙过程中对场景中的光照数据进行采样，能够将反射光信息绑定到<strong>非Static物体</strong>中</p>
+</li>
+<li><p><strong>Reflect Probes -  反射探针</strong></p>
+<p>反射探针是将环境的一部分投影带附加的物体上的方法，能够生成更逼真的反射。</p>
+<p>默认使用Skybox上的反射，但是反射探针可以让反射更接近周围的环境，最后在光滑的物体表面使用反射探针。</p>
+<p>可以选择不同分辨率的反射探针，可以创建更高质量的反射。如果相机离物体比较远，那么可以降低分辨率来获得更好的性能。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>相机设置</strong></p>
+<ul>
+<li><p>通过禁用相机上不需要的渲染器进程来优化相机，针对不同性能设置的项目比较有用。</p>
+<p>禁用后处理、阴影渲染、深度纹理等功能可以减小在低端设备上的性能开销</p>
+</li>
+<li><p>使用遮挡剔除</p>
+<p>通过烘焙遮挡数据，Unity可以忽略场景中被相机视野遮挡的任何部分</p>
+<p>要启动烘焙遮挡数据，需要将物体设置为<strong>Occluder Static</strong>或者<strong>Occludee Static</strong></p>
+<p>在<strong>Window</strong> -&gt; <strong>Rendering</strong> -&gt; <strong>Occlusion Culling</strong>中进行烘焙</p>
+</li>
+</ul>
+</li>
+<li><p><strong>渲染管道设置</strong></p>
+<ul>
+<li><p>URP管道能将项目部署到不同的目标平台和设备上，URP资产包括多个我们可以控制的设置。</p>
+<p>在<strong>Edit</strong> -&gt; <strong>Project Settings</strong> -&gt; <strong>Quality</strong>中可以容纳不同的URP资源，可以创建不同的预设来控制不同设备的显示效果。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Frame Debugger</strong></p>
+<ul>
+<li><p>Frame Debugger可以逐步查看渲染过程，在这个过程中可以找出渲染开销最多的地方进行优化</p>
+</li>
+<li><p>设置</p>
+<p>在URP渲染设置的<strong>Advance</strong>中，可以关闭<strong>Debug Level</strong>，开启会损失一些性能</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Profiler</strong></p>
+<ul>
+<li>可以识别需要很长时间才能完成的脚本</li>
+</ul>
+</li>
+</ul>
+<h2 id="URP-Post-Process"><a href="#URP-Post-Process" class="headerlink" title="URP Post-Process"></a>URP Post-Process</h2><blockquote>
+<p>URP中无法使用Post Process插件，需要使用内置的Global Volume</p>
+</blockquote>
+<p>在<strong>URP</strong>上实现自定义的<strong>Post-Process</strong>可以通过自定义的<strong>RendererFeature</strong>，需要以下脚本：</p>
+<ul>
+<li><strong>VolumeComponent：</strong>用来控制参数</li>
+<li><strong>RendererFeature：</strong> 向URP渲染器添加额外的渲染Pass</li>
+<li><strong>RenderPass：</strong>用来渲染指定物体</li>
+</ul>
+<h2 id="Shader-Code-in-URP"><a href="#Shader-Code-in-URP" class="headerlink" title="Shader Code in URP"></a>Shader Code in URP</h2><blockquote>
+<p>参考文献：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=gY1Mx4kkZPU">https://www.youtube.com/watch?v=gY1Mx4kkZPU</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cyanilux.com/tutorials/urp-shader-code/?utm_source=youtube&amp;utm_medium=social&amp;utm_campaign=engine_global_generalpromo_2022-05-04_retention22-urpvideotutorial1-ytdescr-cyan%27sshadercode">https://www.cyanilux.com/tutorials/urp-shader-code/?utm_source=youtube&amp;utm_medium=social&amp;utm_campaign=engine_global_generalpromo_2022-05-04_retention22-urpvideotutorial1-ytdescr-cyan%27sshadercode</a></li>
+</ul>
+</blockquote>
+<p>Unity URP使用的Shader Code从CG转向了HLSL，核心库也是由HLSL编写的。</p>
+<ul>
+<li>原本的CG语义块被替换成了以下语句：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HLSLINCLUDE</span><br><span class="line"></span><br><span class="line">ENDHLSL</span><br></pre></td></tr></table></figure>
+
+<p>它用来包含需要引入的文件或者我们定义的变量和函数。</p>
+<ul>
+<li>Pass中的语句块</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HLSLPROGRAM</span><br><span class="line"></span><br><span class="line">ENDHLSL</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在上面的语句内，有下面这样的语句块，它用来保证每个Pass中的这些变量都是相同的</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CBUFFER_START(UnityPerMaterial)</span><br><span class="line"></span><br><span class="line">CBUFFER_END</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>采样纹理被替换成了以下语句</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">TEXTURE2D(_MainTex);</span><br><span class="line">SAMPLER(sampler_MainTex);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>顶点着色器可以写成下面两种形式</li>
+</ul>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Varyings vert(Attribute v)</span><br><span class="line">&#123;</span><br><span class="line">    Varyings o;</span><br><span class="line">    o.vertex = TransformObjectToHClip(v.vertex.xyz);</span><br><span class="line">    o.texcoord = v.texcoord;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Varyings UnlitPassVertex(Attributes IN) &#123;</span><br><span class="line">    Varyings OUT;</span><br><span class="line">	<span class="comment">// alternatively, Varyings OUT = (Varyings)0;</span></span><br><span class="line">	<span class="comment">// to initalise all struct inputs to 0.</span></span><br><span class="line">	<span class="comment">// otherwise, every variable in the struct must be set</span></span><br><span class="line"> </span><br><span class="line">	<span class="comment">//OUT.positionCS = TransformObjectToHClip(IN.positionOS.xyz);</span></span><br><span class="line">	<span class="comment">// Or :</span></span><br><span class="line">    VertexPositionInputs positionInputs = GetVertexPositionInputs(IN.positionOS.xyz);</span><br><span class="line">    OUT.positionCS = positionInputs.positionCS;</span><br><span class="line">    <span class="comment">// which also contains .positionWS, .positionVS and .positionNDC (aka screen position)</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Pass through UV/TEXCOORD0 with texture tiling and offset (_BaseMap_ST) applied :</span></span><br><span class="line">    OUT.uv = TRANSFORM_TEX(IN.uv, _BaseMap);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// Pass through Vertex Colours :</span></span><br><span class="line">    OUT.color = IN.color;</span><br><span class="line">    <span class="keyword">return</span> OUT;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>片元着色器的写法</li>
+</ul>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">half4 frag (Varyings  i) : SV_Target</span><br><span class="line">&#123;</span><br><span class="line">	half4 baseMap = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv);</span><br><span class="line">    <span class="keyword">return</span> baseMap * _BaseColor * IN.color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>除此之外，可以使用hlsl文件存储我们在一个pass中定义的变量和函数，需要将这部分的代码放到下面的宏里面。</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#ifndef INCLUDED</span><br><span class="line">#define INCLUDED</span><br><span class="line"></span><br><span class="line">///</span><br><span class="line">///code</span><br><span class="line">///</span><br><span class="line"></span><br><span class="line">#endif //INCLUDED</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="可见性问题"><a href="#可见性问题" class="headerlink" title="可见性问题"></a>可见性问题</h2><p>Unity中的内置文件很多都被标记为interal，我们无法直接使用其中的函数，下面是一个获取被标记为interal的函数或者数据的方法</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ZiHH_BvjoGk">https://www.youtube.com/watch?v=ZiHH_BvjoGk</a></p>
+</blockquote>
+<ul>
+<li>创建一个Assembly Definition Reference</li>
+<li>选择你需要应用的文件</li>
+<li>创建一个static类用来返回其中的方法</li>
+</ul>
+<h2 id="拓展阅读"><a href="#拓展阅读" class="headerlink" title="拓展阅读"></a>拓展阅读</h2><ul>
+<li><p>Optimize your Unity Project with URP</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=NFBr21V0zvU&amp;list=PLX2vGYjWbI0QRLkvupULwSZCPkLyHs-UX&amp;index=2">https://www.youtube.com/watch?v=NFBr21V0zvU&amp;list=PLX2vGYjWbI0QRLkvupULwSZCPkLyHs-UX&amp;index=2</a></p>
+</li>
+<li><p>Converting custom shaders to the Universal Render Pipeline</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=db1ed8ZMy3U&amp;list=PLX2vGYjWbI0QRLkvupULwSZCPkLyHs-UX&amp;index=10">https://www.youtube.com/watch?v=db1ed8ZMy3U&amp;list=PLX2vGYjWbI0QRLkvupULwSZCPkLyHs-UX&amp;index=10</a></p>
+</li>
+<li><p>Cyan’s shader code tutorials</p>
+<p><a target="_blank" rel="noopener" href="https://www.cyanilux.com/tutorials/urp-shader-code/?utm_source=youtube&amp;utm_medium=social&amp;utm_campaign=engine_global_generalpromo_2022-05-04_retention22-urpvideotutorial1-ytdescr-cyan%27sshadercode">https://www.cyanilux.com/tutorials/urp-shader-code/?utm_source=youtube&amp;utm_medium=social&amp;utm_campaign=engine_global_generalpromo_2022-05-04_retention22-urpvideotutorial1-ytdescr-cyan%27sshadercode</a></p>
+</li>
+<li><p>Creating an Outline Effect as a Post-Process in Unity</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ehyMwVnnnTg">https://www.youtube.com/watch?v=ehyMwVnnnTg</a></p>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>LiKira</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://li-kira.github.io/2023/10/18/Unity-URP/">https://li-kira.github.io/2023/10/18/Unity-URP/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Unity/"># Unity</a>
+                    
+                        <a href="/tags/URP/"># URP</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/10/19/Unity-URP-Renderer-Feature/">Custom URP Renderer Feature， 以Outline效果为例</a>
+            
+            
+            <a class="next" rel="next" href="/2023/10/15/GAMES101-%E5%BE%AE%E8%A1%A8%E9%9D%A2%E6%A8%A1%E5%9E%8B/">微表面模型</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© LiKira | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
