@@ -265,7 +265,7 @@
 <p><font size=4 ><strong>卡通渲染全流程，以崩坏星穹铁道角色为例</strong></font></p>
 <p>本文详细介绍了卡通渲染的流程，深入探讨了<strong>LightMap</strong>的RGBA通道用法、<strong>SDF</strong>以及<strong>Ramp</strong>纹理的使用</p>
 <ul>
-<li>漫反射部分介绍了<strong>二分阴影</strong>、<strong>脸部SDF阴影</strong>以及<strong>AO阴影</strong>的生成，并结合<strong>Ramp</strong>纹理实现了丰富的漫反射颜色变化</li>
+<li>漫反射部分介绍了<strong>二分阴影</strong>、<strong>使用SDF纹理生成脸部伦勃朗光影</strong>以及<strong>AO阴影</strong>的生成，并结合<strong>Ramp</strong>纹理实现了丰富的漫反射颜色变化</li>
 <li>高光部分介绍了<strong>各向异性高光</strong>、<strong>自发光</strong>、<strong>Blink效果</strong></li>
 <li>实现了基于<strong>深度图</strong>和<strong>Back Facing Outline</strong>的<strong>RimLight</strong>以及<strong>Outline</strong></li>
 <li>最后还介绍了菲涅尔反射、透明物体渲染、后处理效果以及基于色相、饱和度、明度的色彩校正</li>
@@ -282,7 +282,12 @@
 <br>
 
 
-<h1 id="Game-Play"><a href="#Game-Play" class="headerlink" title="Game Play"></a>Game Play</h1><br>
+<h1 id="Game-Play"><a href="#Game-Play" class="headerlink" title="Game Play"></a>Game Play</h1><img src="/image/Portfolio/TargetSystem.png" alt="Target System" width="1024"/>
+
+<p><font size=4 ><strong>Target System</strong></font></p>
+<p>锁定系统探索，实现了两个模式：<strong>FreeMode</strong>和<strong>SelectionMode</strong>，在<strong>FreeMode</strong>下，每次帧更新都会更新当前目标，而<strong>SelectionMode</strong>中有按下<strong>Lock</strong>按键才能更新当前目标。此外还实现了动画效果。</p>
+<p><a href="https://li-kira.github.io/2023/11/17/Quantum-Shader/">Read More</a></p>
+<br>
 
 <h1 id="Universal-RP"><a href="#Universal-RP" class="headerlink" title="Universal RP"></a>Universal RP</h1><img src="/image/Portfolio/SSAO.png" alt="SSAO" width="1024"/>
 
@@ -431,7 +436,7 @@
         <section class="post-nav">
             
             
-            <a class="next" rel="next" href="/2023/11/24/Arcade-Slash-VFX/">Arcade Slash VFX</a>
+            <a class="next" rel="next" href="/2023/11/27/Target-System/">Target System</a>
             
         </section>
 
