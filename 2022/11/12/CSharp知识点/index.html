@@ -221,7 +221,88 @@
         </header>
 
         <div class="post-content">
-            <h2 id="Abstract-Class-vs-Interface-Real-Application-Use-in-C-NET"><a href="#Abstract-Class-vs-Interface-Real-Application-Use-in-C-NET" class="headerlink" title="Abstract Class vs Interface (Real Application Use) in C# .NET"></a>Abstract Class vs Interface (Real Application Use) in C# .NET</h2><ul>
+            <h1 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Bai9_LSZfAI">https://www.youtube.com/watch?v=Bai9_LSZfAI</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/YSGStudyHards/DotNetGuide">https://github.com/YSGStudyHards/DotNetGuide</a></p>
+</blockquote>
+<h2 id="Q1-面向对象的基本概念是什么？什么是类和对象"><a href="#Q1-面向对象的基本概念是什么？什么是类和对象" class="headerlink" title="Q1.面向对象的基本概念是什么？什么是类和对象"></a>Q1.面向对象的基本概念是什么？什么是类和对象</h2><p><strong>类</strong>是一个逻辑单元，包含<strong>字段</strong>、<strong>方法</strong>和<strong>属性</strong></p>
+<p>1.构造函数是类中的一种方法，当创建类对象时自动执行<br>2.字段是任何类型的变量。基本上是数据。<br>3.属性是在私有字段的读写方面提供帮助的成员。<br>4.方法是包含成堆声明i的代码块。</p>
+<p><strong>对象</strong>是类的示例</p>
+<h2 id="Q2-什么是继承，为什么继承很重要"><a href="#Q2-什么是继承，为什么继承很重要" class="headerlink" title="Q2. 什么是继承，为什么继承很重要"></a>Q2. 什么是继承，为什么继承很重要</h2><p>继承是在两个类之间创建父-子关系，其子类将自动获取父级的属性和方法。继承有利于提高代码的复用性和抽象性。</p>
+<h2 id="Q3-有哪些不同类型的继承"><a href="#Q3-有哪些不同类型的继承" class="headerlink" title="Q3. 有哪些不同类型的继承"></a>Q3. 有哪些不同类型的继承</h2><p>单继承、多继承、多级继承、等级继承</p>
+<h2 id="Q4-如何阻止一个类被继承"><a href="#Q4-如何阻止一个类被继承" class="headerlink" title="Q4. 如何阻止一个类被继承"></a>Q4. 如何阻止一个类被继承</h2><p>使用<strong>SEALED</strong>关键字，或者使用<strong>static</strong>关键字，但是被标记为<strong>static</strong>的类中的变量也要是<strong>static</strong>的</p>
+<h2 id="Q5-什么是抽象"><a href="#Q5-什么是抽象" class="headerlink" title="Q5. 什么是抽象"></a>Q5. 什么是抽象</h2><p>抽象是只显示需要的事物，隐藏它背后的细节</p>
+<h2 id="Q6-什么是封装"><a href="#Q6-什么是封装" class="headerlink" title="Q6. 什么是封装"></a>Q6. 什么是封装</h2><p>封装的含义为将数据、方法和属性包装到一个单元</p>
+<h2 id="Q7-什么是多态，它的类型是什么？"><a href="#Q7-什么是多态，它的类型是什么？" class="headerlink" title="Q7. 什么是多态，它的类型是什么？"></a>Q7. 什么是多态，它的类型是什么？</h2><p>多态是指一个变量、对象或者是函数能够接受多种形式数据。比如<strong>方法重载。</strong></p>
+<p>多态的类型：</p>
+<ul>
+<li><strong>Compile Time：</strong> 编译时的多态性是通过<strong>重载</strong>来实现的。对于非虚的成员来说，系统在编译时，根据传递的参数、返回的类型等信息决定实现何种操作。</li>
+<li><strong>Run Time：</strong>运行时的多态性就是指直到系统运行时，才<strong>根据实际情况决定</strong>实现何种操作。C#中，运行时的多态性通过虚成员实现。</li>
+</ul>
+<blockquote>
+<p>对于<strong>非虚方法</strong>来说，调用哪个方法取决于该实例<strong>编译时</strong>的类型。但对于<strong>虚方法</strong>来说，调用哪个方法取决于该实例<strong>运行时</strong>的类型。</p>
+<p>虚方法是用来实现多态的，一般virtual和override一起使用</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_43381316/article/details/108112208">https://blog.csdn.net/weixin_43381316/article/details/108112208</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/gygg/p/11556005.html">https://www.cnblogs.com/gygg/p/11556005.html</a></p>
+</blockquote>
+<ol>
+<li>当调用一个对象的函数时，系统会直接去检查这个对象申明定义的类，即申明类，看所调用的函数是否为虚函数；</li>
+<li>如果不是虚函数，那么它就直接执行该函数。而如果有virtual关键字，也就是一个虚函数，那么这个时候它就不会立刻执行该函数了，而是转去检查对象的实例类。</li>
+<li>在这个实例类里，他会检查这个实例类的定义中是否有重新实现该虚函数（通过override关键字），如果是有，那么OK，它就不会再找了，而马上执行该实例类中的这个重新实现的函数。而如果没有的话，系统就会不停地往上找实例类的父类，并对父类重复刚才在实例类里的检查，直到找到第一个重载了该虚函数的父类为止，然后执行该父类里重载后的函数。</li>
+</ol>
+<h2 id="Q8-什么是方法重载，有多少种方法能重载"><a href="#Q8-什么是方法重载，有多少种方法能重载" class="headerlink" title="Q8. 什么是方法重载，有多少种方法能重载"></a>Q8. 什么是方法重载，有多少种方法能重载</h2><p>方法重载是一种多态。重载的所有方法都以不同的方式工作。</p>
+<blockquote>
+<p>方法重载也叫编译时多态，因为编译器知道这些重名的方法能做不同的事情</p>
+</blockquote>
+<h2 id="Q9-Overloading-和Overriding的区别"><a href="#Q9-Overloading-和Overriding的区别" class="headerlink" title="Q9. Overloading 和Overriding的区别"></a>Q9. Overloading 和Overriding的区别</h2><p>重载和重写的区别：</p>
+<table>
+<thead>
+<tr>
+<th align="center">重载</th>
+<th align="center">重写</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>重载</strong>是一种多态，重载在同一个类中使用同样名称的方法，让重载的方法都以不同的方式工作。<strong>比如能够接受不同数据类型的方法。</strong></td>
+<td align="center"><strong>重写</strong>是在不同的类中，使用相同名称和类型方法，让它以不同的方式工作。<strong>比如子类对父类方法的重写</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>重载</strong>不用使用任何关键字</td>
+<td align="center">重写需要使用<strong>virtual</strong>和<strong>override</strong>关键字</td>
+</tr>
+<tr>
+<td align="center"><strong>重载</strong>不需要继承</td>
+<td align="center"><strong>重写</strong>需要继承</td>
+</tr>
+</tbody></table>
+<h2 id="Q10-方法重写和方法隐藏的区别"><a href="#Q10-方法重写和方法隐藏的区别" class="headerlink" title="Q10. 方法重写和方法隐藏的区别"></a>Q10. 方法重写和方法隐藏的区别</h2><ul>
+<li><strong>方法重写</strong>有相同的名称和前面，但是在不同的类中</li>
+<li><strong>方法隐藏</strong>可以使用<strong>new</strong>关键字隐藏基类中方法的实现</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">PrintFields</span>()</span> </span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title">B</span> : <span class="title">A</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">new</span> <span class="keyword">void</span> <span class="title">PrintFields</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        A a = <span class="keyword">new</span> B();</span><br><span class="line">        B b = <span class="keyword">new</span> B();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p>A B</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title">A</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">PrintFields</span>()</span> </span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">class</span> <span class="title">B</span> : <span class="title">A</span></span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">PrintFields</span>()</span></span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(<span class="string">&quot;B&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        A a = <span class="keyword">new</span> B();</span><br><span class="line">        B b = <span class="keyword">new</span> B();</span><br><span class="line"></span><br><span class="line">        a.PrintFields();</span><br><span class="line">        b.PrintFields(); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p>B B</p>
+<h2 id="Q11-面向对象的优势和局限性"><a href="#Q11-面向对象的优势和局限性" class="headerlink" title="Q11. 面向对象的优势和局限性"></a>Q11. 面向对象的优势和局限性</h2><blockquote>
+<p>主要是对面向对象的<strong>继承、多态、封装、抽象</strong>的解释</p>
+</blockquote>
+<p>优势：</p>
+<ul>
+<li>通过继承提高代码的重用性</li>
+<li>多态的灵活性</li>
+<li>通过隐藏和封装能够提高安全性</li>
+<li>容易将应用从小规模升级成大规模</li>
+<li>模块化，方便纠错</li>
+</ul>
+<p>局限性</p>
+<ul>
+<li>小的应用不适合，前期设计时间开销大</li>
+</ul>
+<h2 id="面向对象和C-抽象类和接口"><a href="#面向对象和C-抽象类和接口" class="headerlink" title="面向对象和C# - 抽象类和接口"></a>面向对象和C# - 抽象类和接口</h2><h2 id="Q12-Abstract-Class-和-Interface-in-C-NET-抽象类和接口的区别"><a href="#Q12-Abstract-Class-和-Interface-in-C-NET-抽象类和接口的区别" class="headerlink" title="Q12. Abstract Class 和 Interface in C# .NET 抽象类和接口的区别"></a>Q12. Abstract Class 和 Interface in C# .NET 抽象类和接口的区别</h2><ul>
 <li><strong>抽象类和接口的区别：</strong></li>
 </ul>
 <table>
@@ -232,12 +313,16 @@
 </tr>
 </thead>
 <tbody><tr>
-<td>抽象类包含方法的声明和定义</td>
+<td>抽象类包含方法的<strong>声明</strong>和<strong>定义</strong></td>
 <td>接口只包含方法的声明</td>
 </tr>
 <tr>
 <td>抽象类使用Abstract关键字</td>
 <td>接口使用Interface关键字</td>
+</tr>
+<tr>
+<td>抽象类能包含方法、字段、构造器以及其他类成员</td>
+<td>接口只包含方法</td>
 </tr>
 <tr>
 <td>抽象类不支持多重继承</td>
@@ -248,11 +333,224 @@
 <td>接口没有构造函数</td>
 </tr>
 </tbody></table>
-<ul>
-<li><strong>什么时候使用抽象类或者接口</strong></li>
-</ul>
-<p><strong>接口：</strong>你知道必须有一个方法需要放在那，但是这个方法尚不知如何实现，可以在不同的派生类中用不同的方式实现的时候就用接口。</p>
+<h2 id="Q13-什么时候使用抽象类或者接口"><a href="#Q13-什么时候使用抽象类或者接口" class="headerlink" title="Q13. 什么时候使用抽象类或者接口"></a><strong>Q13. 什么时候使用抽象类或者接口</strong></h2><p><strong>接口：</strong>你知道必须有一个方法需要放在那，但是这个方法尚不知如何实现，可以在不同的派生类中用不同的方式实现的时候就用接口。</p>
 <p><strong>抽象类：</strong>当你确定某些方法要被怎样具体实现的时候就用抽象类，当然也可以使用<strong>abstract</strong>关键字定义方法，并在派生类类使用<strong>override</strong>中重写。</p>
+<h2 id="Q14-为什么要使用接口"><a href="#Q14-为什么要使用接口" class="headerlink" title="Q14. 为什么要使用接口"></a>Q14. 为什么要使用接口</h2><p>因为某些业务内容可能是不确定的，但是知道大概会有那些功能。</p>
+<h2 id="Q15-接口可以有构造函数吗"><a href="#Q15-接口可以有构造函数吗" class="headerlink" title="Q15. 接口可以有构造函数吗"></a>Q15. 接口可以有构造函数吗</h2><p>不行，因为构造函数是一个类被创建时自动执行的，但是接口无法被创建</p>
+<h2 id="Q16-可以创建抽象类或者接口的实例吗"><a href="#Q16-可以创建抽象类或者接口的实例吗" class="headerlink" title="Q16. 可以创建抽象类或者接口的实例吗"></a>Q16. 可以创建抽象类或者接口的实例吗</h2><p>不行，抽象类和接口只能被继承</p>
+<h1 id="面向对象和C-通用"><a href="#面向对象和C-通用" class="headerlink" title="面向对象和C# - 通用"></a>面向对象和C# - 通用</h1><h2 id="Q17-什么是访问修饰符，一个类中的默认访问修饰符是什么"><a href="#Q17-什么是访问修饰符，一个类中的默认访问修饰符是什么" class="headerlink" title="Q17. 什么是访问修饰符，一个类中的默认访问修饰符是什么"></a>Q17. 什么是访问修饰符，一个类中的默认访问修饰符是什么</h2><p>访问修饰符是关键字。指定类、方法的可访问性</p>
+<ul>
+<li>public</li>
+<li>private</li>
+<li>protected</li>
+<li>internal</li>
+<li>protectedinternal</li>
+</ul>
+<h2 id="Q18-什么是Boxing-和-Unboxing"><a href="#Q18-什么是Boxing-和-Unboxing" class="headerlink" title="Q18.什么是Boxing 和 Unboxing?"></a>Q18.什么是Boxing 和 Unboxing?</h2><ul>
+<li><strong>Boxing</strong>是将<strong>值类型</strong>转换为<strong>引用类型</strong>的过程。</li>
+<li><strong>Unboxing</strong>是将<strong>引用类型</strong>转换为<strong>值类型</strong>的过程。</li>
+</ul>
+<h2 id="Q19-“String”-和-“StringBuilder”的区别"><a href="#Q19-“String”-和-“StringBuilder”的区别" class="headerlink" title="Q19.  “String” 和 “StringBuilder”的区别"></a>Q19.  “String” 和 “StringBuilder”的区别</h2><p><strong>字符串在C#中是不可变的。</strong><br>这意味着如果您定义了一个字符串，那么您就不能修改它。每次给它赋值时，它都会创建一个新的字符串。</p>
+<p><strong>字符串创建器是可变的</strong></p>
+<p>这意味着，如果要对字符串执行任何操作，那么它就不会每次都创建一个新实例。</p>
+<p>如果需要频繁地更改字符串，则StringBuilder是一个更好的选项，因为它不会每次都申请新内存。</p>
+<h2 id="Q20-C-中的基础字符串操作符"><a href="#Q20-C-中的基础字符串操作符" class="headerlink" title="Q20. C#中的基础字符串操作符"></a>Q20. C#中的基础字符串操作符</h2><ul>
+<li>连接：使用 <strong>+</strong> 进行两个字符串之间的连接</li>
+<li>替换：<strong>replace</strong></li>
+<li>修剪：<strong>trim()</strong> 能够修建末端的空白字符</li>
+<li>包含：<strong>contains()</strong> 检查是否包含子串</li>
+</ul>
+<h2 id="Q21-什么是可空类型"><a href="#Q21-什么是可空类型" class="headerlink" title="Q21. 什么是可空类型"></a>Q21. 什么是可空类型</h2><p>如果要保存空值，我们必须使用可空类型，因为变量类型不包含空值。</p>
+<ul>
+<li>用法：使用<code>Nullable&lt;int&gt;</code>或者<code>int?</code></li>
+</ul>
+<h2 id="Q22-解释泛型，如何使用它们"><a href="#Q22-解释泛型，如何使用它们" class="headerlink" title="Q22. 解释泛型，如何使用它们"></a>Q22. 解释泛型，如何使用它们</h2><p>泛型允许我们让类和方法<strong>类型独立</strong>或者<strong>类型安全</strong>。</p>
+<p>使用object代替原来的类型</p>
+<p>使用方式：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Caculator</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">AreEqual</span>&lt;<span class="title">T</span>&gt;(<span class="params">T value1, T value2</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> value1.Equals(value2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">bool</span> equal = Caculator.AreEqual(<span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="built_in">bool</span> strEqual = Caculator.AreEqual(<span class="string">&quot;Interview&quot;</span>, <span class="string">&quot;Happy&quot;</span>); </span><br><span class="line">    Console.WriteLine(equal + <span class="string">&quot; &quot;</span> + strEqual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Caculator</span>&lt;<span class="title">T</span>&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">bool</span> <span class="title">AreEqual</span>(<span class="params">T value1, T value2</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> value1.Equals(value2);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">bool</span> equal = Caculator&lt;<span class="built_in">int</span>&gt;.AreEqual(<span class="number">4</span>, <span class="number">4</span>);</span><br><span class="line">    <span class="built_in">bool</span> strEqual = Caculator&lt;<span class="built_in">string</span>&gt;.AreEqual(<span class="string">&quot;Interview&quot;</span>, <span class="string">&quot;Happy&quot;</span>); </span><br><span class="line">    Console.WriteLine(equal + <span class="string">&quot; &quot;</span> + strEqual);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="面向对象和C-异常处理"><a href="#面向对象和C-异常处理" class="headerlink" title="面向对象和C# - 异常处理"></a>面向对象和C# - 异常处理</h1><h2 id="Q23-如何在C-中实现异常处理"><a href="#Q23-如何在C-中实现异常处理" class="headerlink" title="Q23. 如何在C#中实现异常处理"></a>Q23. 如何在C#中实现异常处理</h2><p>面向对象编程中的异常处理用于管理错误</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/377036317">https://zhuanlan.zhihu.com/p/377036317</a></p>
+</blockquote>
+<ol>
+<li><strong>TRY：</strong>是一个代码块，其中包含可能发生错误的代码</li>
+<li><strong>CATCH：</strong>当TRY块中发生任何错误时，则传递给CATCH块来处理它。</li>
+<li><strong>Finally：</strong>用于执行给定一组语句，无论是否抛出异常。</li>
+<li><strong>THROW：</strong>在<strong>CATCH</strong>块中，您可以使用<strong>throw</strong>关键字将堆栈跟踪传递到上一级别。</li>
+</ol>
+<h2 id="Q24-能否执行多个Catch块"><a href="#Q24-能否执行多个Catch块" class="headerlink" title="Q24. 能否执行多个Catch块"></a>Q24. 能否执行多个Catch块</h2><p>不行，我们可以编写多个catch块，但是只有一个会被执行。</p>
+<h2 id="Q25-Finally块是什么，什么时候用它"><a href="#Q25-Finally块是什么，什么时候用它" class="headerlink" title="Q25. Finally块是什么，什么时候用它"></a>Q25. Finally块是什么，什么时候用它</h2><p>无论是否抛出异常都会执行的块，一般用在释放资源</p>
+<h2 id="Q26-能否只包含-“Try”-块而没有-“Catch”-块"><a href="#Q26-能否只包含-“Try”-块而没有-“Catch”-块" class="headerlink" title="Q26. 能否只包含 “Try” 块而没有 “Catch” 块"></a>Q26. 能否只包含 “Try” 块而没有 “Catch” 块</h2><p>可以，但是必须要有<strong>Finally块</strong></p>
+<h2 id="Q27-“throw-ex”-和“throw”的区别是？"><a href="#Q27-“throw-ex”-和“throw”的区别是？" class="headerlink" title="Q27.  “throw ex” 和“throw”的区别是？"></a>Q27.  “throw ex” 和“throw”的区别是？</h2><ul>
+<li><strong>“throw ex”：</strong>抛出异常将清空堆栈跟踪，</li>
+<li><strong>“throw ”：</strong>将保存整个堆栈。</li>
+</ul>
+<p>错误的做法：</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Some code that throws an exception</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// some code that handles the exception</span></span><br><span class="line">    <span class="keyword">throw</span> ex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>正确的做法</strong></p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Some code that throws an exception</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// some code that handles the exception</span></span><br><span class="line">    <span class="keyword">throw</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<strong>“throw</strong>;”代替了<strong>“throw ex;”</strong>，后者会清空原来的堆栈跟踪信息。如果我们在抛出异常时没有指定具体的异常（简单的throw），那么它会默认地将原来捕获的异常继续上抛。这样 的话，上层代码捕获的异常还是最开始我们通过catch捕获的同一个异常。</p>
+<h1 id="面向对象和C-循环和容器"><a href="#面向对象和C-循环和容器" class="headerlink" title="面向对象和C# - 循环和容器"></a>面向对象和C# - 循环和容器</h1><h2 id="Q28-C-的循环类型"><a href="#Q28-C-的循环类型" class="headerlink" title="Q28. C#的循环类型"></a>Q28. C#的循环类型</h2><ul>
+<li>While</li>
+<li>do While：跟While的区别是do，无论条件，会至少执行一次</li>
+<li>for</li>
+<li>foreach</li>
+</ul>
+<h2 id="Q29-“continue”-和-“break”-的区别"><a href="#Q29-“continue”-和-“break”-的区别" class="headerlink" title="Q29. “continue” 和 “break” 的区别?"></a>Q29. “continue” 和 “break” 的区别?</h2><ul>
+<li><strong>Continue：</strong>用于跳过某段代码回到循环的开头继续执行</li>
+<li><strong>break：</strong>退出循环</li>
+</ul>
+<h2 id="Q30-Array-和-ArrayList-的区别"><a href="#Q30-Array-和-ArrayList-的区别" class="headerlink" title="Q30.Array 和 ArrayList 的区别"></a>Q30.Array 和 ArrayList 的区别</h2><table>
+<thead>
+<tr>
+<th align="center">Array</th>
+<th align="center">ArrayList</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>Array</strong> 是强类型，只能存储特定类型数据</td>
+<td align="center"><strong>ArrayList</strong>是弱类型，能存储任意类型数据</td>
+</tr>
+<tr>
+<td align="center"><strong>Array</strong>是固定长度</td>
+<td align="center"><strong>ArrayList</strong>是可变长度</td>
+</tr>
+</tbody></table>
+<h2 id="Q31-Arraylist-和-Hashtable的区别"><a href="#Q31-Arraylist-和-Hashtable的区别" class="headerlink" title="Q31. Arraylist 和 Hashtable的区别"></a>Q31. Arraylist 和 Hashtable的区别</h2><table>
+<thead>
+<tr>
+<th align="center">Arraylist</th>
+<th align="center">Hashtable</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>Arraylist</strong> 添加数据只要添加值</td>
+<td align="center"><strong>Hashtable</strong>添加数据时需要添加键和值</td>
+</tr>
+</tbody></table>
+<h2 id="Q32-C-中的容器是什么，它们的类型是"><a href="#Q32-C-中的容器是什么，它们的类型是" class="headerlink" title="Q32. C#中的容器是什么，它们的类型是"></a>Q32. C#中的容器是什么，它们的类型是</h2><p>C#集合旨在更有效地存储、管理和操作类似的数据。例如<strong>ArrayList</strong>、<strong>Dictionary</strong>、<strong>List</strong>、<strong>Hashtable</strong>等。</p>
+<p><img src="/image/CSharp/image-20231208220140751.png" alt="image-20231208220140751"></p>
+<p>C#中的容器包括：<strong>通用容器</strong>、<strong>泛型容器</strong>、<strong>并发容器</strong></p>
+<p><strong>concurrent：</strong>并发类型，C#中的线程安全集合</p>
+<h2 id="Q33-C-中的IEnumerable是什么"><a href="#Q33-C-中的IEnumerable是什么" class="headerlink" title="Q33. C# 中的IEnumerable是什么"></a>Q33. C# 中的IEnumerable是什么</h2><p><strong>IEnumerable</strong>是<strong>可枚举的所有非泛型集合的基接口</strong>，当我们想要在集合类之间使用<strong>Foreach</strong>，可以使用<strong>IEnumerable</strong>接口。</p>
+<p>比如使用<strong>List</strong>迭代某个类实例化的对象</p>
+<h2 id="Q34-IEnumerable-和-IEnumerator-的区别"><a href="#Q34-IEnumerable-和-IEnumerator-的区别" class="headerlink" title="Q34. IEnumerable 和 IEnumerator 的区别"></a>Q34. IEnumerable 和 IEnumerator 的区别</h2><p><strong>lEnumebale</strong>包含<strong>IEnumerator</strong> 功能</p>
+<p><img src="/image/CSharp/image-20231208221210716.png" alt="image-20231208221210716"></p>
+<h2 id="Q35-IEnumerable-和-IQueryable-区别，为什么在sql中使用IQueryable"><a href="#Q35-IEnumerable-和-IQueryable-区别，为什么在sql中使用IQueryable" class="headerlink" title="Q35.  IEnumerable 和 IQueryable 区别，为什么在sql中使用IQueryable"></a>Q35.  IEnumerable 和 IQueryable 区别，为什么在sql中使用IQueryable</h2><p><strong>IQueryable</strong>与<strong>IEnumerable</strong> 类似，用于从数据中收集<strong>sql查询</strong>。它在SYSTEM.LINQ命名空间下。</p>
+<p><img src="/image/CSharp/image-20231208225226825.png" alt="image-20231208225226825"></p>
+<p><strong>IEnumerable</strong>从数据库中获取信息会带来全部的信息再过滤，影响性能</p>
+<p><strong>IQueryable</strong>会先过滤再带来数据</p>
+<h1 id="面向对象和C-方法和委托"><a href="#面向对象和C-方法和委托" class="headerlink" title="面向对象和C# - 方法和委托"></a>面向对象和C# - 方法和委托</h1><h2 id="Q36-“out”-和“ref”-的区别"><a href="#Q36-“out”-和“ref”-的区别" class="headerlink" title="Q36. “out” 和“ref” 的区别"></a>Q36. “out” 和“ref” 的区别</h2><p>通过使用ref和out关键字，我们可以通过引用传递参数，当您想从一个方法中返回多个值时，您可以使用<strong>out</strong>和<strong>ref</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>out</th>
+<th>ref</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>不需要在传递<strong>out</strong>参数之前初始化它。</td>
+<td>需要初始化</td>
+</tr>
+<tr>
+<td><strong>返回前</strong>必须初始化<strong>out</strong>参数</td>
+<td><strong>返回前</strong>不需要必须初始化</td>
+</tr>
+</tbody></table>
+<p>简单来说，使用<strong>out</strong>来指定一个新的值，使用<strong>ref</strong>来修改一个值。</p>
+<h2 id="Q37-“params”-关键字的用处"><a href="#Q37-“params”-关键字的用处" class="headerlink" title="Q37.  “params” 关键字的用处"></a>Q37.  “params” 关键字的用处</h2><p><strong>params</strong>关键字用来表示<strong>可以使用可变参数类型</strong></p>
+<p>当程序员对要使用的参数的数量没有任何先验知识时，比较有用</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">int</span> <span class="title">Add</span>(<span class="params"><span class="keyword">params</span> <span class="built_in">int</span>[] listNumbers</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> total = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span>(<span class="built_in">int</span> i <span class="keyword">in</span> listNumbers)</span><br><span class="line">    &#123;</span><br><span class="line">        total += i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> total;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">int</span> y = Add(<span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">20</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Q38-什么是构造函数，它的类型是什么？"><a href="#Q38-什么是构造函数，它的类型是什么？" class="headerlink" title="Q38. 什么是构造函数，它的类型是什么？"></a>Q38. 什么是构造函数，它的类型是什么？</h2><p>构造函数是类的一种特殊方法，在创建类的实例时自动调用。构造函数的名称必须与类名相同，否则将很难从其他方法中识别出来。</p>
+<p>C#的构造函数</p>
+<ul>
+<li><strong>Default constructor：</strong>默认构造函数，没有任何参数的构造函数</li>
+<li><strong>Parameterized constructor：</strong>参数构造函数，具有至少一个<strong>输入参数</strong>的构造函数是参数构造函数。</li>
+<li>Copy constructor：复制构造函数，从另一个对象复制变量</li>
+<li><strong>Static constructor：</strong>静态构造函数，用于在调用类的任何静态成员之前进行调用。需要以<strong>Static</strong>作为类型</li>
+<li><strong>Private constructor：</strong>私有构造函数，当构造函数是Private 修饰符时，<strong>其他类是不能从该类派生，也不可能创建该类的实例。</strong></li>
+</ul>
+<h2 id="Q39-什么时候使用Private-constructor"><a href="#Q39-什么时候使用Private-constructor" class="headerlink" title="Q39. 什么时候使用Private constructor"></a>Q39. 什么时候使用Private constructor</h2><p>单例设计模式中常使用<strong>Private constructor</strong></p>
+<p>私有构造函数是一个特殊的构造函数，用于只包含静态成员的类中。</p>
+<h2 id="Q40-C-中的Extension方法是什么，什么时候用他们"><a href="#Q40-C-中的Extension方法是什么，什么时候用他们" class="headerlink" title="Q40.  C#中的Extension方法是什么，什么时候用他们?"></a>Q40.  C#中的Extension方法是什么，什么时候用他们?</h2><p><strong>Extension Method</strong>允许在现有类中添加新方法，而无需修改原始类的源代码。比如说使用一些原本类没有的方法。</p>
+<p>比如说<code>RightSubstring()</code>方法不是<code>string</code>类中的方法，但是我们可以通过使用扩展方法来添加它。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">StringExtensions</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="built_in">string</span> <span class="title">RightSubstring</span>(<span class="params"><span class="keyword">this</span> <span class="built_in">string</span> s, <span class="built_in">int</span> count</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> s.Substring(s.Length - count, count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">string</span> test = <span class="string">&quot;Hello&quot;</span>;</span><br><span class="line">    <span class="built_in">string</span> a = test.RightSubstring(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Q41-什么是Delegate-什么时候用它们？"><a href="#Q41-什么是Delegate-什么时候用它们？" class="headerlink" title="Q41. 什么是Delegate? 什么时候用它们？"></a>Q41. 什么是Delegate? 什么时候用它们？</h2><p>委托是一个<strong>变量</strong>，它保存对A函数或指向A函数的指针的引用。委托可以引用多个方法，需要具有相同的返回类型和参数。</p>
+<p>简单来说委托就是对函数的引用。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">Caculator</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Console.WriteLine(x + y);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Caculator caculator = <span class="keyword">new</span> Caculator(Add);</span><br><span class="line">    caculator(<span class="number">10</span>, <span class="number">20</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Q42-什么是Multicast-Delegates"><a href="#Q42-什么是Multicast-Delegates" class="headerlink" title="Q42. 什么是Multicast Delegates?"></a>Q42. 什么是Multicast Delegates?</h2><p>多点委托对是多个函数的引用。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">Caculator</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Add</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(x + y);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Mul</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Console.WriteLine(x * y);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Caculator caculator = <span class="keyword">new</span> Caculator(Add);</span><br><span class="line">        caculator += Mul;</span><br><span class="line">        caculator(<span class="number">10</span>, <span class="number">20</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">30</span><br><span class="line">200</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Q43-什么是Anonymous-Delegates"><a href="#Q43-什么是Anonymous-Delegates" class="headerlink" title="Q43.什么是Anonymous Delegates"></a>Q43.什么是Anonymous Delegates</h2><p>Anonymous Delegates，在匿名委托中，您可以创建一个委托，但是不需要声明与其关联的方法。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="built_in">delegate</span> <span class="keyword">void</span> <span class="title">Caculator</span>(<span class="params"><span class="built_in">int</span> x, <span class="built_in">int</span> y</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">Program</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        Caculator caculator = <span class="built_in">delegate</span> (<span class="built_in">int</span> a, <span class="built_in">int</span> b)</span><br><span class="line">        &#123;</span><br><span class="line">            Console.WriteLine(a + b);</span><br><span class="line">    	&#125;;</span><br><span class="line"></span><br><span class="line">        caculator(<span class="number">10</span>, <span class="number">20</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="Q44-Events-和-Delegates的区别"><a href="#Q44-Events-和-Delegates的区别" class="headerlink" title="Q44. Events 和 Delegates的区别"></a>Q44. Events 和 Delegates的区别</h2><ul>
+<li>委托是一个变量，它保存对函数的引用或指向函数的指针。</li>
+<li>事件是依赖于委托的通知机制。</li>
+</ul>
+<p><img src="/image/CSharp/image-20231208234135168.png" alt="image-20231208234135168"></p>
+<p>事件依赖于委托，没有委托就不能被调用。事件类似于委托的包装器，以提高其安全性。</p>
+<h1 id="面向对象和C-重要关键字"><a href="#面向对象和C-重要关键字" class="headerlink" title="面向对象和C# - 重要关键字"></a>面向对象和C# - 重要关键字</h1><ul>
+<li><p><strong>this：</strong>此关键字用于引用类的当前的实例，避免了类字段和构造函数参数之间的名称混淆。</p>
+</li>
+<li><p><strong>using：</strong></p>
+<ul>
+<li><p><strong>使用指令</strong></p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> System.IO;</span><br></pre></td></tr></table></figure></li>
+<li><p>使用语句确保即使发生异常也调用**dispose()**方法。主要用于创建数据库联系</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="built_in">string</span>[] args</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">using</span>(<span class="keyword">var</span> connection = <span class="keyword">new</span> SqlConnection(<span class="string">&quot;ConnectionString&quot;</span>))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">var</span> query = <span class="string">&quot;UPDATE YourTable SET Property = value&quot;</span>;</span><br><span class="line">        <span class="keyword">var</span> command = <span class="keyword">new</span> SqlCommand(query, connection);</span><br><span class="line"></span><br><span class="line">        connection.Open();</span><br><span class="line">        command.ExecuteNonQuery();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//connection.Dispose();</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;    </span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li> <strong>is 和 as 操作符：</strong></li>
+<li><strong>is：</strong> 操作符用于<strong>检查对象的类型</strong>，是一个布尔类型</li>
+<li><strong>as：</strong>操作符用于在兼容的引用类型之间执行转换。比如在<strong>object</strong>和<strong>string</strong>之间进行转换，不是布尔类型</li>
+<li> <strong>Readonly</strong>和<strong>Constant</strong> </li>
+<li><strong>Readonly：</strong>使用<strong>Readonly</strong>，可以在<strong>声明</strong>或者<strong>构造函数</strong>中赋值，初始化完成后便无法更改。<strong>ReadOnly</strong>是运行时常数</li>
+<li><strong>Constant：</strong>使用<strong>Constant</strong>，只能在<strong>声明</strong>中赋值，其他地方不能更改<strong>const</strong>字段的值。<strong>Constant</strong>是编译时常数</li>
+<li><strong>Static：</strong>静态类是不能被创建，不能继承的类。静态类用作静态成员，比如方法、构造函数和其他的<strong>容器</strong></li>
+<li><strong>var</strong>和 <strong>dynamic</strong><ul>
+<li><strong>var：</strong>变量的类型由编译器在<strong>编译时</strong>决定。</li>
+<li><strong>dynamic：</strong>变量的类型是在<strong>运行时</strong>决定的，可以在其他地方赋值其他类型的数据</li>
+</ul>
+</li>
+<li><strong>Enum：</strong>枚举是一种特殊的类，用来表示一组<strong>int类型常量</strong>，通常第一个常量<strong>由0开始</strong></li>
+</ul>
 
         </div>
 
